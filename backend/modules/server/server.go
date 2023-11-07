@@ -29,6 +29,11 @@ func (s *Server) Run() error {
 		return errors.New("failed to map handlers")
 	}
 
+	err = s.FileServer()
+	if err != nil {
+		return errors.New("failed to run file server")
+	}
+
 	ginConectionUrl, err := utils.ConnectionUrlBuilder("gin", s.Cfg)
 	if err != nil {
 		return errors.New("failed to build gin connection url")
