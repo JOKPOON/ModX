@@ -46,7 +46,9 @@ func (a *AuthController) Login(c *gin.Context) {
 }
 
 func (a *AuthController) AuthTest(c *gin.Context) {
+	tk := c.MustGet("token").(*entities.UsersClaims)
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Auth Test",
+		"message": "success",
+		"token":   tk,
 	})
 }
