@@ -1,6 +1,9 @@
 package usecases
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/Bukharney/ModX/modules/entities"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -27,6 +30,34 @@ func (a *UsersUsecases) Register(req *entities.UsersRegisterReq) (*entities.User
 	}
 
 	return user, nil
+}
+
+func (a *UsersUsecases) ChangePassword(req *entities.UsersChangePasswordReq) (*entities.UsersChangePasswordRes, error) {
+
+	user, err := a.UsersRepo.GetUserByUsername(req.Username)
+	if err != nil {
+		return nil, errors.New("error, user not found")
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.OldPassword)); err != nil {
+		fmt.Println(err.Error())
+		return nil, errors.New("error, password is invalid")
+	}
+
+	hashedPassword, err := hashPassword(req.NewPassword)
+	if err != nil {
+		return nil, err
+	}
+
+	req.NewPassword = hashedPassword
+
+	res, err := a.UsersRepo.ChangePassword(req)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+
 }
 
 func hashPassword(password string) (string, error) {

@@ -23,14 +23,15 @@ func (a *AuthRepo) SignUsersAccessToken(req *entities.UsersPassport) (string, er
 	claims := &entities.UsersClaims{
 		Id:       req.Id,
 		Username: req.Username,
+		Role:     req.Roles,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(15 * time.Minute)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(60 * time.Minute)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			NotBefore: jwt.NewNumericDate(time.Now()),
 			Subject:   "users_access_token",
 			Issuer:    "ModX_auth",
 			ID:        uuid.New().String(),
-			Audience:  []string{"users"},
+			Audience:  []string{"user"},
 		},
 	}
 

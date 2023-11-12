@@ -68,16 +68,19 @@ func JwtAuthentication() gin.HandlerFunc {
 	}
 }
 
-func GetUserByToken(c *gin.Context) entities.UsersClaims {
+func GetUserByToken(c *gin.Context) (entities.UsersClaims, error) {
 	tokenHeader := c.Request.Header.Get("Authorization")
 	splitted := strings.Split(tokenHeader, " ")
 	tokenPart := splitted[1]
 	tk := &entities.UsersClaims{}
-	token, _ := jwt.ParseWithClaims(tokenPart, tk, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenPart, tk, func(token *jwt.Token) (interface{}, error) {
 		return []byte(os.Getenv("JWT_SECRET")), nil
 	})
+
 	if token.Valid {
-		return *tk
+		return *tk, nil
+	} else {
+		return entities.UsersClaims{}, err
 	}
-	return entities.UsersClaims{}
+
 }

@@ -21,8 +21,9 @@ func NewFileUsecase(userRepo entities.UsersRepository) entities.FileUsecase {
 }
 
 func (f *FileUsecase) Upload(fuq *entities.FileUploadReq) (*entities.FileUploadRes, error) {
+
 	files := fuq.File
-	filesName := make([]string, len(files))
+	filesName := []string{}
 	for _, fileHeader := range files {
 
 		if fileHeader.Size > MAX_UPLOAD_SIZE {
@@ -53,7 +54,7 @@ func (f *FileUsecase) Upload(fuq *entities.FileUploadReq) (*entities.FileUploadR
 			return nil, err
 		}
 
-		fileName := fmt.Sprintf("%d-%s", time.Now().Unix(), fileHeader.Filename)
+		fileName := fmt.Sprintf("%d_%s", time.Now().Unix(), fileHeader.Filename)
 
 		err = os.MkdirAll("./static/products/", os.ModePerm)
 		if err != nil {

@@ -25,9 +25,23 @@ func NewFileControllers(r gin.IRoutes, cfg *configs.Configs, fileUsecase entitie
 
 func (f *FileController) Upload(c *gin.Context) {
 	var req entities.FileUploadReq
-	err := c.ShouldBindJSON(&req)
-	if err != nil {
+
+	if err := c.Request.ParseMultipartForm(10 << 20); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	files := c.Request.MultipartForm.File["file"]
+	req.File = files
+
+	role, err := middlewares.GetUserByToken(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if role.Role != "admin" {
+		c.JSON(http.StatusForbidden, gin.H{"error": "you are not admin"})
 		return
 	}
 

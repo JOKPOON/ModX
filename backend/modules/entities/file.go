@@ -11,7 +11,7 @@ type FileRepository interface {
 }
 
 type FileUploadReq struct {
-	File []*multipart.FileHeader `json:"file" db:"file"`
+	File []*multipart.FileHeader `form:"file"`
 }
 
 type FileUploadRes struct {

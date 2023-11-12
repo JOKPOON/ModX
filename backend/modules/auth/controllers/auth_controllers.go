@@ -46,9 +46,12 @@ func (a *AuthController) Login(c *gin.Context) {
 }
 
 func (a *AuthController) AuthTest(c *gin.Context) {
-	tk := c.MustGet("token").(*entities.UsersClaims)
-	c.JSON(http.StatusOK, gin.H{
-		"message": "success",
-		"token":   tk,
-	})
+	tk, err := middlewares.GetUserByToken(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, tk)
 }
