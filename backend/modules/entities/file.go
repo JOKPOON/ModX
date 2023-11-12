@@ -1,6 +1,8 @@
 package entities
 
-import "mime/multipart"
+import (
+	"mime/multipart"
+)
 
 type FileUsecase interface {
 	Upload(req *FileUploadReq) (*FileUploadRes, error)
@@ -11,7 +13,8 @@ type FileRepository interface {
 }
 
 type FileUploadReq struct {
-	File []*multipart.FileHeader `form:"file"`
+	Claims *UsersClaims            `json:"claims"`
+	File   []*multipart.FileHeader `form:"file"`
 }
 
 type FileUploadRes struct {

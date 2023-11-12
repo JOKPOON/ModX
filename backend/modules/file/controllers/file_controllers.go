@@ -23,10 +23,12 @@ func NewFileControllers(r gin.IRoutes, cfg *configs.Configs, fileUsecase entitie
 	r.POST("/upload", controllers.Upload, middlewares.JwtAuthentication())
 }
 
+const MAX_UPLOAD_SIZE = 1024 * 1024 * 10
+
 func (f *FileController) Upload(c *gin.Context) {
 	var req entities.FileUploadReq
 
-	if err := c.Request.ParseMultipartForm(10 << 20); err != nil {
+	if err := c.Request.ParseMultipartForm(MAX_UPLOAD_SIZE); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -40,10 +42,7 @@ func (f *FileController) Upload(c *gin.Context) {
 		return
 	}
 
-	if role.Role != "admin" {
-		c.JSON(http.StatusForbidden, gin.H{"error": "you are not admin"})
-		return
-	}
+	req.Claims = &role
 
 	res, err := f.FileUsecase.Upload(&req)
 	if err != nil {

@@ -13,17 +13,26 @@ import (
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 10
 
 type FileUsecase struct {
-	UserUsecase entities.UsersRepository
+	UserRepo entities.UsersRepository
 }
 
 func NewFileUsecase(userRepo entities.UsersRepository) entities.FileUsecase {
-	return &FileUsecase{UserUsecase: userRepo}
+	return &FileUsecase{UserRepo: userRepo}
 }
 
 func (f *FileUsecase) Upload(fuq *entities.FileUploadReq) (*entities.FileUploadRes, error) {
 
+	user, err := f.UserRepo.GetUserByUsername(fuq.Claims.Username)
+	if err != nil {
+		return nil, fmt.Errorf("error, user not found")
+	}
+
+	if user.Roles != "admin" {
+		return nil, fmt.Errorf("error, user not authorized")
+	}
+
 	files := fuq.File
-	filesName := []string{}
+	FileName := []string{}
 	for _, fileHeader := range files {
 
 		if fileHeader.Size > MAX_UPLOAD_SIZE {
@@ -33,7 +42,7 @@ func (f *FileUsecase) Upload(fuq *entities.FileUploadReq) (*entities.FileUploadR
 		file, err := fileHeader.Open()
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error, failed to open file")
 		}
 
 		defer file.Close()
@@ -51,32 +60,32 @@ func (f *FileUsecase) Upload(fuq *entities.FileUploadReq) (*entities.FileUploadR
 
 		_, err = file.Seek(0, io.SeekStart)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error, failed to seek file")
 		}
 
-		fileName := fmt.Sprintf("%d_%s", time.Now().Unix(), fileHeader.Filename)
+		fileName := fmt.Sprintf("%d-%s", time.Now().Unix(), fileHeader.Filename)
 
 		err = os.MkdirAll("./static/products/", os.ModePerm)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error, failed to create directory")
 		}
 
 		dst, err := os.Create(fmt.Sprintf("./static/products/%s", fileName))
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error, failed to create file")
 		}
 
 		defer dst.Close()
 
 		if _, err := io.Copy(dst, file); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error, failed to copy file")
 		}
 
-		filesName = append(filesName, fileName)
+		FileName = append(FileName, fileName)
 	}
 
 	res := &entities.FileUploadRes{
-		FileName: filesName,
+		FileName: FileName,
 	}
 
 	return res, nil
