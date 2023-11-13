@@ -18,5 +18,6 @@ type FileUploadReq struct {
 }
 
 type FileUploadRes struct {
-	FileName []string `json:"file_name" db:"file_name"`
+	Status    string   `json:"status"`
+	FilePaths []string `json:"file_paths" db:"file_paths"`
 }

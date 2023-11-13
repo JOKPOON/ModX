@@ -85,7 +85,8 @@ func (f *FileUsecase) Upload(fuq *entities.FileUploadReq) (*entities.FileUploadR
 	}
 
 	res := &entities.FileUploadRes{
-		FileName: FileName,
+		Status:    "success",
+		FilePaths: FileName,
 	}
 
 	return res, nil
