@@ -6,3 +6,4 @@ export * from './Cart';
 export * from './Wishlist';
 export * from './Notification';
 export * from './ContactUs';
+export * from './AllProducts/AllProducts';
