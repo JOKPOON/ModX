@@ -36,20 +36,8 @@ export const Home = () => {
             <div className="Home__header__btm">CATEGORIES</div>
             <div className="Home__Catagories__Container">
               <div className="Home__Catagories__Top">
-                <button className="Home__Education__Categories">
-                  <div className="Home__Catagories__header">EDUCATIONS</div>
-                </button>
-                <button className="Home__Clothes__Categories">
-                  <div className="Home__Catagories__header">CLOTHES</div>
-                </button>
               </div>
-              <div className="Home__Catagories__BTM">
-                <button className="Home__Electronics__Categories">
-                  <div className="Home__Catagories__header">ELECTRONICS</div>
-                </button>
-                <button className="Home__Accessories__Categories">
-                  <div className="Home__Catagories__header">ACCESSORIES</div>
-                </button>
+              <div className="Home__Catagories__Bottom">
               </div>
             </div>
           </div>

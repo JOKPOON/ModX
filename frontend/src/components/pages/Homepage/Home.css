@@ -113,30 +113,26 @@ body {
 }
 
 .Home__Bottom__Right {
-  margin-right: 100px;
   height: 500px;
+  margin-right: 100px;
 }
 
 .Home__Catagories__Container {
   height: 80%;
-}
-
-.Home__Catagories__Top {
+  background-color:bisque;
+  display: grid;
   width: 100%;
-  height: 190px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  grid-template-rows: 1fr 1fr;
 }
 
-.Home__Education__Categories {
-  display: flex;
-  border: none;
-  width: 55%;
-  height: 100%;
-  border-radius: 20px;
-  background-color: #ff6e1f;
+.Home__Catagories__Top{
+  background-color:aquamarine;
 }
+
+.Home__Catagories__Bottom{
+  background-color:blueviolet;
+}
+
 
 .Home__Catagories__header {
   margin-top: 140px;
@@ -144,44 +140,6 @@ body {
   font-size: 24px;
   font-weight: 700;
   color: #fefcfe;
-}
-
-.Home__Clothes__Categories {
-  display: flex;
-  border: none;
-  margin-left: 20px;
-  width: 42%;
-  height: 100%;
-  border-radius: 20px;
-  background-color: #ff6e1f;
-}
-
-.Home__Catagories__BTM {
-  margin-top: 20px;
-  width: 100%;
-  height: 190px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-.Home__Electronics__Categories {
-  display: flex;
-  border: none;
-  width: 50%;
-  height: 100%;
-  border-radius: 20px;
-  background-color: #ff6e1f;
-}
-
-.Home__Accessories__Categories {
-  display: flex;
-  border: none;
-  margin-left: 20px;
-  width: 48%;
-  height: 100%;
-  border-radius: 20px;
-  background-color: #ff6e1f;
 }
 
 @media (max-width: 1000px) {
@@ -272,14 +230,59 @@ body {
     font-size: 14px;
   }
 
-  .Home__button__Container button {
-    width: 160px;
-    height: 45px;
-    border-radius: 25px;
+  .Home__Catagories__header {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 450px) {
+  .Home__Bottom,
+  .Home__Middle {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .Home__Middle__Left {
+    order: 1;
+  }
+
+  .Home__Middle__Right {
+    order: 2;
+    margin-right: 0px;
+  }
+
+  .Home__Bottom__Left {
+    order: 1;
+    margin-left: 40px;
+  }
+
+  .Home__New__Item__Container {
+    margin-right: 0px;
+  }
+
+  .Home__Bottom__Right {
+    order: 2;
+    margin-left: 40px;
+  }
+
+  .Home__header {
+    font-size: 36px;
+  }
+
+  .Home__subheader {
     font-size: 14px;
   }
 
   .Home__Catagories__header {
     font-size: 20px;
   }
+
+  .Home__Bottom__Left{
+    order: 1;
+  }
+
+  .Home__Bottom__Right{
+    order: 2;
+  }
+
 }
