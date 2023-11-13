@@ -11,7 +11,12 @@ import (
 	_authRepo "github.com/Bukharney/ModX/modules/auth/repositories"
 	_authUsecase "github.com/Bukharney/ModX/modules/auth/usecases"
 
+	_productController "github.com/Bukharney/ModX/modules/products/controllers"
+	_productRepo "github.com/Bukharney/ModX/modules/products/repositories"
+	_productUsecase "github.com/Bukharney/ModX/modules/products/usecases"
+
 	_fileController "github.com/Bukharney/ModX/modules/file/controllers"
+	_fileRepo "github.com/Bukharney/ModX/modules/file/repositories"
 	_fileUsecase "github.com/Bukharney/ModX/modules/file/usecases"
 
 	"github.com/gin-gonic/gin"
@@ -34,8 +39,15 @@ func (s *Server) MapHandlers() error {
 
 	// File
 	fileGroup := v1.Group("/file")
-	fileUsecase := _fileUsecase.NewFileUsecase(usersRepo)
+	fileRepo := _fileRepo.NewFileRepo(s.DB)
+	fileUsecase := _fileUsecase.NewFileUsecase(usersRepo, fileRepo)
 	_fileController.NewFileControllers(fileGroup, s.Cfg, fileUsecase)
+
+	// Product
+	productGroup := v1.Group("/product")
+	productRepo := _productRepo.NewProductRepo(s.DB)
+	productUsecase := _productUsecase.NewProductUsecases(productRepo, fileRepo)
+	_productController.NewProductControllers(productGroup, s.Cfg, productUsecase, fileUsecase)
 
 	s.App.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Not Found"})

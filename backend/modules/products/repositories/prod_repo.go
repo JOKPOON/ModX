@@ -9,7 +9,7 @@ type ProductRepo struct {
 	Db *sqlx.DB
 }
 
-func NewAuthRepo(db *sqlx.DB) entities.ProductRepository {
+func NewProductRepo(db *sqlx.DB) entities.ProductRepository {
 	return &ProductRepo{Db: db}
 }
 

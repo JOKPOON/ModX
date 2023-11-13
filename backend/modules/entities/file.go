@@ -5,11 +5,11 @@ import (
 )
 
 type FileUsecase interface {
-	Upload(req *FileUploadReq) (*FileUploadRes, error)
+	Upload(req *FileUploadReq) (FileUploadRes, error)
 }
 
 type FileRepository interface {
-	Upload(req *FileUploadReq) (*FileUploadRes, error)
+	Upload(req *FileUploadReq) (FileUploadRes, error)
 }
 
 type FileUploadReq struct {

@@ -2,58 +2,86 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
+	"github.com/Bukharney/ModX/configs"
 	"github.com/Bukharney/ModX/modules/entities"
-	"github.com/Bukharney/ModX/modules/products/usecases"
+	"github.com/Bukharney/ModX/pkg/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
 type ProductController struct {
-	ProductUsecases usecases.ProductUsecases
+	Cfg            *configs.Configs
+	ProductUsecase entities.ProductUsecase
+	FileUsecase    entities.FileUsecase
 }
 
-func NewProductController(productUsecases usecases.ProductUsecases) *ProductController {
-	return &ProductController{ProductUsecases: productUsecases}
+func NewProductControllers(r gin.IRoutes, cfg *configs.Configs, productUsecase entities.ProductUsecase, fileUsecase entities.FileUsecase) {
+	controllers := &ProductController{
+		Cfg:            cfg,
+		ProductUsecase: productUsecase,
+		FileUsecase:    fileUsecase,
+	}
+
+	r.POST("/create", controllers.Create, middlewares.JwtAuthentication())
 }
+
+const MAX_UPLOAD_SIZE = 1024 * 1024 * 100
 
 func (p *ProductController) Upload(c *gin.Context) (*entities.FileUploadRes, error) {
-	var req entities.FileUploadReq
-
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return nil, err
-	}
-
-	res, err := p.ProductUsecases.Upload(&req)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return nil, err
-	}
-
-	return res, nil
+	return nil, nil
 }
 
 func (p *ProductController) Create(c *gin.Context) {
-	var req entities.Product
+	var freq entities.FileUploadReq
 
-	file, err := p.Upload(c)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	if err := c.Request.ParseMultipartForm(MAX_UPLOAD_SIZE); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": c.Request.Body})
 		return
 	}
 
-	req.Picture = file.FilePaths
+	files := c.Request.MultipartForm.File["file"]
+	freq.File = files
 
-	if err := c.ShouldBindJSON(&req); err != nil {
+	res, err := p.FileUsecase.Upload(&freq)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	res, err := p.ProductUsecases.Create(&req)
+	var req entities.Product
+
+	req.Picture = res.FilePaths
+
+	req.Title = c.PostForm("title")
+	req.Desc = c.PostForm("desc")
+	req.Category = c.PostForm("category")
+	req.SubType = c.PostForm("sub_type")
+
+	var variants []entities.ProductVariant
+
+	for _, v := range c.PostFormArray("variants") {
+		variants = append(variants, entities.ProductVariant{
+			Price: float32(convert(v)),
+			Stock: convert(v),
+			Color: v,
+			Size:  v,
+			Model: v,
+		})
+	}
+
+	req.Variants = variants
+
+	nres, err := p.ProductUsecase.Create(&req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, res)
+	c.JSON(http.StatusCreated, nres)
+}
+
+func convert(v string) int {
+	i, _ := strconv.Atoi(v)
+	return i
 }

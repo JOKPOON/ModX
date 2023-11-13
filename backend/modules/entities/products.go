@@ -4,6 +4,11 @@ type ProductRepository interface {
 	Create(req *Product) (*ProductCreateRes, error)
 }
 
+type ProductUsecase interface {
+	Create(req *Product) (*ProductCreateRes, error)
+	Upload(req *FileUploadReq) (*FileUploadRes, error)
+}
+
 type Product struct {
 	ProductId int      `json:"id" db:"id"`
 	Title     string   `json:"title" db:"title"`
