@@ -5,7 +5,8 @@ nav {
   padding: 0 100px;
   height: 60px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  position: sticky;
+  position: fixed;
+  width: 100%;
   background-color:#FEFCFC ;
   top: 0;
   z-index: 999;
@@ -128,11 +129,19 @@ nav .nav-links :hover {
 @media screen and (max-width: 768px) {
   nav {
     padding: 0 60px;
+    height: 50px;
   }
 
   nav .Logo img {
-    height: 25px;
+    height: 20px;
     width: auto;
+  }
+   
+  nav .Search__Container {
+    display: flex;
+    align-items: center;
+    height: 30px;
+    border-radius: 10px;
   }
 
   nav .menu-toggle {
@@ -150,11 +159,15 @@ nav .nav-links :hover {
     display: none;
   }
 
+  nav .Search input{
+    font-size: 12px;
+  }
+
   nav .nav-links {
     display: none;
     flex-direction: column;
     position: absolute;
-    top: 60px;
+    top: 50px;
     left: 0;
     width: 100%;
     background-color: #fff;
@@ -174,7 +187,7 @@ nav .nav-links :hover {
     align-items: center;
     justify-content: center;
     margin-left: 10px;
-    font-size: 14px;
+    font-size: 12px;
   }
 
   nav .nav-links.active {
@@ -224,7 +237,7 @@ nav .nav-links :hover {
     display: none;
     flex-direction: column;
     position: absolute;
-    top: 60px;
+    top: 50px;
     left: 0;
     width: 100%;
     background-color: #FEFCFC;

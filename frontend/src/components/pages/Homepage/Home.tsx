@@ -12,6 +12,7 @@ export const Home = () => {
   const backgrounds = [
     "https://i.kym-cdn.com/photos/images/original/002/491/279/26f.gif",
     "https://media4.giphy.com/media/xUNd9CxrgrFmvp27du/giphy.gif",
+    "https://avatars.githubusercontent.com/u/111488842?v=4",
   ];
 
   useEffect(() => {
@@ -23,7 +24,7 @@ export const Home = () => {
 
     return () => clearInterval(interval);
   }, [currentBackground, backgrounds.length]);
-  
+
   return (
     <div>
       <div className="Home__Container">
@@ -48,7 +49,9 @@ export const Home = () => {
           <div className="Home__Middle__Right">
             <button
               className="Home__Advertisement"
-              style={{ backgroundImage: `url(${backgrounds[currentBackground]})` }}
+              style={{
+                backgroundImage: `url(${backgrounds[currentBackground]})`,
+              }}
             ></button>
           </div>
         </div>
