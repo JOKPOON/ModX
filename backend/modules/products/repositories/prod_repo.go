@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/Bukharney/ModX/modules/entities"
 	"github.com/jmoiron/sqlx"
@@ -22,13 +23,14 @@ func (p *ProductRepo) Create(req *entities.ProductWithVariants) (*entities.Produ
 	INSERT INTO "products"(
 		"title",
 		"desc",
+		"price",
 		"category",
 		"sub_type",
 		"sold",
 		"stock",
 		"picture"
 	)
-	VALUES ($1, $2, $3, $4, $5, $6, $7)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 	RETURNING "id", "title";
 	`
 
@@ -43,7 +45,7 @@ func (p *ProductRepo) Create(req *entities.ProductWithVariants) (*entities.Produ
 		}
 	}
 
-	row, err := p.Db.Queryx(query, req.Product.Title, req.Product.Desc, req.Product.Category, req.Product.SubType, req.Product.Sold, req.Product.Stock, stringOfPicture)
+	row, err := p.Db.Queryx(query, req.Product.Title, req.Product.Desc, req.Product.Price, req.Product.Category, req.Product.SubType, req.Product.Sold, req.Product.Stock, stringOfPicture)
 	if err != nil {
 		p.DeleteFile(&req.Product)
 		return nil, err
@@ -90,22 +92,11 @@ func (p *ProductRepo) Create(req *entities.ProductWithVariants) (*entities.Produ
 	return product, nil
 }
 
-func (p *ProductRepo) GetAll(req *entities.ProductQuery) (*entities.AllProductReq, error) {
-	sqlQuery := "SELECT * FROM products WHERE 1=1"
-	if req.Id != "" {
-		sqlQuery += " AND id = :id"
-	}
-	if req.Title != "" {
-		sqlQuery += " AND title = :title"
-	}
-	if req.Category != "" {
-		sqlQuery += " AND category = :category"
-	}
-	if req.SubType != "" {
-		sqlQuery += " AND sub_type = :sub_type"
-	}
-	if req.Rating != "" {
-		sqlQuery += " AND rating = :rating"
+func (p *ProductRepo) GetAll(req *entities.ProductQuery) (*entities.AllProductRes, error) {
+
+	sqlQuery, err := sqlQuery(req)
+	if err != nil {
+		return nil, err
 	}
 
 	stmt, err := p.Db.PrepareNamed(sqlQuery)
@@ -120,14 +111,40 @@ func (p *ProductRepo) GetAll(req *entities.ProductQuery) (*entities.AllProductRe
 	defer rows.Close()
 
 	var res entities.AllProductReq
+	var product entities.Product
+	var result entities.AllProductRes
 	for rows.Next() {
+
 		err = rows.StructScan(&res)
 		if err != nil {
-			return &res, err
+			return &result, err
 		}
+		picture := strings.Split(res.Picture, ",")
+		for i, v := range picture {
+			picture[i] = fmt.Sprintf("http://localhost:8080/static/products/%s", v)
+		}
+
+		product.Id = res.Id
+		product.Title = res.Title
+		product.Desc = res.Desc
+		product.Price = res.Price
+		product.Category = res.Category
+		product.SubType = res.SubType
+		product.Rating = res.Rating
+		product.Sold = res.Sold
+		product.Stock = res.Stock
+		product.Created = res.Created
+		product.Updated = res.Updated
+		product.Picture = picture
+
+		result.Data = append(result.Data, product)
 	}
 
-	return &res, nil
+	if res.Id == 0 {
+		return &result, fmt.Errorf("error, product not found")
+	}
+
+	return &result, nil
 }
 
 func (p *ProductRepo) DeleteFile(req *entities.Product) error {
@@ -153,4 +170,44 @@ func (p *ProductRepo) Delete(req *entities.Product) error {
 	}
 
 	return nil
+}
+
+func sqlQuery(req *entities.ProductQuery) (string, error) {
+	sqlQuery := "SELECT * FROM products WHERE 1=1"
+	if req.Id != "" {
+		sqlQuery += " AND id = :id"
+	}
+	if req.Search != "" {
+		sqlQuery += " AND title LIKE :search"
+		req.Search = "%" + req.Search + "%"
+	}
+	if req.Title != "" {
+		sqlQuery += " AND title = :title"
+	}
+	if req.Category != "" {
+		sqlQuery += " AND category = :category"
+	}
+	if req.SubType != "" {
+		sqlQuery += " AND sub_type = :sub_type"
+	}
+	if req.Rating != "" {
+		sqlQuery += " AND rating >= :rating"
+	}
+	if req.MaxPrice != "" {
+		sqlQuery += " AND price <= :max_price"
+	}
+	if req.MinPrice != "" {
+		sqlQuery += " AND price >= :min_price"
+	}
+	if req.PriceSort != "" {
+		if req.PriceSort != "ASC" && req.PriceSort != "DESC" {
+			return "", fmt.Errorf("error, price sort must be ASC or DESC")
+		}
+		sqlQuery += " ORDER BY price " + req.PriceSort
+	}
+	if req.Limit != "" {
+		sqlQuery += " LIMIT :limit"
+	}
+
+	return sqlQuery, nil
 }

@@ -2,7 +2,7 @@ package entities
 
 type ProductRepository interface {
 	Create(req *ProductWithVariants) (*ProductCreateRes, error)
-	GetAll(req *ProductQuery) (*AllProductReq, error)
+	GetAll(req *ProductQuery) (*AllProductRes, error)
 }
 
 type ProductUsecase interface {
@@ -14,6 +14,7 @@ type ProductUsecase interface {
 type Product struct {
 	Id       int      `json:"id" db:"id"`
 	Title    string   `json:"title" db:"title"`
+	Price    float32  `json:"price" db:"price"`
 	Desc     string   `json:"desc" db:"desc"`
 	Picture  []string `json:"picture" db:"picture"`
 	Category string   `json:"category" db:"category"`
@@ -60,6 +61,7 @@ type AllProductReq struct {
 	Id       int     `json:"id" db:"id"`
 	Title    string  `json:"title" db:"title"`
 	Desc     string  `json:"desc" db:"desc"`
+	Price    float32 `json:"price" db:"price"`
 	Picture  string  `json:"picture" db:"picture"`
 	Category string  `json:"category" db:"category"`
 	SubType  string  `json:"sub_type" db:"sub_type"`
@@ -71,9 +73,14 @@ type AllProductReq struct {
 }
 
 type ProductQuery struct {
-	Id       string `json:"id" db:"id"`
-	Title    string `json:"title" db:"title"`
-	Category string `json:"category" db:"category"`
-	SubType  string `json:"sub_type" db:"sub_type"`
-	Rating   string `json:"rating" db:"rating"`
+	Id        string `json:"id" db:"id"`
+	Title     string `json:"title" db:"title"`
+	Category  string `json:"category" db:"category"`
+	SubType   string `json:"sub_type" db:"sub_type"`
+	Rating    string `json:"rating" db:"rating"`
+	Limit     string `json:"limit" db:"limit"`
+	MinPrice  string `json:"min_price" db:"min_price"`
+	MaxPrice  string `json:"max_price" db:"max_price"`
+	PriceSort string `json:"price_sort" db:"price_sort"`
+	Search    string `json:"search" db:"search"`
 }

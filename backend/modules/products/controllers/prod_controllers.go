@@ -90,6 +90,11 @@ func (p *ProductController) GetAllProduct(c *gin.Context) {
 	req.Category = c.Query("category")
 	req.SubType = c.Query("sub_type")
 	req.Rating = c.Query("rating")
+	req.Limit = c.Query("limit")
+	req.MaxPrice = c.Query("max_price")
+	req.MinPrice = c.Query("min_price")
+	req.PriceSort = c.Query("price_sort")
+	req.Search = c.Query("search")
 
 	res, err := p.ProductUsecase.GetAllProduct(&req)
 	if err != nil {
