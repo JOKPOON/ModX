@@ -10,9 +10,10 @@ export const Home = () => {
   const [currentBackground, setCurrentBackground] = useState(0);
 
   const backgrounds = [
-    "https://i.kym-cdn.com/photos/images/original/002/491/279/26f.gif",
-    "https://media4.giphy.com/media/xUNd9CxrgrFmvp27du/giphy.gif",
-    "https://avatars.githubusercontent.com/u/111488842?v=4",
+    "https://www.kmutt.ac.th/wp-content/uploads/2020/08/HDR_0001-5-HDR-scaled.jpg",
+    "https://steco.kmutt.ac.th/wp-content/uploads/2019/12/KMUTT-Landscape.jpg",
+    "https://www.kmutt.ac.th/wp-content/uploads/2020/09/MG_0703-scaled.jpg",
+    "https://www.kmutt.ac.th/wp-content/uploads/2020/08/%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B8%A1%E0%B8%94_%E0%B9%91%E0%B9%98%E0%B9%91%E0%B9%92%E0%B9%92%E0%B9%97_0091.jpg",
   ];
 
   useEffect(() => {
@@ -73,7 +74,7 @@ export const Home = () => {
                       <i className="bx bx-right-arrow-alt"></i>
                     </div>
                   </div>
-                  <div className="Home__Categories__Header">EDUCATIONS</div>
+                  <div className="Home__Categories__Header">EDUCATION</div>
                 </button>
 
                 <button
