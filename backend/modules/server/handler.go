@@ -47,7 +47,7 @@ func (s *Server) MapHandlers() error {
 	productGroup := v1.Group("/product")
 	productRepo := _productRepo.NewProductRepo(s.DB)
 	productUsecase := _productUsecase.NewProductUsecases(productRepo, fileRepo)
-	_productController.NewProductControllers(productGroup, s.Cfg, productUsecase, fileUsecase)
+	_productController.NewProductControllers(productGroup, s.Cfg, usersUsecase, productUsecase, fileUsecase)
 
 	s.App.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Not Found"})

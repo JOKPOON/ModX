@@ -1,8 +1,8 @@
 package controllers
 
 import (
+	"encoding/json"
 	"net/http"
-	"strconv"
 
 	"github.com/Bukharney/ModX/configs"
 	"github.com/Bukharney/ModX/modules/entities"
@@ -14,16 +14,19 @@ type ProductController struct {
 	Cfg            *configs.Configs
 	ProductUsecase entities.ProductUsecase
 	FileUsecase    entities.FileUsecase
+	UsersUsecase   entities.UsersUsecase
 }
 
-func NewProductControllers(r gin.IRoutes, cfg *configs.Configs, productUsecase entities.ProductUsecase, fileUsecase entities.FileUsecase) {
+func NewProductControllers(r gin.IRoutes, cfg *configs.Configs, usersUsecase entities.UsersUsecase, productUsecase entities.ProductUsecase, fileUsecase entities.FileUsecase) {
 	controllers := &ProductController{
 		Cfg:            cfg,
 		ProductUsecase: productUsecase,
 		FileUsecase:    fileUsecase,
+		UsersUsecase:   usersUsecase,
 	}
 
 	r.POST("/create", controllers.Create, middlewares.JwtAuthentication())
+	r.GET("/all", controllers.GetAllProduct)
 }
 
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 100
@@ -34,14 +37,27 @@ func (p *ProductController) Upload(c *gin.Context) (*entities.FileUploadRes, err
 
 func (p *ProductController) Create(c *gin.Context) {
 	var freq entities.FileUploadReq
+	err := c.ShouldBind(&freq.File)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	if err := c.Request.ParseMultipartForm(MAX_UPLOAD_SIZE); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": c.Request.Body})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	files := c.Request.MultipartForm.File["file"]
 	freq.File = files
+
+	role, err := middlewares.GetUserByToken(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	freq.Claims = &role
 
 	res, err := p.FileUsecase.Upload(&freq)
 	if err != nil {
@@ -49,28 +65,13 @@ func (p *ProductController) Create(c *gin.Context) {
 		return
 	}
 
-	var req entities.Product
-
-	req.Picture = res.FilePaths
-
-	req.Title = c.PostForm("title")
-	req.Desc = c.PostForm("desc")
-	req.Category = c.PostForm("category")
-	req.SubType = c.PostForm("sub_type")
-
-	var variants []entities.ProductVariant
-
-	for _, v := range c.PostFormArray("variants") {
-		variants = append(variants, entities.ProductVariant{
-			Price: float32(convert(v)),
-			Stock: convert(v),
-			Color: v,
-			Size:  v,
-			Model: v,
-		})
-	}
-
-	req.Variants = variants
+	var req entities.ProductWithVariants
+	req.Product.Picture = res.FilePaths
+	req.Variant = getVariants(c)
+	req.Product.Title = c.PostForm("title")
+	req.Product.Desc = c.PostForm("desc")
+	req.Product.Category = c.PostForm("category")
+	req.Product.SubType = c.PostForm("sub_type")
 
 	nres, err := p.ProductUsecase.Create(&req)
 	if err != nil {
@@ -81,7 +82,30 @@ func (p *ProductController) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, nres)
 }
 
-func convert(v string) int {
-	i, _ := strconv.Atoi(v)
-	return i
+func (p *ProductController) GetAllProduct(c *gin.Context) {
+
+	var req entities.ProductQuery
+	req.Id = c.Query("id")
+	req.Title = c.Query("title")
+	req.Category = c.Query("category")
+	req.SubType = c.Query("sub_type")
+	req.Rating = c.Query("rating")
+
+	res, err := p.ProductUsecase.GetAllProduct(&req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+func getVariants(c *gin.Context) []entities.ProductVariant {
+	jsonData := c.PostForm("json_data")
+	var jsonDataMap []entities.ProductVariant
+	if err := json.Unmarshal([]byte(jsonData), &jsonDataMap); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return nil
+	}
+	return jsonDataMap
 }
