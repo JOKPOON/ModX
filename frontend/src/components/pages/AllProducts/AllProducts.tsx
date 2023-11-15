@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./AllProducts.css";
+import Products from "./Products";
 
 interface CategoryButtonProps {
   text: string;
@@ -40,8 +41,9 @@ export const AllProducts = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      setShowCategories(window.innerWidth > 468);
+      setShowCategories(window.innerWidth > 768);
     };
+    
     handleResize();
     window.addEventListener("resize", handleResize);
 
@@ -209,15 +211,16 @@ export const AllProducts = () => {
           )}
 
           <div className="Toggle__Categories__Container">
-              <button onClick={toggleCategories}
-              className="Toggle__Categories" >
-                {showCategories ? 
-                <i className="bx bx-chevron-left"></i> :
-                <i className="bx bx-sort"></i>}
-              </button>
-            </div>
+            <button onClick={toggleCategories} className="Toggle__Categories">
+              {showCategories ? (
+                <i className="bx bx-chevron-left"></i>
+              ) : (
+                <i className="bx bx-sort"></i>
+              )}
+            </button>
+          </div>
           <div className="AllProducts__Products">
-            <div className="AllProducts__Products__Container"></div>
+           <Products />
           </div>
         </div>
       </div>

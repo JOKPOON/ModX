@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "./Home.css";
 
 interface Newitem {
   picture?: string;
@@ -72,6 +71,7 @@ const NewItems = () => {
     const formatPriced = priceString.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return formatPriced;
   };
+
   return (
     <div className="Home__New__Item__Container">
       <div className="NewItem__Button__Container__Left">

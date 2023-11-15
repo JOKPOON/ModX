@@ -1,0 +1,118 @@
+.AllProducts__Products__Container {
+  width: 100%;
+  height: 100%;
+  margin-left: 250px;
+  padding: 80px;
+  overflow-y: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.AllProducts__Products__Items {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  height: 300px;
+  width: 99%;
+}
+
+.AllProducts__Products__Item {
+  margin-top: 20px;
+  font-size: 14px;
+  background-color: #fefefe;
+  border-radius: 25px;
+  box-shadow: 0px 0px 55px 0px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+
+.AllProducts__Products__Item__Picture {
+  width: 100%;
+  height: 50%;
+  border-top-right-radius: 25px;
+  border-top-left-radius: 25px;
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: luminosity;
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.AllProducts__Products__Item__Text {
+  width: 100%;
+  height: 50%;
+  padding: 10px 15px 15px 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.AllProducts__Products__Item__Name{
+  font-size: 14px;
+  font-weight: 500;
+  color: #222222;
+}
+
+@media (max-width: 1200px) {
+  .AllProducts__Products__Container {
+    margin-left: 225px;
+    margin-top: 20px;
+    padding: 60px;
+    overflow-y: auto;
+  }
+
+  .AllProducts__Products__Items {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    height: 250px;
+  }
+
+  .AllProducts__Products__Item {
+    font-size: 12px;
+    border-radius: 20px;
+  }
+
+  .AllProducts__Products__Item__Picture {
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .AllProducts__Products__Items {
+    gap: 20px;
+    height: 225px;
+  }
+
+  .AllProducts__Products__Container {
+    margin-left: 0px;
+    padding: 40px;
+  }
+
+  .AllProducts__Products__Item {
+    font-size: 12px;
+    border-radius: 15px;
+  }
+
+  .AllProducts__Products__Item__Picture {
+    border-top-right-radius: 15px;
+    border-top-left-radius: 15px;
+  }
+}
+
+@media (max-width: 468px) {
+  .AllProducts__Products__Item {
+    font-size: 8px;
+    border-radius: 10px;
+  }
+
+  .AllProducts__Products__Container {
+    margin-left: 0px;
+  }
+
+  .AllProducts__Products__Items {
+    gap: 10px;
+    height: 150px;
+  }
+}

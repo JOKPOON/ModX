@@ -9,6 +9,13 @@ import Accessories from "../assets/Accessories.svg";
 export const Home = () => {
   const [currentBackground, setCurrentBackground] = useState(0);
 
+  const CategoryButton = () => {
+    /* 
+    Move to All product pages 
+    - Pass the category
+    */
+  };
+
   const backgrounds = [
     "https://www.kmutt.ac.th/wp-content/uploads/2020/08/HDR_0001-5-HDR-scaled.jpg",
     "https://steco.kmutt.ac.th/wp-content/uploads/2019/12/KMUTT-Landscape.jpg",
@@ -49,6 +56,7 @@ export const Home = () => {
           </div>
           <div className="Home__Middle__Right">
             <button
+              onClick={CategoryButton}
               className="Home__Advertisement"
               style={{
                 backgroundImage: `url(${backgrounds[currentBackground]})`,
