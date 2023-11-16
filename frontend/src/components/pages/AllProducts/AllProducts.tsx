@@ -8,6 +8,18 @@ interface CategoryButtonProps {
   onClick: () => void;
 }
 
+const handleTopsaleClick = () => {
+  console.log("Top Sale button clicked!");
+};
+
+const handleLatestClick = () => {
+  console.log("Latest button clicked!");
+}
+
+const handlePromotionClick = () => {
+  console.log("Promotion button clicked!");
+}
+
 const mockCategories = ["Education", "Clothes", "Electronics", "Accessories"];
 
 const CategoryButton: React.FC<CategoryButtonProps> = ({
@@ -38,12 +50,18 @@ export const AllProducts = () => {
   const [minPrice, setMinPrice] = useState<string>("");
   const [maxPrice, setMaxPrice] = useState<string>("");
   const [showCategories, setShowCategories] = useState(true);
+  const [sortType, setSortType] = useState('Low to High');
+
+  const handleSortToggle = () => {
+    setSortType(prevSortType => (prevSortType === 'Low to High' ? 'High to Low' : 'Low to High'));
+    console.log("Sort button clicked!\nSort type: ", sortType);
+  };
 
   useEffect(() => {
     const handleResize = () => {
-      setShowCategories(window.innerWidth > 768);
+      setShowCategories(window.innerWidth > 968);
     };
-    
+
     handleResize();
     window.addEventListener("resize", handleResize);
 
@@ -125,13 +143,19 @@ export const AllProducts = () => {
           <div className="AllProducts__Sortby__Text">
             <div className="AllProducts__Sortby__Text__Options">
               <div className="AllProducts__Sortby__Text__Title">Sort By</div>
-              <button className="AllProducts__Sortby__Text__Options__Button">
+              <button className="AllProducts__Sortby__Text__Options__Button"
+              onClick={handleTopsaleClick}
+              >
                 Top Sale
               </button>
-              <button className="AllProducts__Sortby__Text__Options__Button">
+              <button className="AllProducts__Sortby__Text__Options__Button"
+              onClick={handleLatestClick}
+              >
                 Latest
               </button>
-              <button className="AllProducts__Sortby__Text__Options__Button">
+              <button className="AllProducts__Sortby__Text__Options__Button"
+              onClick={handlePromotionClick}
+              >
                 Promotion
               </button>
               <div className="AllProducts__Sortby__Text__Title">
@@ -140,8 +164,10 @@ export const AllProducts = () => {
             </div>
           </div>
           <div className="AllProducts__Sortby__Select">
-            <button className="AllProducts__Sortby__Select__Button">
-              Price : Low to High
+            <button className="AllProducts__Sortby__Select__Button"
+            onClick={handleSortToggle}
+            >
+            Price: {sortType}
             </button>
           </div>
         </div>
@@ -220,7 +246,7 @@ export const AllProducts = () => {
             </button>
           </div>
           <div className="AllProducts__Products">
-           <Products />
+            <Products />
           </div>
         </div>
       </div>

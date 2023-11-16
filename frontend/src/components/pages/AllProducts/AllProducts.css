@@ -254,6 +254,16 @@ body {
   display: none;
 }
 
+.AllProducts__Categories__Price__Range__Input:focus{
+  border: 1px solid #fa871f;
+}
+
+.AllProducts__Sortby__Text__Options__Button:hover,
+.AllProducts__Sortby__Select__Button:hover {
+  transform: scale(1.025);
+  transition: all 0.2s ease-in-out;
+}
+
 @media (max-width: 1200px) {
   .AllProducts__Container {
     margin-top: 60px;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./Home.css";
 import NewItems from "./NewItems";
 import Educations from "../assets/Educations.svg";
@@ -7,13 +7,15 @@ import Electronics from "../assets/Electronics.svg";
 import Accessories from "../assets/Accessories.svg";
 
 export const Home = () => {
-  const [currentBackground, setCurrentBackground] = useState(0);
+  const handleHomeClick = () => {
+    window.location.href = "/Allproducts";
+  };
 
-  const CategoryButton = () => {
-    /* 
-    Move to All product pages 
-    - Pass the category
-    */
+  const [currentBackground, setCurrentBackground] = useState(0);
+  const Categories = ["Education", "Clothes", "Electronics", "Accessories"];
+
+  const handleCategoryClick = (text: string) => {
+    console.log("Selected Category : ", text);
   };
 
   const backgrounds = [
@@ -50,18 +52,19 @@ export const Home = () => {
                 Discover, Unwind, and Celebrate Your University Spirit!
               </div>
               <div className="Home__button__Container">
-                <button className="Home__button">Visti Store</button>
+                <button className="Home__button" onClick={handleHomeClick}>
+                  Visit Store
+                </button>
               </div>
             </div>
           </div>
           <div className="Home__Middle__Right">
-            <button
-              onClick={CategoryButton}
+            <div
               className="Home__Advertisement"
               style={{
                 backgroundImage: `url(${backgrounds[currentBackground]})`,
               }}
-            ></button>
+            ></div>
           </div>
         </div>
         <div className="Home__Bottom">
@@ -76,6 +79,7 @@ export const Home = () => {
                 <button
                   className="Home__Categories__Top__Left"
                   style={{ backgroundImage: `url(${Educations})` }}
+                  onClick={() => handleCategoryClick(Categories[0])}
                 >
                   <div className="Home__Education__Arrow">
                     <div className="Home__Education__Arrow__Container">
@@ -88,6 +92,7 @@ export const Home = () => {
                 <button
                   className="Home__Categories__Top__Right"
                   style={{ backgroundImage: `url(${Clothes})` }}
+                  onClick={() => handleCategoryClick(Categories[1])}
                 >
                   <div className="Home__Education__Arrow">
                     <div className="Home__Education__Arrow__Container">
@@ -101,6 +106,7 @@ export const Home = () => {
                 <button
                   className="Home__Categories__Bottom__Left"
                   style={{ backgroundImage: `url(${Electronics})` }}
+                  onClick={() => handleCategoryClick(Categories[2])}
                 >
                   <div className="Home__Education__Arrow">
                     <div className="Home__Education__Arrow__Container">
@@ -112,11 +118,12 @@ export const Home = () => {
                 <button
                   className="Home__Categories__Bottom__Right"
                   style={{ backgroundImage: `url(${Accessories})` }}
+                  onClick={() => handleCategoryClick(Categories[3])}
                 >
                   <div className="Home__Education__Arrow">
-                    <div className="Home__Education__Arrow__Container">
+                    <button className="Home__Education__Arrow__Container">
                       <i className="bx bx-right-arrow-alt"></i>
-                    </div>
+                    </button>
                   </div>
                   <div className="Home__Categories__Header">ACCESSORIES</div>
                 </button>
