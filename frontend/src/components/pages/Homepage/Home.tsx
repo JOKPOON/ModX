@@ -18,9 +18,9 @@ export const Home = () => {
 
   const handleCategoryClick = (text: string) => {
     console.log("Selected Category : ", text);
-    navigate("/Allproducts", { state: { selectedCategories: text }});
+    navigate("/Allproducts", { state: { selectedCategories: [text] }});
   };
-
+  
   const backgrounds = [
     "https://www.kmutt.ac.th/wp-content/uploads/2020/08/HDR_0001-5-HDR-scaled.jpg",
     "https://steco.kmutt.ac.th/wp-content/uploads/2019/12/KMUTT-Landscape.jpg",
@@ -30,13 +30,11 @@ export const Home = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentBackground(
-        (prevBackground) => (prevBackground + 1) % backgrounds.length
-      );
+      setCurrentBackground((prevBackground) => (prevBackground + 1) % backgrounds.length);
     }, 5000);
-
+  
     return () => clearInterval(interval);
-  }, [currentBackground, backgrounds.length]);
+  }, []);
 
   return (
     <div>

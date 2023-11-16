@@ -234,7 +234,8 @@ body {
   height: 30px;
   background-color: rgba(217, 217, 217, 0.3);
   margin-right: 25px;
-  border-radius: 50px;
+  border-radius: 50px;  
+  color: #fefcfe;
   border: 1.5px solid #fefcfe;
   backdrop-filter: blur(7.5px);
 }

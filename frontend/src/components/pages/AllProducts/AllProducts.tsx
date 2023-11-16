@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "./AllProducts.css";
 import Products from "./Products";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface CategoryButtonProps {
   text: string;
   isSelected: boolean;
   onClick: () => void;
 }
-
 const mockCategories = ["Education", "Clothes", "Electronics", "Accessories"];
 
 const CategoryButton: React.FC<CategoryButtonProps> = ({
@@ -35,11 +34,19 @@ const CategoryButton: React.FC<CategoryButtonProps> = ({
 
 export const AllProducts = () => {
   const location = useLocation();
-  const CategoriesFromHome = location.state?.selectedCategories || [];
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(CategoriesFromHome);
-  const [selectedRating, setSelectedRating] = useState<number | null>(null);
-  const [minPrice, setMinPrice] = useState<string>("");
-  const [maxPrice, setMaxPrice] = useState<string>("");
+  const initialMinPrice = location.state?.minPrice || "";
+  const initialMaxPrice = location.state?.maxPrice || "";
+  const initialSelectedRating = location.state?.selectedRating || null;
+  const initialSelectedCategories = location.state?.selectedCategories || [];
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(
+    initialSelectedCategories
+    
+  );
+  const [selectedRating, setSelectedRating] = useState<number | null>(
+    initialSelectedRating
+  );
+  const [minPrice, setMinPrice] = useState<string>(initialMinPrice);
+  const [maxPrice, setMaxPrice] = useState<string>(initialMaxPrice);
   const [showCategories, setShowCategories] = useState(true);
   const [sortType, setSortType] = useState("Low to High");
   const [selectedButton, setSelectedButton] = useState<number | null>(null);
@@ -79,11 +86,15 @@ export const AllProducts = () => {
   };
 
   const handleCategoryButtonClick = (text: string) => {
-    setSelectedCategories((prevSelected) =>
-      prevSelected.includes(text)
-        ? prevSelected.filter((category) => category !== text)
-        : [...prevSelected, text]
-    );
+    setSelectedCategories((prevSelected) => {
+      const categoriesArray = Array.isArray(prevSelected) ? prevSelected : [];
+
+      const updatedCategories = categoriesArray.includes(text)
+        ? categoriesArray.filter((category) => category !== text)
+        : [...categoriesArray, text];
+
+      return updatedCategories;
+    });
   };
 
   const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,17 +141,33 @@ export const AllProducts = () => {
         isSelected={selectedCategories.includes(category)}
         onClick={() => handleCategoryButtonClick(category)}
       />
-      
     ));
   };
 
+  const navigate = useNavigate();
   const handleApplyButtonClick = () => {
     console.log("Apply button clicked!");
     console.log("Selected Categories: ", selectedCategories);
     console.log("Min Price: ", minPrice);
     console.log("Max Price: ", maxPrice);
     console.log("Selected Rating: ", selectedRating);
-  };  
+    if(minPrice !== "" && maxPrice !== "" && parseInt(minPrice) > parseInt(maxPrice)) {
+      alert("You are stupid or what? Max price must be greater than min price!");
+      return;
+    }
+    navigate("/Allproducts", 
+    {state: {
+      selectedCategories: selectedCategories, 
+      minPrice: minPrice, maxPrice: maxPrice, 
+      selectedRating: selectedRating,
+    }})
+  };
+
+  useEffect(() => {
+    return () => {
+      localStorage.clear();
+    };
+  }, []);
 
   return (
     <div>
@@ -267,5 +294,6 @@ export const AllProducts = () => {
         </div>
       </div>
     </div>
+    
   );
 };
