@@ -19,6 +19,10 @@ import (
 	_fileRepo "github.com/Bukharney/ModX/modules/file/repositories"
 	_fileUsecase "github.com/Bukharney/ModX/modules/file/usecases"
 
+	_orderController "github.com/Bukharney/ModX/modules/orders/controllers"
+	_orderRepo "github.com/Bukharney/ModX/modules/orders/repositories"
+	_orderUsecase "github.com/Bukharney/ModX/modules/orders/usecases"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -42,6 +46,12 @@ func (s *Server) MapHandlers() error {
 	fileRepo := _fileRepo.NewFileRepo(s.DB)
 	fileUsecase := _fileUsecase.NewFileUsecase(usersRepo, fileRepo)
 	_fileController.NewFileControllers(fileGroup, s.Cfg, fileUsecase)
+
+	// Order
+	orderGroup := v1.Group("/order")
+	orderRepo := _orderRepo.NewOrderRepo(s.DB)
+	orderUsecase := _orderUsecase.NewOrderUsecases(orderRepo)
+	_orderController.NewOrderControllers(orderGroup, s.Cfg, orderUsecase)
 
 	// Product
 	productGroup := v1.Group("/product")

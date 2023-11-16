@@ -32,12 +32,13 @@ type ProductWithVariants struct {
 }
 
 type ProductVariant struct {
-	Id    int     `json:"id" db:"id"`
-	Color string  `json:"color" db:"color"`
-	Size  string  `json:"size" db:"size"`
-	Model string  `json:"model" db:"model"`
-	Price float32 `json:"price" db:"price"`
-	Stock int     `json:"stock" db:"stock"`
+	Id        int     `json:"id" db:"id"`
+	ProductId int     `json:"product_id" db:"product_id"`
+	Color     string  `json:"color" db:"color"`
+	Size      string  `json:"size" db:"size"`
+	Model     string  `json:"model" db:"model"`
+	Price     float32 `json:"price" db:"price"`
+	Stock     int     `json:"stock" db:"stock"`
 }
 
 type ProductCreate struct {

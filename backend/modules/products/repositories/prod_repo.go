@@ -22,7 +22,7 @@ func (p *ProductRepo) Create(req *entities.ProductWithVariants) (*entities.Produ
 	query := `
 	INSERT INTO "products"(
 		"title",
-		"desc",
+		"description",
 		"price",
 		"category",
 		"sub_type",
