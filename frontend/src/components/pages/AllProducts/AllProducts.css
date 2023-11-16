@@ -264,6 +264,14 @@ body {
   transition: all 0.2s ease-in-out;
 }
 
+
+.AllProducts__Sortby__Text__Options__Button.selected {
+  background-color: #ff6e1f;
+  color: #fefefe; 
+  border: 2px solid #ff6e1f;
+}
+
+
 @media (max-width: 1200px) {
   .AllProducts__Container {
     margin-top: 60px;

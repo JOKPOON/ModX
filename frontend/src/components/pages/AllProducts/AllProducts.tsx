@@ -1,23 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./AllProducts.css";
 import Products from "./Products";
+import { useLocation } from "react-router-dom";
 
 interface CategoryButtonProps {
   text: string;
   isSelected: boolean;
   onClick: () => void;
-}
-
-const handleTopsaleClick = () => {
-  console.log("Top Sale button clicked!");
-};
-
-const handleLatestClick = () => {
-  console.log("Latest button clicked!");
-}
-
-const handlePromotionClick = () => {
-  console.log("Promotion button clicked!");
 }
 
 const mockCategories = ["Education", "Clothes", "Electronics", "Accessories"];
@@ -45,15 +34,30 @@ const CategoryButton: React.FC<CategoryButtonProps> = ({
 };
 
 export const AllProducts = () => {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const location = useLocation();
+  const CategoriesFromHome = location.state?.selectedCategories || [];
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(CategoriesFromHome);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [minPrice, setMinPrice] = useState<string>("");
   const [maxPrice, setMaxPrice] = useState<string>("");
   const [showCategories, setShowCategories] = useState(true);
-  const [sortType, setSortType] = useState('Low to High');
+  const [sortType, setSortType] = useState("Low to High");
+  const [selectedButton, setSelectedButton] = useState<number | null>(null);
+
+  const handleSortbyButtonClick = (buttonIndex: number) => {
+    setSelectedButton((prevIndex) =>
+      prevIndex === buttonIndex ? null : buttonIndex
+    );
+  };
+
+  useEffect(() => {
+    console.log("Selected button: ", selectedButton);
+  }, [selectedButton]);
 
   const handleSortToggle = () => {
-    setSortType(prevSortType => (prevSortType === 'Low to High' ? 'High to Low' : 'Low to High'));
+    setSortType((prevSortType) =>
+      prevSortType === "Low to High" ? "High to Low" : "Low to High"
+    );
     console.log("Sort button clicked!\nSort type: ", sortType);
   };
 
@@ -69,6 +73,7 @@ export const AllProducts = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
   const toggleCategories = () => {
     setShowCategories(!showCategories);
   };
@@ -125,6 +130,7 @@ export const AllProducts = () => {
         isSelected={selectedCategories.includes(category)}
         onClick={() => handleCategoryButtonClick(category)}
       />
+      
     ));
   };
 
@@ -134,7 +140,7 @@ export const AllProducts = () => {
     console.log("Min Price: ", minPrice);
     console.log("Max Price: ", maxPrice);
     console.log("Selected Rating: ", selectedRating);
-  };
+  };  
 
   return (
     <div>
@@ -143,18 +149,27 @@ export const AllProducts = () => {
           <div className="AllProducts__Sortby__Text">
             <div className="AllProducts__Sortby__Text__Options">
               <div className="AllProducts__Sortby__Text__Title">Sort By</div>
-              <button className="AllProducts__Sortby__Text__Options__Button"
-              onClick={handleTopsaleClick}
+              <button
+                className={`AllProducts__Sortby__Text__Options__Button ${
+                  selectedButton === 0 ? "selected" : ""
+                }`}
+                onClick={() => handleSortbyButtonClick(0)}
               >
                 Top Sale
               </button>
-              <button className="AllProducts__Sortby__Text__Options__Button"
-              onClick={handleLatestClick}
+              <button
+                className={`AllProducts__Sortby__Text__Options__Button ${
+                  selectedButton === 1 ? "selected" : ""
+                }`}
+                onClick={() => handleSortbyButtonClick(1)}
               >
                 Latest
               </button>
-              <button className="AllProducts__Sortby__Text__Options__Button"
-              onClick={handlePromotionClick}
+              <button
+                className={`AllProducts__Sortby__Text__Options__Button ${
+                  selectedButton === 2 ? "selected" : ""
+                }`}
+                onClick={() => handleSortbyButtonClick(2)}
               >
                 Promotion
               </button>
@@ -164,10 +179,11 @@ export const AllProducts = () => {
             </div>
           </div>
           <div className="AllProducts__Sortby__Select">
-            <button className="AllProducts__Sortby__Select__Button"
-            onClick={handleSortToggle}
+            <button
+              className="AllProducts__Sortby__Select__Button"
+              onClick={handleSortToggle}
             >
-            Price: {sortType}
+              Price: {sortType}
             </button>
           </div>
         </div>

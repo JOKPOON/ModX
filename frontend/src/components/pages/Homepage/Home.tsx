@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import NewItems from "./NewItems";
 import Educations from "../assets/Educations.svg";
@@ -7,8 +8,9 @@ import Electronics from "../assets/Electronics.svg";
 import Accessories from "../assets/Accessories.svg";
 
 export const Home = () => {
+  const navigate = useNavigate();
   const handleHomeClick = () => {
-    window.location.href = "/Allproducts";
+    navigate("/Allproducts");
   };
 
   const [currentBackground, setCurrentBackground] = useState(0);
@@ -16,6 +18,7 @@ export const Home = () => {
 
   const handleCategoryClick = (text: string) => {
     console.log("Selected Category : ", text);
+    navigate("/Allproducts", { state: { selectedCategories: text }});
   };
 
   const backgrounds = [
