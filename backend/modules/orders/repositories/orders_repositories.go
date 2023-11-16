@@ -14,7 +14,7 @@ func NewOrderRepo(db *sqlx.DB) *OrderRepo {
 	return &OrderRepo{Db: db}
 }
 
-func (o *OrderRepo) Create(req *entities.OrderCreateReq) (*entities.OrderCreateRes, error) {
+func (o *OrderRepo) CreateOrder(req *entities.OrderCreateReq) (*entities.OrderCreateReq, error) {
 	query := `
 	INSERT INTO "orders"(
 		"user_id",
@@ -31,10 +31,9 @@ func (o *OrderRepo) Create(req *entities.OrderCreateReq) (*entities.OrderCreateR
 	RETURNING "id";
 	`
 
-	order := new(entities.OrderQuery)
 	err := o.Db.QueryRowx(
 		query,
-		req.Id,
+		req.UserId,
 		req.ShippingId,
 		req.ShippingType,
 		req.ItemCost,
@@ -43,13 +42,17 @@ func (o *OrderRepo) Create(req *entities.OrderCreateReq) (*entities.OrderCreateR
 		req.PaymentType,
 		req.PaymentStatus,
 		req.Status,
-	).Scan(&order.Id)
+	).Scan(&req.Id)
 	if err != nil {
 		return nil, err
 	}
 
+	return req, nil
+}
+
+func (o *OrderRepo) Create(req *entities.OrderCreateReq) (*entities.OrderCreateRes, error) {
 	for _, v := range req.OrderProducts {
-		query = `
+		query := `
 		INSERT INTO "order_products"(
 			"order_id",
 			"product_id"
@@ -60,10 +63,10 @@ func (o *OrderRepo) Create(req *entities.OrderCreateReq) (*entities.OrderCreateR
 		`
 
 		order_items := entities.OrderItems{}
-		err = o.Db.QueryRowx(
+		err := o.Db.QueryRowx(
 			query,
-			order.Id,
-			order.ProductId,
+			req.Id,
+			v.ProductId,
 		).Scan(&order_items.Id)
 
 		if err != nil {
@@ -72,19 +75,19 @@ func (o *OrderRepo) Create(req *entities.OrderCreateReq) (*entities.OrderCreateR
 
 		query = `
 		SELECT
-			"products_variants"."id",
-			"products_variants"."product_id",
-			"products_variants"."price",
-			"products_variants"."color",
-			"products_variants"."size",
-			"products_variants"."model"
-		FROM "products_variants"
-		WHERE "products_variants"."id" = $1;
+			"product_variants"."id",
+			"product_variants"."product_id",
+			"product_variants"."price",
+			"product_variants"."color",
+			"product_variants"."size",
+			"product_variants"."model"
+		FROM "product_variants"
+		WHERE "product_variants"."id" = $1;
 		`
 
 		product := entities.ProductVariant{}
-		for _, v := range req.OrderProducts {
-			err = o.Db.QueryRowx(query, v).StructScan(&product)
+		for _, v := range v.OrderItems {
+			err = o.Db.QueryRowx(query, v.ProductVariantId).StructScan(&product)
 			if err != nil {
 				return nil, err
 			}

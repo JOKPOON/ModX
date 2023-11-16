@@ -23,7 +23,7 @@ func NewFileControllers(r gin.IRoutes, cfg *configs.Configs, fileUsecase entitie
 	r.POST("/upload", controllers.Upload, middlewares.JwtAuthentication())
 }
 
-const MAX_UPLOAD_SIZE = 1024 * 1024 * 10
+const MAX_UPLOAD_SIZE = 1024 * 1024 * 100
 
 func (f *FileController) Upload(c *gin.Context) {
 	var req entities.FileUploadReq

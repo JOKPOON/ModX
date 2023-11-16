@@ -50,8 +50,8 @@ func (s *Server) MapHandlers() error {
 	// Order
 	orderGroup := v1.Group("/order")
 	orderRepo := _orderRepo.NewOrderRepo(s.DB)
-	orderUsecase := _orderUsecase.NewOrderUsecases(orderRepo)
-	_orderController.NewOrderControllers(orderGroup, s.Cfg, orderUsecase)
+	orderUsecase := _orderUsecase.NewOrderUsecases(orderRepo, usersRepo)
+	_orderController.NewOrderControllers(orderGroup, s.Cfg, usersUsecase, orderUsecase)
 
 	// Product
 	productGroup := v1.Group("/product")

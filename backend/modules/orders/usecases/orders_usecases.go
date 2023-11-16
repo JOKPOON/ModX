@@ -6,16 +6,23 @@ import (
 
 type OrderUsecases struct {
 	OrderRepo entities.OrderRepository
+	UserRepo  entities.UsersRepository
 }
 
-func NewOrderUsecases(orderRepo entities.OrderRepository) entities.OrderUsecase {
+func NewOrderUsecases(orderRepo entities.OrderRepository, userRepo entities.UsersRepository) entities.OrderUsecase {
 	return &OrderUsecases{
 		OrderRepo: orderRepo,
+		UserRepo:  userRepo,
 	}
 }
 
 func (o *OrderUsecases) Create(req *entities.OrderCreateReq) (*entities.OrderCreateRes, error) {
-	res, err := o.OrderRepo.Create(req)
+	order, err := o.OrderRepo.CreateOrder(req)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := o.OrderRepo.Create(order)
 	if err != nil {
 		return nil, err
 	}

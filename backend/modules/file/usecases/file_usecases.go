@@ -30,7 +30,7 @@ func (f *FileUsecase) Upload(fuq *entities.FileUploadReq) (entities.FileUploadRe
 
 	res, err = f.FileRepo.Upload(fuq)
 	if err != nil {
-		return res, fmt.Errorf("error, failed to upload file")
+		return res, err
 	}
 
 	return res, nil

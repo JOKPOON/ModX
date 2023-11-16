@@ -11,7 +11,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-const MAX_UPLOAD_SIZE = 1024 * 1024 * 10
+const MAX_UPLOAD_SIZE = 1024 * 1024 * 20
 
 type FileRepo struct {
 	Db *sqlx.DB

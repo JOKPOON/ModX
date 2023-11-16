@@ -27,6 +27,7 @@ type Shipping struct {
 type OrderRepository interface {
 	Create(req *OrderCreateReq) (*OrderCreateRes, error)
 	Update(req *OrderUpdateReq) error
+	CreateOrder(req *OrderCreateReq) (*OrderCreateReq, error)
 }
 
 type OrderUsecase interface {
@@ -42,6 +43,7 @@ type OrderItem struct {
 
 type OrderCreateReq struct {
 	Id            int             `json:"id"`
+	UserId        int             `json:"user_id"`
 	ShippingId    int             `json:"shipping_id"`
 	ShippingType  int             `json:"shipping_type"`
 	ShippingCost  int             `json:"shipping_cost"`

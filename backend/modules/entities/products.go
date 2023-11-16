@@ -61,7 +61,7 @@ type AllProductRes struct {
 type AllProductReq struct {
 	Id       int     `json:"id" db:"id"`
 	Title    string  `json:"title" db:"title"`
-	Desc     string  `json:"desc" db:"desc"`
+	Desc     string  `json:"desc" db:"description"`
 	Price    float32 `json:"price" db:"price"`
 	Picture  string  `json:"picture" db:"picture"`
 	Category string  `json:"category" db:"category"`

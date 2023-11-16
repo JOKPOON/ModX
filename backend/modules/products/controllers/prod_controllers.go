@@ -88,7 +88,6 @@ func (p *ProductController) GetAllProduct(c *gin.Context) {
 	req.Id = c.Query("id")
 	req.Title = c.Query("title")
 	req.Category = c.Query("category")
-	req.SubType = c.Query("sub_type")
 	req.Rating = c.Query("rating")
 	req.Limit = c.Query("limit")
 	req.MaxPrice = c.Query("max_price")
