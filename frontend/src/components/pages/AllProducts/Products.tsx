@@ -1,4 +1,6 @@
 import "./Products.css";
+import { useNavigate } from "react-router-dom";
+
 interface items {
   picture?: string;
   name: string;
@@ -94,6 +96,7 @@ const ProductsData: items[] = [
 ];
 
 const Products = () => {
+  const navigate = useNavigate();
   const formatPrice = (price: number) => {
     const priceString = price.toString();
     const formatPriced = priceString.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -115,6 +118,7 @@ const Products = () => {
   const handleAddToCartClick = (item: items, rowIndex: number, itemIndex: number) => {
     const overallIndex = rowIndex * itemsPerRow + itemIndex;
     console.log(`Selected item at index : ${overallIndex}:`, item);
+    navigate("/SingleProduct", { state: { selectedItems: [item] }});
   };
 
   const handleAddToWishlist = (item: items, rowIndex: number, itemIndex: number) => {

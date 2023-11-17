@@ -1,0 +1,386 @@
+.Cart__Container {
+  width: 100%;
+  height: 100vh;
+}
+
+.Cart__Header {
+  width: 100%;
+  height: 80px;
+  margin-top: 60px;
+  background-color: #fefefe;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.Cart__Header__Left {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 100px;
+  margin-bottom: 10px;
+    font-size: 16px;
+    color: #909090;
+    margin-left: 8rem;
+}
+
+.Cart__Header__Right {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 100px;
+}
+
+.Cart__Gap{
+    width: 1%;
+}
+
+.Cart__Body {
+  padding: 0px 100px 60px 100px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.Cart__Left {
+  padding: 20px 20px 20px 0;
+  width: 100%;
+}
+
+.Cart__Right {
+  padding: 20px 0 20px 0;
+  width: 100%;
+}
+
+.Cart__Left__Container,
+.Cart__Right__Container {
+  padding: 20px 40px 20px 40px;
+  width: 100%;
+  height: auto;
+  align-items: center;
+  border: 1px solid #909090;
+  border-radius: 10px;
+}
+
+.Cart__Left__Button{
+    padding: 20px 40px 20px 40px;
+    width: 100%;
+    height: auto;
+    align-items: center;
+    border: 1px solid #909090;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    outline: none;
+    background-color: #fefefe;
+    color: #909090;
+}
+
+.Cart__Left__Button:hover{
+    background-color: #222222;
+    color: #fefefe;  
+    transform: scale(1.005);
+    transition: all 0.05s ease-in-out;
+}
+
+.Cart__Left__Container {
+  margin-bottom: 10px;
+  display: grid;
+  grid-template-columns: 0.2fr auto 1.5fr 0.2fr 0.5fr;
+  gap: 20px;
+}
+
+.Cart__Left__Grid1 {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.Cart__Left__Grid2 {
+  width: 125px;
+  height: 125px;
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: luminosity;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  border-radius: 15px;
+}
+
+.Cart__Left__Grid3 {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 16px;
+}
+
+.Cart__Left__Grid4 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+}
+
+.Cart__Left__Grid5 {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  text-align: end;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.Cart__text__Right {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.Cart__text__Right__Toppic {
+  font-size: 16px;
+  font-weight: 500;
+  color: #222222;
+}
+
+.Cart__text__Right__Content {
+  font-size: 16px;
+  font-weight: 400;
+  color: #222222;
+}
+
+.Cart__text__Right__Toppic__Total {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222222;
+}
+
+.Cart__text__Right__Content__Total {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222222;
+}
+
+.Cart__Right__Box {
+  margin-top: 10px;
+  padding: 20px;
+  width: 100%;
+  height: auto;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  border: 1px solid #909090;
+  border-radius: 10px;
+}
+
+.Cart__Edit__Address__Container {
+  display: flex;
+  align-items: end;
+}
+
+.Cart__Edit__Address {
+  height: 50%;
+  font-size: 16px;
+  font-weight: 500;
+  color: #222222;
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  outline: none;
+  border: 1px solid #222222;
+  background-color: #fefefe;
+}
+
+.Cart__Edit__Address:hover{
+    background-color: #222222;
+    color: #fefefe;  
+    transform: scale(1.005);
+    transition: all 0.05s ease-in-out;
+}
+
+.Cart__payment__Button {
+  width: 100%;
+  padding: 20px;
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #fefefe;
+  background-color: #222222;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  outline: none;
+}
+
+.Cart__payment__Button:hover{
+    background: var(
+    --gradient-1,
+    linear-gradient(120deg, #fa871f 13.4%, #ff6e1f 86.6%)
+  );
+    color: #fefefe;  
+    transform: scale(1.005);
+    transition: all 0.05s ease-in-out;
+}
+
+.Cart__select__Togggle {
+  font-size: 16px;
+  font-weight: 500;
+  background-color: #fefefe;
+  color: #222222;
+  border: 2px solid #222222;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 1200px) {
+
+    .Cart__Header{
+        grid-template-columns: 1fr
+    }
+    .Cart__Header__Left{
+        display: none;
+    }
+
+    .Cart__Header__Right{
+        display: flex;
+        justify-content: flex-end;
+    }
+
+  .Cart__Header {
+    height: 70px;
+    margin-top: 60px;
+  }
+
+  .Cart__Header__Left {
+    padding-left: 60px;
+  }
+
+  .Cart__Header__Right {
+    padding-right: 60px;
+  }
+
+  .Cart__Left {
+    padding: 0px 0px 20px 0;
+    width: 100%;
+  }
+
+  .Cart__Right {
+    margin-top: 0px;
+    padding: 20px 0 20px 0;
+  }
+
+  .Cart__Body {
+    padding: 40px 60px 60px 60px;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .Cart__Edit__Address,
+  .Cart__text__Right__Toppic,
+  .Cart__text__Right__Content {
+    font-size: 14px;
+  }
+
+  .Cart__payment__Button,
+  .Cart__text__Right__Toppic__Total,
+  .Cart__text__Right__Content__Total {
+    font-size: 16px;
+  }
+
+  .Cart__Left__Grid2 {
+    width: 90px;
+    height: 90px;
+    border-radius: 10px;
+  }
+
+  .Cart__Left__Grid3,
+  .Cart__Left__Grid4,
+  .Cart__Left__Grid5 {
+    font-size: 14px;
+  }
+
+  .Cart__Left__Button{
+    font-size: 14px;
+}
+}
+
+@media (max-width: 768px) {
+  .Cart__Header {
+    margin-top: 50px;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .Cart__Left__Container {
+    padding: 20px 15px 20px 15px;
+    gap: 15px;
+  }
+
+  .Cart__Header {
+    height: 60px;
+    margin-top: 50px;
+  }
+
+  .Cart__Header__Right {
+    padding-right: 20px;
+  }
+
+  .Cart__Left {
+    padding: 0px 0px 20px 0px;
+  }
+
+  .Cart__Right {
+    margin-top: 0px;
+    padding: 20px 0 20px 0;
+  }
+
+  .Cart__Body {
+    padding: 20px 20px 0px 20px;
+  }
+
+  .Cart__Edit__Address,
+  .Cart__text__Right__Toppic,
+  .Cart__text__Right__Content {
+    font-size: 12px;
+  }
+
+  .Cart__payment__Button,
+  .Cart__text__Right__Toppic__Total,
+  .Cart__text__Right__Content__Total {
+    font-size: 14px;
+  }
+
+  .Cart__Left__Grid2 {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+  }
+
+  .Cart__Left__Grid3,
+  .Cart__Left__Grid4,
+  .Cart__Left__Grid5 {
+    font-size: 12px;
+  }
+
+  .Cart__Left__Button{
+    font-size: 12px;
+}
+}
