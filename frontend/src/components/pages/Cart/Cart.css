@@ -186,6 +186,7 @@
   align-items: end;
 }
 
+.Cart__Delete__Button,
 .Cart__Edit__Address {
   height: 50%;
   font-size: 16px;
@@ -200,6 +201,14 @@
   outline: none;
   border: 1px solid #222222;
   background-color: #fefefe;
+}
+
+.Cart__Delete__Button:hover{
+    background-color:red;
+    color: #fefefe;  
+    border: none;
+    transform: scale(1.005);
+    transition: all 0.05s ease-in-out;
 }
 
 .Cart__Edit__Address:hover{
@@ -235,9 +244,9 @@
 
 .Cart__select__Togggle {
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 800;
   background-color: #fefefe;
-  color: #222222;
+  color: #222222; 
   border: 2px solid #222222;
   border-radius: 5px;
   display: flex;
@@ -247,6 +256,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+}
+
+.Cart__select__Togggle.clicked {
+  color: #fefefe;
+  background: #222222;
 }
 
 @media (max-width: 1200px) {
