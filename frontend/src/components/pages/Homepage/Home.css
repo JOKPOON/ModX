@@ -27,7 +27,7 @@ body {
   grid-template-columns: 1fr 1fr;
 }
 
-.Home__Advertisement{
+.Home__Advertisement {
   width: 100%;
   height: 100%;
   background-size: cover;
@@ -83,6 +83,7 @@ body {
   height: 45px;
   border-radius: 25px;
   border: none;
+  outline: none;
   background-color: #222222;
   color: #fefcfe;
   font-size: 14px;
@@ -91,8 +92,8 @@ body {
 }
 
 .Home__button__Container button:hover {
-  transform: scale(1.02);
-  transition: all 0.5s ease-in-out;
+  transform: scale(1.05);
+  transition: transform 0.3s ease-in-out;
 }
 
 .Home__Middle__Right {
@@ -233,7 +234,8 @@ body {
   height: 30px;
   background-color: rgba(217, 217, 217, 0.3);
   margin-right: 25px;
-  border-radius: 50px;
+  border-radius: 50px;  
+  color: #fefcfe;
   border: 1.5px solid #fefcfe;
   backdrop-filter: blur(7.5px);
 }
@@ -252,7 +254,6 @@ body {
   display: flex;
   align-items: center;
   position: relative;
-
   z-index: 2;
 }
 
@@ -367,14 +368,43 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
   width: 40px;
   height: 40px;
+  outline: none;
+  border: none;
   background-color: #222222;
   color: #fefcfe;
   border-radius: 50px;
   font-size: 20px;
 }
 
+.Home__Wishlist {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #fefcfc;
+  outline: none;
+  cursor: pointer;
+  background-color: rgba(217, 217, 217, 0.3);
+  stroke-width: 0.5px;
+  stroke: var(--fefcfc, #fefcfc);
+  backdrop-filter: blur(7.5px);
+  border-radius: 50%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fefcfc;
+  font-size: 18px;
+  z-index: 20;
+  margin: 20px 0px 0px 20px;
+}
+
+.Home__Wishlist:hover,
+.Home__NewItem__Arrow:hover {
+  transform: scale(1.05);
+  transition: all 0.5s ease-in-out;
+}
 
 @media (max-width: 1200px) {
   .Home__Bottom,
@@ -397,7 +427,6 @@ body {
     width: 90%;
     margin-left: 60px;
   }
-
 
   .Home__Bottom__Right {
     order: 2;
@@ -478,6 +507,13 @@ body {
     width: 30px;
     height: 30px;
     font-size: 16px;
+  }
+
+  .Home__Wishlist {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    margin: 15px 0px 0px 15px;
   }
 }
 
@@ -612,7 +648,6 @@ body {
   .Home__New__Item__Name {
     font-size: 10px;
     height: 50px;
-
   }
 
   .Home__New__Item__Sold__Price__Container {
@@ -635,5 +670,12 @@ body {
     width: 24px;
     height: 24px;
     font-size: 12px;
+  }
+
+  .Home__Wishlist {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    margin: 10px 0px 0px 10px;
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 
 interface Newitem {
   picture?: string;
@@ -72,6 +72,14 @@ const NewItems = () => {
     return formatPriced;
   };
 
+  const handleNewItemToWishlist = (item: Newitem) => {
+    console.log("Add item to wishlits", item);
+  };
+
+  const handleSelectItemFromNewItem = (item: Newitem) => {
+    console.log("Selected item", item);
+  };
+
   return (
     <div className="Home__New__Item__Container">
       <div className="NewItem__Button__Container__Left">
@@ -85,6 +93,12 @@ const NewItems = () => {
       <div className="Home__New__Item__Box">
         {visibleItems.map((item) => (
           <div className="Home__New__Item" key={item.name}>
+            <button
+              className="Home__Wishlist"
+              onClick={() => handleNewItemToWishlist(item)}
+            >
+              <i className="bx bx-heart"></i>
+            </button>
             <div
               className="Home__New__Item__Picture"
               style={{ backgroundImage: `url(${item.picture})` }}
@@ -97,14 +111,17 @@ const NewItems = () => {
                     {formatPrice(item.sold)} Sold
                   </div>
                   <div className="Home__New__Item__Price">
-                    {formatPrice(item.price)} Baht
+                    {formatPrice(item.price)} THB
                   </div>
                 </div>
                 <div className="Home__NewItem__Arrow__Container">
                   <div className="Home__NewItem__Arrow__Box">
-                    <div className="Home__NewItem__Arrow">
+                    <button
+                      className="Home__NewItem__Arrow"
+                      onClick={() => handleSelectItemFromNewItem(item)}
+                    >
                       <i className="bx bx-right-arrow-alt"></i>
-                    </div>
+                    </button>
                   </div>
                 </div>
               </div>

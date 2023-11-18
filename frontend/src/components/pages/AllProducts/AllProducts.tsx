@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "./AllProducts.css";
 import Products from "./Products";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface CategoryButtonProps {
   text: string;
   isSelected: boolean;
   onClick: () => void;
 }
-
 const mockCategories = ["Education", "Clothes", "Electronics", "Accessories"];
 
 const CategoryButton: React.FC<CategoryButtonProps> = ({
@@ -33,17 +33,46 @@ const CategoryButton: React.FC<CategoryButtonProps> = ({
 };
 
 export const AllProducts = () => {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedRating, setSelectedRating] = useState<number | null>(null);
-  const [minPrice, setMinPrice] = useState<string>("");
-  const [maxPrice, setMaxPrice] = useState<string>("");
+  const location = useLocation();
+  const initialMinPrice = location.state?.minPrice || "";
+  const initialMaxPrice = location.state?.maxPrice || "";
+  const initialSelectedRating = location.state?.selectedRating || null;
+  const initialSelectedCategories = location.state?.selectedCategories || [];
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(
+    initialSelectedCategories
+    
+  );
+  const [selectedRating, setSelectedRating] = useState<number | null>(
+    initialSelectedRating
+  );
+  const [minPrice, setMinPrice] = useState<string>(initialMinPrice);
+  const [maxPrice, setMaxPrice] = useState<string>(initialMaxPrice);
   const [showCategories, setShowCategories] = useState(true);
+  const [sortType, setSortType] = useState("Low to High");
+  const [selectedButton, setSelectedButton] = useState<number | null>(null);
+
+  const handleSortbyButtonClick = (buttonIndex: number) => {
+    setSelectedButton((prevIndex) =>
+      prevIndex === buttonIndex ? null : buttonIndex
+    );
+  };
+
+  useEffect(() => {
+    console.log("Selected button: ", selectedButton);
+  }, [selectedButton]);
+
+  const handleSortToggle = () => {
+    setSortType((prevSortType) =>
+      prevSortType === "Low to High" ? "High to Low" : "Low to High"
+    );
+    console.log("Sort button clicked!\nSort type: ", sortType);
+  };
 
   useEffect(() => {
     const handleResize = () => {
-      setShowCategories(window.innerWidth > 768);
+      setShowCategories(window.innerWidth > 968);
     };
-    
+
     handleResize();
     window.addEventListener("resize", handleResize);
 
@@ -51,16 +80,21 @@ export const AllProducts = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
   const toggleCategories = () => {
     setShowCategories(!showCategories);
   };
 
   const handleCategoryButtonClick = (text: string) => {
-    setSelectedCategories((prevSelected) =>
-      prevSelected.includes(text)
-        ? prevSelected.filter((category) => category !== text)
-        : [...prevSelected, text]
-    );
+    setSelectedCategories((prevSelected) => {
+      const categoriesArray = Array.isArray(prevSelected) ? prevSelected : [];
+
+      const updatedCategories = categoriesArray.includes(text)
+        ? categoriesArray.filter((category) => category !== text)
+        : [...categoriesArray, text];
+
+      return updatedCategories;
+    });
   };
 
   const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,13 +144,30 @@ export const AllProducts = () => {
     ));
   };
 
+  const navigate = useNavigate();
   const handleApplyButtonClick = () => {
     console.log("Apply button clicked!");
     console.log("Selected Categories: ", selectedCategories);
     console.log("Min Price: ", minPrice);
     console.log("Max Price: ", maxPrice);
     console.log("Selected Rating: ", selectedRating);
+    if(minPrice !== "" && maxPrice !== "" && parseInt(minPrice) > parseInt(maxPrice)) {
+      alert("You are stupid or what? Max price must be greater than min price!");
+      return;
+    }
+    navigate("/Allproducts", 
+    {state: {
+      selectedCategories: selectedCategories, 
+      minPrice: minPrice, maxPrice: maxPrice, 
+      selectedRating: selectedRating,
+    }})
   };
+
+  useEffect(() => {
+    return () => {
+      localStorage.clear();
+    };
+  }, []);
 
   return (
     <div>
@@ -125,13 +176,28 @@ export const AllProducts = () => {
           <div className="AllProducts__Sortby__Text">
             <div className="AllProducts__Sortby__Text__Options">
               <div className="AllProducts__Sortby__Text__Title">Sort By</div>
-              <button className="AllProducts__Sortby__Text__Options__Button">
+              <button
+                className={`AllProducts__Sortby__Text__Options__Button ${
+                  selectedButton === 0 ? "selected" : ""
+                }`}
+                onClick={() => handleSortbyButtonClick(0)}
+              >
                 Top Sale
               </button>
-              <button className="AllProducts__Sortby__Text__Options__Button">
+              <button
+                className={`AllProducts__Sortby__Text__Options__Button ${
+                  selectedButton === 1 ? "selected" : ""
+                }`}
+                onClick={() => handleSortbyButtonClick(1)}
+              >
                 Latest
               </button>
-              <button className="AllProducts__Sortby__Text__Options__Button">
+              <button
+                className={`AllProducts__Sortby__Text__Options__Button ${
+                  selectedButton === 2 ? "selected" : ""
+                }`}
+                onClick={() => handleSortbyButtonClick(2)}
+              >
                 Promotion
               </button>
               <div className="AllProducts__Sortby__Text__Title">
@@ -140,8 +206,11 @@ export const AllProducts = () => {
             </div>
           </div>
           <div className="AllProducts__Sortby__Select">
-            <button className="AllProducts__Sortby__Select__Button">
-              Price : Low to High
+            <button
+              className="AllProducts__Sortby__Select__Button"
+              onClick={handleSortToggle}
+            >
+              Price: {sortType}
             </button>
           </div>
         </div>
@@ -220,10 +289,11 @@ export const AllProducts = () => {
             </button>
           </div>
           <div className="AllProducts__Products">
-           <Products />
+            <Products />
           </div>
         </div>
       </div>
     </div>
+    
   );
 };

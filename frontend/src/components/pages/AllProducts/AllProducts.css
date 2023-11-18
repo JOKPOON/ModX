@@ -146,7 +146,7 @@ body {
 
 .AllProducts__Products {
   width: 100%;
-  overflow-y: auto; 
+  overflow-y: auto;
   display: flex;
   position: relative;
   z-index: 0;
@@ -254,6 +254,23 @@ body {
   display: none;
 }
 
+.AllProducts__Categories__Price__Range__Input:focus {
+  border: 1px solid #fa871f;
+}
+
+.AllProducts__Categories__Apply__Button:hover,
+.AllProducts__Sortby__Text__Options__Button:hover,
+.AllProducts__Sortby__Select__Button:hover {
+  transform: scale(1.025);
+  transition: all 0.2s ease-in-out;
+}
+
+.AllProducts__Sortby__Text__Options__Button.selected {
+  background-color: #ff6e1f;
+  color: #fefefe;
+  border: 2px solid #ff6e1f;
+}
+
 @media (max-width: 1200px) {
   .AllProducts__Container {
     margin-top: 60px;
@@ -329,7 +346,6 @@ body {
     border-radius: 5px;
     border: 1px solid #222222;
   }
-
 }
 
 @media (max-width: 968px) {
@@ -342,6 +358,7 @@ body {
     padding-right: 10px;
     height: 40px;
   }
+
   .AllProducts__Sortby__Text {
     margin-left: 30px;
   }
@@ -373,7 +390,6 @@ body {
     margin-left: 0px;
   }
 
-  
   .Toggle__Categories__Container {
     position: fixed;
     display: flex;
@@ -383,7 +399,7 @@ body {
     margin-top: 45px;
   }
 
-  .Toggle__Categories{
+  .Toggle__Categories {
     height: 35px;
     width: 35px;
     border: none;
@@ -401,11 +417,10 @@ body {
     margin-left: -2px;
   }
 
-  .AllProducts__Categories{
+  .AllProducts__Categories {
     box-shadow: 100px 0 80px rgba(0, 0, 0, 0.1);
   }
 }
-
 
 @media (max-width: 768px) {
   .AllProducts__Container {
@@ -448,7 +463,6 @@ body {
     margin-left: 0px;
   }
 
-  
   .Toggle__Categories__Container {
     position: fixed;
     display: flex;
@@ -458,7 +472,7 @@ body {
     margin-top: 45px;
   }
 
-  .Toggle__Categories{
+  .Toggle__Categories {
     height: 35px;
     width: 35px;
     border: none;
@@ -476,7 +490,7 @@ body {
     margin-left: -2px;
   }
 
-  .AllProducts__Categories{
+  .AllProducts__Categories {
     box-shadow: 100px 0 80px rgba(0, 0, 0, 0.1);
   }
 }

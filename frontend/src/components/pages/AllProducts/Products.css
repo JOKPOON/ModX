@@ -19,7 +19,6 @@
 
 .AllProducts__Products__Item {
   margin-top: 20px;
-  font-size: 14px;
   background-color: #fefefe;
   border-radius: 25px;
   box-shadow: 0px 0px 55px 0px rgba(0, 0, 0, 0.1);
@@ -46,12 +45,80 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  font-size: 14px;
 }
 
-.AllProducts__Products__Item__Name{
-  font-size: 14px;
+.AllProducts__Products__Item__Name {
   font-weight: 500;
   color: #222222;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.AllProducts__Products__Item__Buttom {
+  width: 100%;
+  height: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.AllProducts__Products__Item__Buttom__Text {
+  width: 70%;
+}
+
+.AllProducts__Products__Item__Sold {
+  font-weight: 400;
+  color: #908f8f;
+}
+
+.AllProducts__Products__Item__Price {
+  font-weight: 500;
+  color: #222222;
+}
+
+.AllProducts__Products__Item__Wishlist {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #fefcfc;
+  outline: none;
+  cursor: pointer;
+  background-color: rgba(217, 217, 217, 0.3);
+  stroke-width: 0.5px;
+  stroke: var(--fefcfc, #fefcfc);
+  backdrop-filter: blur(7.5px);
+  border-radius: 50%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fefcfc;
+  font-size: 18px;
+  z-index: 20;
+  margin: 10px 0px 0px 10px;
+}
+
+.AllProducts__Products__Item__Button__Add {
+  width: 40px;
+  height: 40px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background-color: #222222;
+  color: #fefefe;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+
+.AllProducts__Products__Item__Wishlist:hover,
+.AllProducts__Products__Item__Button__Add:hover {
+  transform: scale(1.05);
+  transition: all 0.5s ease-in-out;
 }
 
 @media (max-width: 1200px) {
@@ -77,9 +144,26 @@
     border-top-right-radius: 20px;
     border-top-left-radius: 20px;
   }
+
+  .AllProducts__Products__Item__Text {
+    font-size: 12px;
+  }
+
+  .AllProducts__Products__Item__Wishlist {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+    margin: 10px 0px 0px 10px;
+  }
+
+  .AllProducts__Products__Item__Button__Add {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 968px) {
   .AllProducts__Products__Items {
     gap: 20px;
     height: 225px;
@@ -87,7 +171,7 @@
 
   .AllProducts__Products__Container {
     margin-left: 0px;
-    padding: 40px;
+    padding: 30px;
   }
 
   .AllProducts__Products__Item {
@@ -99,6 +183,29 @@
     border-top-right-radius: 15px;
     border-top-left-radius: 15px;
   }
+
+  .AllProducts__Products__Item__Text {
+    font-size: 12px;
+    padding: 10px 15px 15px 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .AllProducts__Products__Container {
+    margin-top: 40px;
+    margin-left: 0px;
+    padding: 15px;
+  }
+
+  .AllProducts__Products__Items {
+    gap: 7px;
+    height: 225px;
+  }
+
+  .AllProducts__Products__Item__Text {
+    font-size: 10px;
+    padding: 7px 10px 10px 10px;
+  }
 }
 
 @media (max-width: 468px) {
@@ -109,10 +216,32 @@
 
   .AllProducts__Products__Container {
     margin-left: 0px;
+    padding: 10px;
+  }
+
+  .AllProducts__Products__Container {
+    margin-left: 0px;
   }
 
   .AllProducts__Products__Items {
-    gap: 10px;
-    height: 150px;
+    gap: 5px;
+    height: 175px;
+  }
+
+  .AllProducts__Products__Item__Text {
+    font-size: 8px;
+  }
+
+  .AllProducts__Products__Item__Wishlist {
+    width: 20px;
+    height: 20px;
+    margin: 7px 0px 0px 7px;
+    font-size: 10px;
+  }
+
+  .AllProducts__Products__Item__Button__Add {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
   }
 }

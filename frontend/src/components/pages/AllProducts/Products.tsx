@@ -1,5 +1,4 @@
 import "./Products.css";
-
 interface items {
   picture?: string;
   name: string;
@@ -113,27 +112,55 @@ const Products = () => {
       ProductsData.slice(rowIndex * itemsPerRow, (rowIndex + 1) * itemsPerRow)
   );
 
+  const handleAddToCartClick = (item: items, rowIndex: number, itemIndex: number) => {
+    const overallIndex = rowIndex * itemsPerRow + itemIndex;
+    console.log(`Selected item at index : ${overallIndex}:`, item);
+  };
+
+  const handleAddToWishlist = (item: items, rowIndex: number, itemIndex: number) => {
+    const overallIndex = rowIndex * itemsPerRow + itemIndex;
+    console.log(`Add item to wishlist at index : ${overallIndex}:`, item);
+  };
+
   return (
     <div className="AllProducts__Products__Container">
       <div className="AllProducts__Products__Rows">
         {rows.map((row, rowIndex) => (
           <div className="AllProducts__Products__Items" key={rowIndex}>
-            {row.map((item, index) => (
-              <div className="AllProducts__Products__Item" key={index}>
+            {row.map((item, itemIndex) => (
+              <div className="AllProducts__Products__Item" key={itemIndex}>
+                <button className="AllProducts__Products__Item__Wishlist"
+                onClick={() => handleAddToWishlist(item, rowIndex, itemIndex)}
+                >
+                  <i className="bx bx-heart"></i>
+                </button>
                 <div
                   className="AllProducts__Products__Item__Picture"
                   style={{ backgroundImage: `url(${item.picture})` }}
                 ></div>
+
                 <div className="AllProducts__Products__Item__Text">
                   <div className="AllProducts__Products__Item__Name">
                     {item.name}
                   </div>
                   <div>
-                    <div className="AllProducts__Products__Item__Sold">
-                      Sold: {item.sold}
-                    </div>
-                    <div className="AllProducts__Products__Item__Price">
-                      Price: {formatPrice(item.price)} Bath
+                    <div className="AllProducts__Products__Item__Buttom">
+                      <div className="AllProducts__Products__Item__Buttom__Text">
+                        <div className="AllProducts__Products__Item__Sold">
+                          Sold: {formatPrice(item.sold)}
+                        </div>
+                        <div className="AllProducts__Products__Item__Price">
+                          Price: {formatPrice(item.price)} THB
+                        </div>
+                      </div>
+                      <div className="AllProducts__Products__Item__Button">
+                        <button
+                          className="AllProducts__Products__Item__Button__Add"
+                          onClick={() => handleAddToCartClick(item, rowIndex, itemIndex)}
+                        >
+                          <i className="bx bx-right-arrow-alt"></i>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
