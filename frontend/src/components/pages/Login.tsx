@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Login.css";
 import userDatabase from "./userDatabase";
+import Logo from "./assets/Logo.svg";
 
 export const Login = () => {
   const [username, setUsername] = useState("");
@@ -10,10 +11,6 @@ export const Login = () => {
 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
-  };
-
-  const handleToggleRegister = () => {
-    window.location.href = "/register";
   };
 
   const handleLogin = () => {
@@ -29,44 +26,57 @@ export const Login = () => {
     }
   };
 
+  const [isSignUp, setIsSignUp] = useState(false);
+
+  const handleToggle = () => {
+    setIsSignUp(!isSignUp);
+  };
+
   return (
-    <div className="login">
-      <div className="login__container">
-        <h1 className="login__title">Login</h1>
-        <div className="login__inputContainer">
-          <label className="login__label">Username</label>
-          <input
-            className="login__input"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </div>
-        <div className="login__inputContainer">
-          <label className="login__label">Password</label>
-          <input
-            className="login__input"
-            type={showPassword ? "text" : "password"}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button
-            className="login__togglePassword"
-            onClick={handleTogglePassword}
-          >
-            {showPassword ? "Hide" : "Show"}
-          </button>
-        </div>
-        <div className="login__error">{error}</div>
-        <div className="login__buttonContainer">
-          <button className="login__button" onClick={handleLogin}>
-            Login
-          </button>
-          <button className="login__button" onClick={handleToggleRegister}>
-            Register
-          </button>
+    <div className="main">
+    <div className={`container ${isSignUp ? 'active' : ''}`}>
+      <div className="form-container sign-in">
+        <button className="Back">{'<'+'Back' }</button>
+        <img src={Logo} alt="" className="LogoSVG"/>
+      
+        <form>
+          <h1>Login</h1>
+          <span></span>
+          <input type="name" placeholder="Username"/>
+          <input type="password" placeholder="Password"/>
+
+          <button className="BtnTog">Login</button>
+        </form>
+
+      </div>
+      <div className="form-container sign-up">
+        <form>
+          <h1>Create Account</h1>
+          <span></span>
+          <input type="text" placeholder="Name"/>
+          <input type="email" placeholder="Email"/>
+          <input type="password" placeholder="Password"/>
+          <input type="password" placeholder="Confirm Password"/>
+          <button className="BtnTog" >Sign Up</button>
+        </form>
+      </div>
+      
+
+      <div className="toggle-container">
+        <div className="toggle">
+          <div className={`toggle-panel toggle-left ${isSignUp ? 'hidden' : ''}`}>
+            <h1>Welcome Back!</h1>
+            <p>Enter your personal details to use all site features</p>
+            <button className="BtnTog" onClick={handleToggle}>Login</button>
+          </div>
+          <div className={`toggle-panel toggle-right ${isSignUp ? '' : 'hidden'}`}>
+            <h1>Hello, Friend!</h1>
+            <p>Register with your personal details to use all site features</p>
+            <button className="BtnTog" onClick={handleToggle}>Sign Up</button>
+          </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };
