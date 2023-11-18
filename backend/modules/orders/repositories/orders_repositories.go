@@ -50,6 +50,60 @@ func (o *OrderRepo) CreateOrder(req *entities.OrderCreateReq) (*entities.OrderCr
 	return req, nil
 }
 
+func (o *OrderRepo) GetProductVariantById(id int) (*entities.ProductVariant, error) {
+	query := `
+	SELECT
+		"product_variants"."id",
+		"product_variants"."product_id",
+		"product_variants"."price",
+		"product_variants"."color",
+		"product_variants"."size",
+		"product_variants"."model"
+	FROM "product_variants"
+	WHERE "product_variants"."id" = $1;
+	`
+
+	product_variant := new(entities.ProductVariant)
+	err := o.Db.QueryRowx(query, id).StructScan(product_variant)
+	if err != nil {
+		return nil, err
+	}
+
+	return product_variant, nil
+}
+
+func (o *OrderRepo) SaveItemsByProductVariantId(id int, product *entities.ProductVariant, v *entities.OrderItems) (*entities.OrderItems, error) {
+	query := `
+			INSERT INTO "items"(
+				"order_products_id",
+				"quantity",
+				"price",
+				"color",
+				"size",
+				"model"
+			)
+			VALUES ($1, $2, $3, $4, $5, $6)
+			RETURNING "id";
+			`
+
+	items := new(entities.OrderItems)
+	err := o.Db.QueryRowx(
+		query,
+		id,
+		v.Quantity,
+		product.Price,
+		product.Color,
+		product.Size,
+		product.Model,
+	).Scan(&items.Id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return items, nil
+}
+
 func (o *OrderRepo) Create(req *entities.OrderCreateReq) (*entities.OrderCreateRes, error) {
 	for _, v := range req.OrderProducts {
 		query := `
@@ -73,51 +127,13 @@ func (o *OrderRepo) Create(req *entities.OrderCreateReq) (*entities.OrderCreateR
 			return nil, err
 		}
 
-		query = `
-		SELECT
-			"product_variants"."id",
-			"product_variants"."product_id",
-			"product_variants"."price",
-			"product_variants"."color",
-			"product_variants"."size",
-			"product_variants"."model"
-		FROM "product_variants"
-		WHERE "product_variants"."id" = $1;
-		`
-
-		product := entities.ProductVariant{}
-		for _, v := range v.OrderItems {
-			err = o.Db.QueryRowx(query, v.ProductVariantId).StructScan(&product)
-			if err != nil {
-				return nil, err
-			}
+		product, err := o.GetProductVariantById(v.ProductId)
+		if err != nil {
+			return nil, err
 		}
 
 		for _, v := range v.OrderItems {
-			query = `
-			INSERT INTO "items"(
-				"order_products_id",
-				"quantity",
-				"price",
-				"color",
-				"size",
-				"model"
-			)
-			VALUES ($1, $2, $3, $4, $5, $6)
-			RETURNING "id";
-			`
-
-			items := new(entities.OrderItems)
-			err = o.Db.QueryRowx(
-				query,
-				order_items.Id,
-				v.Quantity,
-				product.Price,
-				product.Color,
-				product.Size,
-				product.Model,
-			).Scan(&items.Id)
-
+			_, err := o.SaveItemsByProductVariantId(order_items.Id, product, &v)
 			if err != nil {
 				return nil, err
 			}
@@ -126,8 +142,7 @@ func (o *OrderRepo) Create(req *entities.OrderCreateReq) (*entities.OrderCreateR
 	}
 
 	return &entities.OrderCreateRes{
-		Status:  "success",
-		Message: "order created",
+		OrderId: req.Id,
 	}, nil
 
 }
@@ -204,16 +219,16 @@ func (o *OrderRepo) GetOrderById(id int64) (*entities.OrderGetByIdRes, error) {
 		}
 
 		query1 := `
-	SELECT
-		"items"."order_product_id",
-		"items"."quantity",
-		"items"."price",
-		"items"."color",
-		"items"."size",
-		"items"."model"
-	FROM "items"
-	WHERE "items"."order_product_id" = $1;
-	`
+		SELECT
+			"items"."order_product_id",
+			"items"."quantity",
+			"items"."price",
+			"items"."color",
+			"items"."size",
+			"items"."model"
+		FROM "items"
+		WHERE "items"."order_product_id" = $1;
+		`
 
 		items := []entities.ItemGetByIdRes{}
 		err = o.Db.Select(&items, query1, v.Id)

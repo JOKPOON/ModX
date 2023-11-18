@@ -3,9 +3,9 @@ package entities
 type Order struct {
 	Id           int         `json:"id" db:"id"`
 	ShippingType string      `json:"shipping_type" db:"shipping_type"`
-	ShippingCost float32     `json:"shipping_cost" db:"shipping_cost"`
-	ItemCost     float32     `json:"item_cost" db:"item_cost"`
-	Total        float32     `json:"total" db:"total"`
+	ShippingCost int         `json:"shipping_cost" db:"shipping_cost"`
+	ItemCost     int         `json:"item_cost" db:"item_cost"`
+	Total        int         `json:"total" db:"total"`
 	Status       string      `json:"status" db:"status"`
 	Shipping     Shipping    `json:"shipping" `
 	Items        []OrderItem `json:"items"`
@@ -28,6 +28,7 @@ type OrderRepository interface {
 	Create(req *OrderCreateReq) (*OrderCreateRes, error)
 	Update(req *OrderUpdateReq) error
 	CreateOrder(req *OrderCreateReq) (*OrderCreateReq, error)
+	GetProductVariantById(id int) (*ProductVariant, error)
 }
 
 type OrderUsecase interface {
@@ -45,7 +46,7 @@ type OrderCreateReq struct {
 	Id            int             `json:"id"`
 	UserId        int             `json:"user_id"`
 	ShippingId    int             `json:"shipping_id"`
-	ShippingType  int             `json:"shipping_type"`
+	ShippingType  string          `json:"shipping_type"`
 	ShippingCost  int             `json:"shipping_cost"`
 	ItemCost      int             `json:"item_cost"`
 	TotalCost     int             `json:"total_cost"`
@@ -67,12 +68,11 @@ type OrderItems struct {
 }
 
 type OrderCreateRes struct {
-	Status  string `json:"status"`
-	Message string `json:"message"`
+	OrderId int `json:"order_id"`
 }
 
 type OrderUpdateReq struct {
-	Id            int64  `json:"id"`
+	Id            int    `json:"id"`
 	PaymentStatus string `json:"payment_status"`
 	Status        string `json:"status"`
 }

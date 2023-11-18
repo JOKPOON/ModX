@@ -89,6 +89,9 @@ func (p *ProductRepo) Create(req *entities.ProductWithVariants) (*entities.Produ
 		return nil, fmt.Errorf("error, variants cannot be empty")
 	}
 
+	product.Status = "success"
+	product.Message = "product created"
+
 	return product, nil
 }
 

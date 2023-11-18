@@ -17,7 +17,12 @@ type ProductController struct {
 	UsersUsecase   entities.UsersUsecase
 }
 
-func NewProductControllers(r gin.IRoutes, cfg *configs.Configs, usersUsecase entities.UsersUsecase, productUsecase entities.ProductUsecase, fileUsecase entities.FileUsecase) {
+func NewProductControllers(
+	r gin.IRoutes,
+	cfg *configs.Configs,
+	usersUsecase entities.UsersUsecase,
+	productUsecase entities.ProductUsecase,
+	fileUsecase entities.FileUsecase) {
 	controllers := &ProductController{
 		Cfg:            cfg,
 		ProductUsecase: productUsecase,
@@ -79,11 +84,10 @@ func (p *ProductController) Create(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, nres)
+	c.JSON(http.StatusCreated, gin.H{"status": "success", "message": nres.Message})
 }
 
 func (p *ProductController) GetAllProduct(c *gin.Context) {
-
 	var req entities.ProductQuery
 	req.Id = c.Query("id")
 	req.Title = c.Query("title")
@@ -101,7 +105,7 @@ func (p *ProductController) GetAllProduct(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusOK, res.Data)
 }
 
 func getVariants(c *gin.Context) []entities.ProductVariant {

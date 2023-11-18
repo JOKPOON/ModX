@@ -5,6 +5,7 @@ import (
 
 	"github.com/Bukharney/ModX/configs"
 	"github.com/Bukharney/ModX/pkg/utils"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 )
@@ -24,6 +25,13 @@ func NewServer(cfg *configs.Configs, db *sqlx.DB) *Server {
 }
 
 func (s *Server) Run() error {
+	s.App.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST"},
+		AllowHeaders:     []string{"Content-Type", "Authorization"},
+		AllowCredentials: true,
+	}))
+
 	err := s.MapHandlers()
 	if err != nil {
 		return errors.New("failed to map handlers")

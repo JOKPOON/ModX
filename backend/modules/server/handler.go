@@ -23,6 +23,10 @@ import (
 	_orderRepo "github.com/Bukharney/ModX/modules/orders/repositories"
 	_orderUsecase "github.com/Bukharney/ModX/modules/orders/usecases"
 
+	_paymentController "github.com/Bukharney/ModX/modules/payment/controllers"
+	_paymentRepo "github.com/Bukharney/ModX/modules/payment/repositories"
+	_paymentUsecase "github.com/Bukharney/ModX/modules/payment/usecases"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -52,6 +56,12 @@ func (s *Server) MapHandlers() error {
 	orderRepo := _orderRepo.NewOrderRepo(s.DB)
 	orderUsecase := _orderUsecase.NewOrderUsecases(orderRepo, usersRepo)
 	_orderController.NewOrderControllers(orderGroup, s.Cfg, usersUsecase, orderUsecase)
+
+	// Payment
+	paymentGroup := v1.Group("/payment")
+	paymentRepo := _paymentRepo.NewPaymentRepo(s.DB)
+	paymentUsecase := _paymentUsecase.NewPaymentUsecase(paymentRepo)
+	_paymentController.NewPaymentControllers(paymentGroup, s.Cfg, paymentUsecase)
 
 	// Product
 	productGroup := v1.Group("/product")

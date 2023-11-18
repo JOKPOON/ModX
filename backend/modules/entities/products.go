@@ -14,12 +14,12 @@ type ProductUsecase interface {
 type Product struct {
 	Id       int      `json:"id" db:"id"`
 	Title    string   `json:"title" db:"title"`
-	Price    float32  `json:"price" db:"price"`
+	Price    int      `json:"price" db:"price"`
 	Desc     string   `json:"desc" db:"desc"`
 	Picture  []string `json:"picture" db:"picture"`
 	Category string   `json:"category" db:"category"`
 	SubType  string   `json:"sub_type" db:"sub_type"`
-	Rating   float32  `json:"rating" db:"rating"`
+	Rating   int      `json:"rating" db:"rating"`
 	Sold     int      `json:"sold" db:"sold"`
 	Stock    int      `json:"stock" db:"stock"`
 	Created  string   `json:"created" db:"created_at"`
@@ -32,13 +32,13 @@ type ProductWithVariants struct {
 }
 
 type ProductVariant struct {
-	Id        int     `json:"id" db:"id"`
-	ProductId int     `json:"product_id" db:"product_id"`
-	Color     string  `json:"color" db:"color"`
-	Size      string  `json:"size" db:"size"`
-	Model     string  `json:"model" db:"model"`
-	Price     float32 `json:"price" db:"price"`
-	Stock     int     `json:"stock" db:"stock"`
+	Id        int    `json:"id" db:"id"`
+	ProductId int    `json:"product_id" db:"product_id"`
+	Color     string `json:"color" db:"color"`
+	Size      string `json:"size" db:"size"`
+	Model     string `json:"model" db:"model"`
+	Price     int    `json:"price" db:"price"`
+	Stock     int    `json:"stock" db:"stock"`
 }
 
 type ProductCreate struct {
@@ -59,18 +59,18 @@ type AllProductRes struct {
 }
 
 type AllProductReq struct {
-	Id       int     `json:"id" db:"id"`
-	Title    string  `json:"title" db:"title"`
-	Desc     string  `json:"desc" db:"description"`
-	Price    float32 `json:"price" db:"price"`
-	Picture  string  `json:"picture" db:"picture"`
-	Category string  `json:"category" db:"category"`
-	SubType  string  `json:"sub_type" db:"sub_type"`
-	Rating   float32 `json:"rating" db:"rating"`
-	Sold     int     `json:"sold" db:"sold"`
-	Stock    int     `json:"stock" db:"stock"`
-	Created  string  `json:"created" db:"created_at"`
-	Updated  string  `json:"updated" db:"updated_at"`
+	Id       int    `json:"id" db:"id"`
+	Title    string `json:"title" db:"title"`
+	Desc     string `json:"desc" db:"description"`
+	Price    int    `json:"price" db:"price"`
+	Picture  string `json:"picture" db:"picture"`
+	Category string `json:"category" db:"category"`
+	SubType  string `json:"sub_type" db:"sub_type"`
+	Rating   int    `json:"rating" db:"rating"`
+	Sold     int    `json:"sold" db:"sold"`
+	Stock    int    `json:"stock" db:"stock"`
+	Created  string `json:"created" db:"created_at"`
+	Updated  string `json:"updated" db:"updated_at"`
 }
 
 type ProductQuery struct {
