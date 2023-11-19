@@ -1,7 +1,3 @@
-body {
-  margin: 0;
-}
-
 .AllProducts__Container {
   margin-top: 60px;
   width: 100%;
@@ -20,6 +16,7 @@ body {
   background-color: #222222;
   position: fixed;
   z-index: 2;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
 }
 
 .AllProducts__Sortby__Text {
@@ -145,7 +142,7 @@ body {
 
 .AllProducts__Products {
   width: 100%;
-  height: 100%;
+  overflow-y: auto;
   display: flex;
   position: relative;
   z-index: 0;
@@ -215,14 +212,14 @@ body {
 }
 
 .AllProducts__Categories__Price__Range__line {
-  width: 7px;
+  width: 10px;
   height: 2px;
   background-color: #222222;
 }
 
 .AllProducts__Categories__Price__Range__Input {
   padding: auto;
-  width: 50px;
+  width: 60px;
   height: 100%;
   display: flex;
   outline: none;
@@ -236,12 +233,38 @@ body {
   border: 1px solid #222222;
 }
 
-.AllProducts__Products__Container {
+.AllProducts__Categories__Rating__Container {
   width: 100%;
   height: 100%;
-  margin-top: 60px;
-  margin-left: 250px;
-  background-color: azure;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.AllProducts__Categories__Rating__StarContainer {
+  cursor: pointer;
+}
+
+.Toggle__Categories__Container {
+  display: none;
+}
+
+.AllProducts__Categories__Price__Range__Input:focus {
+  border: 1px solid #fa871f;
+}
+
+.AllProducts__Categories__Apply__Button:hover,
+.AllProducts__Sortby__Text__Options__Button:hover,
+.AllProducts__Sortby__Select__Button:hover {
+  transform: scale(1.025);
+  transition: all 0.2s ease-in-out;
+}
+
+.AllProducts__Sortby__Text__Options__Button.selected {
+  background-color: #ff6e1f;
+  color: #fefefe;
+  border: 2px solid #ff6e1f;
 }
 
 @media (max-width: 1200px) {
@@ -279,7 +302,7 @@ body {
 
   .AllProducts__Categories {
     width: 225px;
-    padding-left: 40px;
+    padding-left: 60px;
   }
 
   .AllProducts__Products__Container {
@@ -314,10 +337,84 @@ body {
   }
 
   .AllProducts__Categories__Price__Range__Input {
-    width: 45px;
+    width: 55px;
     font-size: 12px;
     border-radius: 5px;
     border: 1px solid #222222;
+  }
+}
+
+@media (max-width: 968px) {
+  .AllProducts__Container {
+    margin-top: 60px;
+  }
+
+  .AllProducts__Sortby {
+    padding-left: 0px;
+    padding-right: 10px;
+    height: 40px;
+  }
+
+  .AllProducts__Sortby__Text {
+    margin-left: 30px;
+  }
+
+  .AllProducts__Sortby__Text__Options__Button {
+    height: 25px;
+    width: 50px;
+    font-size: 8px;
+    border: 1.5px solid #fefefe;
+    border-radius: 5px;
+    margin-right: 5px;
+  }
+
+  .AllProducts__Sortby__Text__Title {
+    width: 40px;
+    font-size: 8px;
+    margin-right: 5px;
+  }
+
+  .AllProducts__Sortby__Select__Button {
+    height: 25px;
+    width: 85px;
+    font-size: 8px;
+    border-radius: 5px;
+  }
+
+  .AllProducts__Products__Container {
+    margin-top: 40px;
+    margin-left: 0px;
+  }
+
+  .Toggle__Categories__Container {
+    position: fixed;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    z-index: 10;
+    margin-top: 45px;
+  }
+
+  .Toggle__Categories {
+    height: 35px;
+    width: 35px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 500;
+    color: #222222;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: -2px;
+  }
+
+  .AllProducts__Categories {
+    box-shadow: 100px 0 80px rgba(0, 0, 0, 0.1);
   }
 }
 
@@ -360,5 +457,36 @@ body {
   .AllProducts__Products__Container {
     margin-top: 40px;
     margin-left: 0px;
+  }
+
+  .Toggle__Categories__Container {
+    position: fixed;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    z-index: 10;
+    margin-top: 45px;
+  }
+
+  .Toggle__Categories {
+    height: 35px;
+    width: 35px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 500;
+    color: #222222;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: -2px;
+  }
+
+  .AllProducts__Categories {
+    box-shadow: 100px 0 80px rgba(0, 0, 0, 0.1);
   }
 }

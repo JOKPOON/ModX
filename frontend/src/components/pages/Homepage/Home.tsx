@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import NewItems from "./NewItems";
 import Educations from "../assets/Educations.svg";
@@ -7,23 +8,33 @@ import Electronics from "../assets/Electronics.svg";
 import Accessories from "../assets/Accessories.svg";
 
 export const Home = () => {
-  const [currentBackground, setCurrentBackground] = useState(0);
+  const navigate = useNavigate();
+  const handleHomeClick = () => {
+    navigate("/Allproducts");
+  };
 
+  const [currentBackground, setCurrentBackground] = useState(0);
+  const Categories = ["Education", "Clothes", "Electronics", "Accessories"];
+
+  const handleCategoryClick = (text: string) => {
+    console.log("Selected Category : ", text);
+    navigate("/Allproducts", { state: { selectedCategories: [text] }});
+  };
+  
   const backgrounds = [
-    "https://i.kym-cdn.com/photos/images/original/002/491/279/26f.gif",
-    "https://media4.giphy.com/media/xUNd9CxrgrFmvp27du/giphy.gif",
-    "https://avatars.githubusercontent.com/u/111488842?v=4",
+    "https://www.kmutt.ac.th/wp-content/uploads/2020/08/HDR_0001-5-HDR-scaled.jpg",
+    "https://steco.kmutt.ac.th/wp-content/uploads/2019/12/KMUTT-Landscape.jpg",
+    "https://www.kmutt.ac.th/wp-content/uploads/2020/09/MG_0703-scaled.jpg",
+    "https://www.kmutt.ac.th/wp-content/uploads/2020/08/%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B8%A1%E0%B8%94_%E0%B9%91%E0%B9%98%E0%B9%91%E0%B9%92%E0%B9%92%E0%B9%97_0091.jpg",
   ];
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentBackground(
-        (prevBackground) => (prevBackground + 1) % backgrounds.length
-      );
+      setCurrentBackground((prevBackground) => (prevBackground + 1) % backgrounds.length);
     }, 5000);
-
+  
     return () => clearInterval(interval);
-  }, [currentBackground, backgrounds.length]);
+  }, []);
 
   return (
     <div>
@@ -42,17 +53,19 @@ export const Home = () => {
                 Discover, Unwind, and Celebrate Your University Spirit!
               </div>
               <div className="Home__button__Container">
-                <button className="Home__button">Visti Store</button>
+                <button className="Home__button" onClick={handleHomeClick}>
+                  Visit Store
+                </button>
               </div>
             </div>
           </div>
           <div className="Home__Middle__Right">
-            <button
+            <div
               className="Home__Advertisement"
               style={{
                 backgroundImage: `url(${backgrounds[currentBackground]})`,
               }}
-            ></button>
+            ></div>
           </div>
         </div>
         <div className="Home__Bottom">
@@ -67,18 +80,20 @@ export const Home = () => {
                 <button
                   className="Home__Categories__Top__Left"
                   style={{ backgroundImage: `url(${Educations})` }}
+                  onClick={() => handleCategoryClick(Categories[0])}
                 >
                   <div className="Home__Education__Arrow">
                     <div className="Home__Education__Arrow__Container">
                       <i className="bx bx-right-arrow-alt"></i>
                     </div>
                   </div>
-                  <div className="Home__Categories__Header">EDUCATIONS</div>
+                  <div className="Home__Categories__Header">EDUCATION</div>
                 </button>
 
                 <button
                   className="Home__Categories__Top__Right"
                   style={{ backgroundImage: `url(${Clothes})` }}
+                  onClick={() => handleCategoryClick(Categories[1])}
                 >
                   <div className="Home__Education__Arrow">
                     <div className="Home__Education__Arrow__Container">
@@ -92,6 +107,7 @@ export const Home = () => {
                 <button
                   className="Home__Categories__Bottom__Left"
                   style={{ backgroundImage: `url(${Electronics})` }}
+                  onClick={() => handleCategoryClick(Categories[2])}
                 >
                   <div className="Home__Education__Arrow">
                     <div className="Home__Education__Arrow__Container">
@@ -103,11 +119,12 @@ export const Home = () => {
                 <button
                   className="Home__Categories__Bottom__Right"
                   style={{ backgroundImage: `url(${Accessories})` }}
+                  onClick={() => handleCategoryClick(Categories[3])}
                 >
                   <div className="Home__Education__Arrow">
-                    <div className="Home__Education__Arrow__Container">
+                    <button className="Home__Education__Arrow__Container">
                       <i className="bx bx-right-arrow-alt"></i>
-                    </div>
+                    </button>
                   </div>
                   <div className="Home__Categories__Header">ACCESSORIES</div>
                 </button>
