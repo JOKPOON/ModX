@@ -205,7 +205,7 @@ export const AllProducts = () => {
               </div>
             </div>
           </div>
-          <div className="AllProducts__Sortby__Select">
+          <div className="AllProducts__Sortby__Select"> 
             <button
               className="AllProducts__Sortby__Select__Button"
               onClick={handleSortToggle}
