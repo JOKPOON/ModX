@@ -27,6 +27,10 @@ import (
 	_paymentRepo "github.com/Bukharney/ModX/modules/payment/repositories"
 	_paymentUsecase "github.com/Bukharney/ModX/modules/payment/usecases"
 
+	_cartController "github.com/Bukharney/ModX/modules/cart/controllers"
+	_cartRepo "github.com/Bukharney/ModX/modules/cart/repositories"
+	_cartUsecase "github.com/Bukharney/ModX/modules/cart/usecases"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -68,6 +72,12 @@ func (s *Server) MapHandlers() error {
 	productRepo := _productRepo.NewProductRepo(s.DB)
 	productUsecase := _productUsecase.NewProductUsecases(productRepo, fileRepo)
 	_productController.NewProductControllers(productGroup, s.Cfg, usersUsecase, productUsecase, fileUsecase)
+
+	// Cart
+	cartGroup := v1.Group("/cart")
+	cartRepo := _cartRepo.NewCartRepo(s.DB)
+	cartUsecase := _cartUsecase.NewCartUsecase(cartRepo)
+	_cartController.NewCartControllers(cartGroup, s.Cfg, usersUsecase, cartUsecase)
 
 	s.App.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Not Found"})

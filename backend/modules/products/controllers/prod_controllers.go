@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/Bukharney/ModX/configs"
 	"github.com/Bukharney/ModX/modules/entities"
@@ -116,4 +117,23 @@ func getVariants(c *gin.Context) []entities.ProductVariant {
 		return nil
 	}
 	return jsonDataMap
+}
+
+func (p *ProductController) GetProduct(c *gin.Context) {
+	var req entities.Product
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	req.Id = id
+
+	res, err := p.ProductUsecase.GetProduct(&req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
 }

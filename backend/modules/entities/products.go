@@ -3,27 +3,31 @@ package entities
 type ProductRepository interface {
 	Create(req *ProductWithVariants) (*ProductCreateRes, error)
 	GetAll(req *ProductQuery) (*AllProductRes, error)
+	GetProduct(req *Product) (*Product, error)
 }
 
 type ProductUsecase interface {
 	Create(req *ProductWithVariants) (*ProductCreateRes, error)
 	Upload(req *FileUploadReq) (*FileUploadRes, error)
 	GetAllProduct(req *ProductQuery) (*AllProductRes, error)
+	GetProduct(req *Product) (*Product, error)
 }
 
 type Product struct {
-	Id       int      `json:"id" db:"id"`
-	Title    string   `json:"title" db:"title"`
-	Price    int      `json:"price" db:"price"`
-	Desc     string   `json:"desc" db:"desc"`
-	Picture  []string `json:"picture" db:"picture"`
-	Category string   `json:"category" db:"category"`
-	SubType  string   `json:"sub_type" db:"sub_type"`
-	Rating   int      `json:"rating" db:"rating"`
-	Sold     int      `json:"sold" db:"sold"`
-	Stock    int      `json:"stock" db:"stock"`
-	Created  string   `json:"created" db:"created_at"`
-	Updated  string   `json:"updated" db:"updated_at"`
+	Id       int              `json:"id" db:"id"`
+	Title    string           `json:"title" db:"title"`
+	Price    int              `json:"price" db:"price"`
+	Desc     string           `json:"desc" db:"desc"`
+	Picture  []string         `json:"picture" db:"picture"`
+	Category string           `json:"category" db:"category"`
+	SubType  string           `json:"sub_type" db:"sub_type"`
+	Rating   int              `json:"rating" db:"rating"`
+	Sold     int              `json:"sold" db:"sold"`
+	Stock    int              `json:"stock" db:"stock"`
+	Variants []ProductVariant `json:"variants"`
+	Reviews  []Review         `json:"review"`
+	Created  string           `json:"created" db:"created_at"`
+	Updated  string           `json:"updated" db:"updated_at"`
 }
 
 type ProductWithVariants struct {
