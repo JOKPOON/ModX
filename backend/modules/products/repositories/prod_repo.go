@@ -28,9 +28,10 @@ func (p *ProductRepo) Create(req *entities.ProductWithVariants) (*entities.Produ
 		"sub_type",
 		"sold",
 		"stock",
-		"picture"
+		"picture",
+		"rating"
 	)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 	RETURNING "id", "title";
 	`
 
@@ -45,7 +46,18 @@ func (p *ProductRepo) Create(req *entities.ProductWithVariants) (*entities.Produ
 		}
 	}
 
-	row, err := p.Db.Queryx(query, req.Product.Title, req.Product.Desc, req.Product.Price, req.Product.Category, req.Product.SubType, req.Product.Sold, req.Product.Stock, stringOfPicture)
+	row, err := p.Db.Queryx(
+		query,
+		req.Product.Title,
+		req.Product.Desc,
+		req.Product.Price,
+		req.Product.Category,
+		req.Product.SubType,
+		req.Product.Sold,
+		req.Product.Stock,
+		stringOfPicture,
+		req.Product.Rating,
+	)
 	if err != nil {
 		p.DeleteFile(&req.Product)
 		return nil, err
@@ -225,15 +237,35 @@ func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, erro
 		return nil, err
 	}
 
+	if !row.Next() {
+		return nil, fmt.Errorf("error, product not found")
+	}
+
+	var picture string
 	for row.Next() {
-		err = row.StructScan(&req)
+		err = row.Scan(
+			&req.Id,
+			&req.Title,
+			&req.Desc,
+			&req.Price,
+			&req.Category,
+			&req.SubType,
+			&req.Rating,
+			&req.Sold,
+			&req.Stock,
+			&req.Created,
+			&req.Updated,
+			&picture,
+		)
 		if err != nil {
 			return nil, err
 		}
+
 	}
 
-	if req.Id == 0 {
-		return nil, fmt.Errorf("error, product not found")
+	req.Picture = strings.Split(picture, ",")
+	for i, v := range req.Picture {
+		req.Picture[i] = fmt.Sprintf("http://localhost:8080/static/products/%s", v)
 	}
 
 	query = `
@@ -269,9 +301,49 @@ func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, erro
 		if err != nil {
 			return nil, err
 		}
-
 		req.Variants = append(req.Variants, variant)
 	}
 
 	return req, nil
+}
+
+func (p *ProductRepo) AddReview(req *entities.Review) error {
+	query := `
+	INSERT INTO "reviews"(
+		"user_id",
+		"product_id",
+		"rating",
+		"comment"
+	)
+	VALUES ($1, $2, $3, $4)
+	RETURNING "id";
+	`
+
+	row, err := p.Db.Queryx(query, req.UserId, req.ProductId, req.Rating, req.Comment)
+	if err != nil {
+		return err
+	}
+
+	for row.Next() {
+		err = row.StructScan(&req)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (p *ProductRepo) DeleteProduct(req *entities.Product) error {
+	query := `
+	DELETE FROM "products"
+	WHERE "id" = $1;
+	`
+
+	_, err := p.Db.Queryx(query, req.Id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
