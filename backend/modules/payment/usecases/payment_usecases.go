@@ -2,7 +2,6 @@ package usecases
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/Bukharney/ModX/modules/entities"
 	"github.com/omise/omise-go"
@@ -35,8 +34,6 @@ func (p *paymentUsecase) Charge(req *entities.PaymentChargeReq) (*entities.Payme
 		return nil, fmt.Errorf("get amount failed: %v", err)
 	}
 
-	amount = amount * 100
-
 	result := &omise.Charge{}
 	err = client.Do(result, &operations.CreateCharge{
 		Amount:      int64(amount),
@@ -49,16 +46,13 @@ func (p *paymentUsecase) Charge(req *entities.PaymentChargeReq) (*entities.Payme
 	}
 
 	if result.Paid && result.Amount == int64(amount) {
-		log.Println("payment success")
 		err = p.paymentRepo.UpdatePaymentStatus(fmt.Sprint(result.Status), req.OrderId)
 		if err != nil {
 			return nil, fmt.Errorf("update payment status failed: %v", err)
 		}
-	} else {
-		log.Println("payment failed")
 	}
 
-	req.Charge = fmt.Sprint(result.ID)
+	req.Charge = result.ID
 	req.Amount = int(result.Amount)
 
 	charge, err := p.paymentRepo.Charge(req)

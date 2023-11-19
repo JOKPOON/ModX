@@ -71,8 +71,6 @@ func (p *ProductRepo) Create(req *entities.ProductWithVariants) (*entities.Produ
 		}
 	}
 
-	log.Println(req.Product.Id)
-
 	query = `
 	INSERT INTO "product_variants"(
 		"product_id",
@@ -241,29 +239,38 @@ func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, erro
 		return nil, fmt.Errorf("error, product not found")
 	}
 
-	var picture string
-	for row.Next() {
-		err = row.Scan(
-			&req.Id,
-			&req.Title,
-			&req.Desc,
-			&req.Price,
-			&req.Category,
-			&req.SubType,
-			&req.Rating,
-			&req.Sold,
-			&req.Stock,
-			&req.Created,
-			&req.Updated,
-			&picture,
-		)
-		if err != nil {
-			return nil, err
-		}
-
+	type Product struct {
+		Id       int    `json:"id" db:"id"`
+		Title    string `json:"title" db:"title"`
+		Desc     string `json:"desc" db:"description"`
+		Price    int    `json:"price" db:"price"`
+		Picture  string `json:"picture" db:"picture"`
+		Category string `json:"category" db:"category"`
+		SubType  string `json:"sub_type" db:"sub_type"`
+		Rating   int    `json:"rating" db:"rating"`
+		Sold     int    `json:"sold" db:"sold"`
+		Stock    int    `json:"stock" db:"stock"`
+		Created  string `json:"created" db:"created_at"`
+		Updated  string `json:"updated" db:"updated_at"`
+	}
+	res := new(Product)
+	err = row.StructScan(&res)
+	if err != nil {
+		return nil, err
 	}
 
-	req.Picture = strings.Split(picture, ",")
+	req.Id = res.Id
+	req.Title = res.Title
+	req.Desc = res.Desc
+	req.Price = res.Price
+	req.Category = res.Category
+	req.SubType = res.SubType
+	req.Rating = res.Rating
+	req.Sold = res.Sold
+	req.Stock = res.Stock
+	req.Created = res.Created
+	req.Updated = res.Updated
+	req.Picture = strings.Split(res.Picture, ",")
 	for i, v := range req.Picture {
 		req.Picture[i] = fmt.Sprintf("http://localhost:8080/static/products/%s", v)
 	}

@@ -46,6 +46,8 @@ type ProductVariant struct {
 	Model     string `json:"model" db:"model"`
 	Price     int    `json:"price" db:"price"`
 	Stock     int    `json:"stock" db:"stock"`
+	Created   string `json:"created" db:"created_at"`
+	Updated   string `json:"updated" db:"updated_at"`
 }
 
 type ProductCreate struct {

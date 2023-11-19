@@ -15,11 +15,13 @@ type ReviewUsecase interface {
 }
 
 type Review struct {
-	ID        int    `json:"id"`
-	ProductId int    `json:"product_id"`
-	UserId    int    `json:"user_id"`
-	Comment   string `json:"comment"`
-	Rating    int    `json:"rating"`
+	Id        int    `json:"id" db:"id"`
+	ProductId int    `json:"product_id" db:"product_id"`
+	UserId    int    `json:"user_id" db:"user_id" `
+	Comment   string `json:"comment" db:"comment" `
+	Rating    int    `json:"rating" db:"rating" `
+	CreatedAt string `json:"created_at" db:"created_at"`
+	UpdatedAt string `json:"updated_at" db:"updated_at"`
 }
 
 type ReviewRes struct {
