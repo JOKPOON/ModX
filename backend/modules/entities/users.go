@@ -4,6 +4,7 @@ import "github.com/golang-jwt/jwt/v4"
 
 type UsersUsecase interface {
 	Register(req *UsersRegisterReq) (*UsersRegisterRes, error)
+	CreateUserShipping(req *UsersShippingReq) (*UsersShippingRes, error)
 	ChangePassword(req *UsersChangePasswordReq) (*UsersChangePasswordRes, error)
 }
 
@@ -11,6 +12,7 @@ type UsersRepository interface {
 	Register(req *UsersRegisterReq) (*UsersRegisterRes, error)
 	GetUserByUsername(username string) (*UsersPassport, error)
 	ChangePassword(req *UsersChangePasswordReq) (*UsersChangePasswordRes, error)
+	CreateUserShipping(req *UsersShippingReq) (*UsersShippingRes, error)
 }
 
 type UsersCredentials struct {
@@ -55,5 +57,20 @@ type UsersLoginRes struct {
 }
 
 type UsersChangePasswordRes struct {
+	Success bool `json:"success"`
+}
+
+type UsersShippingReq struct {
+	UserId   int    `json:"user_id" db:"user_id"`
+	Name     string `json:"name" db:"name" binding:"required"`
+	Tel      string `json:"tel" db:"tel" binding:"required"`
+	Addr     string `json:"addr" db:"addr" binding:"required"`
+	District string `json:"district" db:"district" binding:"required"`
+	Province string `json:"province" db:"province" binding:"required"`
+	Zip      string `json:"zip" db:"zip" binding:"required"`
+	IsDef    bool   `json:"is_def" db:"is_def" binding:"required"`
+}
+
+type UsersShippingRes struct {
 	Success bool `json:"success"`
 }

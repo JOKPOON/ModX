@@ -22,7 +22,7 @@ func (p *ProductRepo) Create(req *entities.ProductWithVariants) (*entities.Produ
 	query := `
 	INSERT INTO "products"(
 		"title",
-		"desc",
+		"description",
 		"price",
 		"category",
 		"sub_type",
@@ -88,6 +88,9 @@ func (p *ProductRepo) Create(req *entities.ProductWithVariants) (*entities.Produ
 		p.Delete(&req.Product)
 		return nil, fmt.Errorf("error, variants cannot be empty")
 	}
+
+	product.Status = "success"
+	product.Message = "product created"
 
 	return product, nil
 }
@@ -210,4 +213,65 @@ func sqlQuery(req *entities.ProductQuery) (string, error) {
 	}
 
 	return sqlQuery, nil
+}
+
+func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, error) {
+	query := `
+	SELECT * FROM products WHERE id = $1;
+	`
+
+	row, err := p.Db.Queryx(query, req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	for row.Next() {
+		err = row.StructScan(&req)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if req.Id == 0 {
+		return nil, fmt.Errorf("error, product not found")
+	}
+
+	query = `
+	SELECT * FROM reviews WHERE product_id = $1;
+	`
+
+	row, err = p.Db.Queryx(query, req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	var review entities.Review
+	for row.Next() {
+		err = row.StructScan(&review)
+		if err != nil {
+			return nil, err
+		}
+		req.Reviews = append(req.Reviews, review)
+	}
+
+	query = `
+	SELECT * FROM product_variants WHERE product_id = $1;
+	`
+
+	row, err = p.Db.Queryx(query, req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	var variant entities.ProductVariant
+	for row.Next() {
+		err = row.StructScan(&variant)
+		if err != nil {
+			return nil, err
+		}
+
+		req.Variants = append(req.Variants, variant)
+	}
+
+	return req, nil
 }

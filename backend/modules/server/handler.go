@@ -19,6 +19,18 @@ import (
 	_fileRepo "github.com/Bukharney/ModX/modules/file/repositories"
 	_fileUsecase "github.com/Bukharney/ModX/modules/file/usecases"
 
+	_orderController "github.com/Bukharney/ModX/modules/orders/controllers"
+	_orderRepo "github.com/Bukharney/ModX/modules/orders/repositories"
+	_orderUsecase "github.com/Bukharney/ModX/modules/orders/usecases"
+
+	_paymentController "github.com/Bukharney/ModX/modules/payment/controllers"
+	_paymentRepo "github.com/Bukharney/ModX/modules/payment/repositories"
+	_paymentUsecase "github.com/Bukharney/ModX/modules/payment/usecases"
+
+	_cartController "github.com/Bukharney/ModX/modules/cart/controllers"
+	_cartRepo "github.com/Bukharney/ModX/modules/cart/repositories"
+	_cartUsecase "github.com/Bukharney/ModX/modules/cart/usecases"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -43,11 +55,29 @@ func (s *Server) MapHandlers() error {
 	fileUsecase := _fileUsecase.NewFileUsecase(usersRepo, fileRepo)
 	_fileController.NewFileControllers(fileGroup, s.Cfg, fileUsecase)
 
+	// Order
+	orderGroup := v1.Group("/order")
+	orderRepo := _orderRepo.NewOrderRepo(s.DB)
+	orderUsecase := _orderUsecase.NewOrderUsecases(orderRepo, usersRepo)
+	_orderController.NewOrderControllers(orderGroup, s.Cfg, usersUsecase, orderUsecase)
+
+	// Payment
+	paymentGroup := v1.Group("/payment")
+	paymentRepo := _paymentRepo.NewPaymentRepo(s.DB)
+	paymentUsecase := _paymentUsecase.NewPaymentUsecase(paymentRepo)
+	_paymentController.NewPaymentControllers(paymentGroup, s.Cfg, paymentUsecase)
+
 	// Product
 	productGroup := v1.Group("/product")
 	productRepo := _productRepo.NewProductRepo(s.DB)
 	productUsecase := _productUsecase.NewProductUsecases(productRepo, fileRepo)
 	_productController.NewProductControllers(productGroup, s.Cfg, usersUsecase, productUsecase, fileUsecase)
+
+	// Cart
+	cartGroup := v1.Group("/cart")
+	cartRepo := _cartRepo.NewCartRepo(s.DB)
+	cartUsecase := _cartUsecase.NewCartUsecase(cartRepo)
+	_cartController.NewCartControllers(cartGroup, s.Cfg, usersUsecase, cartUsecase)
 
 	s.App.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Not Found"})

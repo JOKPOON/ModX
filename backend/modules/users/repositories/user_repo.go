@@ -92,3 +92,32 @@ func (r *UserRepo) GetUserByUsername(username string) (*entities.UsersPassport, 
 	}
 	return res, nil
 }
+
+func (r *UserRepo) CreateUserShipping(req *entities.UsersShippingReq) (*entities.UsersShippingRes, error) {
+	query := `
+	INSERT INTO "shippings"(
+		"user_id",
+		"address",
+		"district",
+		"province",
+		"zip",
+		"tel"
+	)
+	VALUES ($1, $2, $3, $4, $5, $6)
+	RETURNING "id";
+	`
+
+	// Initail a user object
+	user := new(entities.UsersShippingRes)
+
+	// Query part
+	_, err := r.Db.Queryx(query, req.UserId, req.Addr, req.District, req.Province, req.Zip, req.Tel)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, errors.New("error, failed to query")
+	}
+
+	user.Success = true
+
+	return user, nil
+}
