@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Login.css";
-import userDatabase from "./userDatabase";
+import userDatabase from "../userDatabase";
 import Logo from "./assets/Logo.svg";
 
 export const Login = () => {
@@ -53,7 +53,7 @@ export const Login = () => {
         <form>
           <h1>Create Account</h1>
           <span></span>
-          <input type="text" placeholder="Name"/>
+          <input type="text" placeholder="Username"/>
           <input type="email" placeholder="Email"/>
           <input type="password" placeholder="Password"/>
           <input type="password" placeholder="Confirm Password"/>
