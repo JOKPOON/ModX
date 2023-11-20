@@ -198,11 +198,8 @@ export const AllProducts = () => {
                 }`}
                 onClick={() => handleSortbyButtonClick(2)}
               >
-                Promotion
+                Rating
               </button>
-              <div className="AllProducts__Sortby__Text__Title">
-                result : 78
-              </div>
             </div>
           </div>
           <div className="AllProducts__Sortby__Select"> 
