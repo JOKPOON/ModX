@@ -35,8 +35,8 @@ const CartProducts: items[] = [
     picture:
       "https://image.makewebeasy.net/makeweb/m_1920x0/o3WoPJcHm/content/%E0%B9%80%E0%B8%97%E0%B8%84%E0%B8%99%E0%B8%B4%E0%B8%84%E0%B8%A7%E0%B8%B4%E0%B8%98%E0%B8%B5%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%80%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%81%E0%B8%8B%E0%B8%B7%E0%B9%89%E0%B8%AD%E0%B9%80%E0%B8%82%E0%B9%87%E0%B8%A1%E0%B8%82%E0%B8%B1%E0%B8%94%E0%B8%9C%E0%B8%B9%E0%B9%89%E0%B8%8A%E0%B8%B2%E0%B8%A2.jpg",
     name: "เข็มขัดผู้ชาย สำหรับนักศึกษาชาย",
-    price: 99459,
-    discount: 400,
+    price: 999,
+    discount: 0,
   },
   {
     picture:
@@ -68,13 +68,20 @@ export const Cart = () => {
     console.log("Delete items: ", selectedItemIndices);
   };
 
-  const calculateShippingPrice = (): number => {
-    const shippingCostPerItem = 15;
-    return selectedItemIndices.length * shippingCostPerItem;
-  };
-
   const handleChangeAddress = () => {
     navigate("/Account");
+  };
+
+  const [itemQuantities, setItemQuantities] = useState<number[]>(
+    CartProducts.map(() => 1)
+  );
+
+  const handleQuantityChange = (index: number, quantity: number) => {
+    setItemQuantities((prevQuantities) => {
+      const newQuantities = [...prevQuantities];
+      newQuantities[index] = quantity;
+      return newQuantities;
+    });
   };
 
   const handleToggleCart = (index: number) => {
@@ -95,16 +102,27 @@ export const Cart = () => {
 
   const calculateOverallPrice = (): number => {
     return selectedItemIndices.reduce(
-      (total, index) => total + CartProducts[index].price,
+      (total, index) =>
+        total + CartProducts[index].price * itemQuantities[index],
       0
     );
   };
 
   const calculateOverallDiscount = (): number => {
     return selectedItemIndices.reduce(
-      (total, index) => total + (CartProducts[index].discount || 0),
+      (total, index) =>
+        total + (CartProducts[index].discount || 0) * itemQuantities[index],
       0
     );
+  };
+
+  const calculateShippingPrice = (): number => {
+    const shippingCostPerItem = 15;
+    const totalQuantity = selectedItemIndices.reduce(
+      (total, index) => total + itemQuantities[index],
+      0
+    );
+    return totalQuantity * shippingCostPerItem;
   };
 
   const calculateTotal = (): number => {
@@ -112,6 +130,10 @@ export const Cart = () => {
     const overallDiscount = calculateOverallDiscount();
     const ShippingPrice = calculateShippingPrice();
     return overallPrice - overallDiscount + ShippingPrice;
+  };
+
+  const HandleShopMoreItem = () => {
+    navigate("/AllProducts");
   };
 
   const totalPrice = calculateTotal();
@@ -124,7 +146,7 @@ export const Cart = () => {
   return (
     <div className="Cart__Container">
       <div className="Cart__Header">
-        <div className="Cart__Header__Left">Items in your cart</div>
+        <div className="Cart__Header__Left"></div>
         <div className="Cart__Header__Right">
           <button
             className="Cart__Edit__Address"
@@ -165,23 +187,72 @@ export const Cart = () => {
                   style={{ backgroundImage: `url(${product.picture})` }}
                 ></div>
                 <div className="Cart__Left__Grid3">{product.name}</div>
-                <div className="Cart__Left__Grid4">box</div>
+                <div className="Cart__Left__Grid4">
+                  <label htmlFor={`quantity-${index}`}></label>
+                  <select
+                    id={`quantity-${index}`}
+                    value={itemQuantities[index]}
+                    onChange={(e) =>
+                      handleQuantityChange(index, parseInt(e.target.value))
+                    }
+                  >
+                    {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
+                      <option key={num} value={num}>
+                        {num}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 <div className="Cart__Left__Grid5">
-                  {product.price} <br></br>THB
+                  <div style={{ color: "#222222" }}>
+                    {(CartProducts[index].discount ?? 0) > 0 && (
+                      <div>
+                        <span
+                          style={{
+                            textDecoration: "line-through",
+                            color: "#FF6E1F",
+                          }}
+                        >
+                          {CartProducts[index].price * itemQuantities[index]}{" "}
+                        </span>
+                        <br />
+                        {(CartProducts[index].price -
+                          (CartProducts[index].discount ?? 0)) *
+                          itemQuantities[index]}{" "}
+                      </div>
+                    )}
+                    {CartProducts[index].discount === 0 && (
+                      <div>
+                        {CartProducts[index].price * itemQuantities[index]}
+                      </div>
+                    )}{" "}
+                    THB
+                  </div>
                 </div>
               </React.Fragment>
             </div>
           ))}
-          <div className="Cart__Left__Button"> Shop More Item</div>
+          <button
+            className="Cart__Left__Button"
+            onClick={() => HandleShopMoreItem()}
+          >
+            {" "}
+            Shop More Item
+          </button>
         </div>
         <div className="Cart__Right">
           <div className="Cart__Right__Container">
             <div className="Cart__text__Right">
               <div className="Cart__text__Right__Toppic">
-                items ({selectedItemIndices.length}){" "}
+                items (
+                {selectedItemIndices.reduce(
+                  (total, index) => total + itemQuantities[index],
+                  0
+                )}
+                )
               </div>
               <div className="Cart__text__Right__Content">
-                {calculateOverallPrice()} THB
+                {calculateOverallPrice()}THB
               </div>
             </div>
             <div className="Cart__text__Right">
@@ -193,7 +264,6 @@ export const Cart = () => {
             <div className="Cart__text__Right">
               <div className="Cart__text__Right__Toppic">Discount</div>
               <div className="Cart__text__Right__Content">
-                {" "}
                 - {calculateOverallDiscount()} THB
               </div>
             </div>
