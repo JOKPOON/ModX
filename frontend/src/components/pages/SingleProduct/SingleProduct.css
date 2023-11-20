@@ -1,10 +1,38 @@
 .Single__Product__Container{
+    margin-top: 60px;
+    width: 100%;
+    height: 100vh;
+    background-color: #FEFCFC;
+}
+
+.Single__Product__Header{
+    padding: 0px 100px 0px 100px;
+    width: 100%;
+    height: 60px;
+    background-color: #222222;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    position: fixed;
+}
+
+.Single__Product__Header button{
+    background-color: #222222;
+    color: #FEFCFC;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.Single__Product__Content__Container{
+    margin-top: 60px;
     padding: 60px 100px 60px 100px;
     width: 100%;
     height: 100vh;
-    background-color: aquamarine;
     display: grid;
-    grid-template-rows: 1fr 1fr;
+    z-index: 1;
 }
 
 .Single__Product__Top{
@@ -24,7 +52,6 @@
 .Single__Product__Top__Left{
     width: 100%;
     height: 100%;
-    background-color: blue;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -33,17 +60,20 @@
 .Single__Product__Top__Right{
     width: 100%;
     height: 100%;
-    background-color: brown;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    padding: 10px;
+}
+
+.Single__Product__Top__Right__Container,
+.Single__Product__Bottom__Right__Container{
+    width: 100%;
+    height: 100%;
+    border: 1px solid #909090;
+    border-radius: 25px;
 }
 
 .Single__Product__Bottom__Left{
     width: 100%;
     height: 100%;
-    background-color: chartreuse;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -53,9 +83,63 @@
 .Single__Product__Bottom__Right{
     width: 100%;
     height: 100%;
-    background-color: coral;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    padding: 10px;
+}
+
+@media screen and (max-width: 768px) {
+    .Single__Product__Container{
+        margin-top: 50px;
+        background-color: #FEFCFC;
+    }
+    
+    .Single__Product__Header{
+        padding: 50px 60px 50px 60px;
+        height: 50px;
+    }
+    
+    .Single__Product__Header button{
+        font-size: 14px;
+    }
+    
+    .Single__Product__Content__Container{
+        margin-top: 50px;
+        padding: 0px 60px 0px 60px;
+    }
+    
+    .Single__Product__Top{
+        grid-template-columns: 1fr;
+    }
+    
+    .Single__Product__Bottom{
+        grid-template-columns: 1fr;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .Single__Product__Container{
+        margin-top: 40px;
+        background-color: #FEFCFC;
+    }
+    
+    .Single__Product__Header{
+        padding: 0px 40px 0px 40px;
+        height: 40px;
+    }
+    
+    .Single__Product__Header button{
+        font-size: 12px;
+    }
+    
+    .Single__Product__Content__Container{
+        margin-top: 40px;
+        padding: 50px 40px 50px 40px;
+    }
+    
+    .Single__Product__Top{
+        grid-template-columns: 1fr;
+    }
+    
+    .Single__Product__Bottom{
+        grid-template-columns: 1fr;
+    }
 }
