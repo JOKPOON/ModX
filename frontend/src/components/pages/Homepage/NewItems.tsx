@@ -5,6 +5,7 @@ interface Newitem {
   name: string;
   sold: number;
   price: number;
+  discount?: number;
 }
 
 const newItemsData: Newitem[] = [
@@ -14,6 +15,7 @@ const newItemsData: Newitem[] = [
     name: "เข็มขัดผู้ชาย สำหรับนักศึกษาชายที่มีความต้องการที่จะสอบผ่านวิชา Engineering Economics",
     sold: 40000,
     price: 999,
+    discount: 0,
   },
   {
     picture:
@@ -21,6 +23,7 @@ const newItemsData: Newitem[] = [
     name: "เครื่องคิดเลข CASIO รุ่น MX-120B",
     sold: 20,
     price: 960,
+    discount: 445,
   },
   {
     picture:
@@ -28,6 +31,7 @@ const newItemsData: Newitem[] = [
     name: "ปากกาเจลวันพีช One-piece Gel Pen M&G 0.5mm Blue ink ( 5 ด้าม/แพ็ค)",
     sold: 10,
     price: 99,
+    discount: 20,
   },
   {
     picture:
@@ -35,6 +39,7 @@ const newItemsData: Newitem[] = [
     name: "FACTFULNESS จริง ๆ แล้วโลกดีขึ้นทุกวัน",
     sold: 9,
     price: 800,
+    discount: 0,
   },
   {
     picture:
@@ -42,6 +47,7 @@ const newItemsData: Newitem[] = [
     name: "21 บทเรียน สำหรับศตวรรษที่ 21 : 21 lessons for 21st century",
     sold: 20,
     price: 1590,
+    discount: 200,
   },
 ];
 
@@ -111,7 +117,22 @@ const NewItems = () => {
                     {formatPrice(item.sold)} Sold
                   </div>
                   <div className="Home__New__Item__Price">
-                    {formatPrice(item.price)} THB
+                    {(item.discount || item.discount === 0) &&
+                      item.price - (item.discount || 0) > 0 && (
+                        <div style={{ color: "#222222" }}>
+                          {item.discount > 0 && (
+                            <span style={{  color: "#FF6E1F" ,textDecoration: "line-through", fontWeight: "400"}}>
+                              {formatPrice(item.price)}
+                            </span>
+                          )}
+                          {item.price - (item.discount || 0) > 0 && (
+                            <span>
+                              {" "}{formatPrice(item.price - (item.discount || 0))}{" "}
+                              THB
+                            </span>
+                          )}
+                        </div>
+                      )}
                   </div>
                 </div>
                 <div className="Home__NewItem__Arrow__Container">

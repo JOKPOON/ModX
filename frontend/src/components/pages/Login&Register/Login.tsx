@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Login.css";
-import userDatabase from "./userDatabase";
-import Logo from "./assets/Logo.svg";
+import userDatabase from "../userDatabase";
+import Logo from "../assets/Logo.svg";
 
 export const Login = () => {
   const [username, setUsername] = useState("");
