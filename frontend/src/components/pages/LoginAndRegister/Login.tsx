@@ -57,7 +57,7 @@ export const Login = () => {
           <input type="email" placeholder="Email"/>
           <input type="password" placeholder="Password"/>
           <input type="password" placeholder="Confirm Password"/>
-          <button className="BtnTog" >Sign Up</button>
+          <button className="BtnTog" >Register</button>
         </form>
       </div>
       
@@ -72,7 +72,7 @@ export const Login = () => {
           <div className={`toggle-panel toggle-right ${isSignUp ? '' : 'hidden'}`}>
             <h1>Hello, Friend!</h1>
             <p>Register with your personal details to use all site features</p>
-            <button className="BtnTog" onClick={handleToggle}>Sign Up</button>
+            <button className="BtnTog" onClick={handleToggle}>Register</button>
           </div>
         </div>
       </div>
