@@ -45,7 +45,8 @@ export const Login = () => {
           <input type="name" placeholder="Username"/>
           <input type="password" placeholder="Password"/>
 
-          <button className="BtnTog">Login</button>
+          <button className="BtnTog"
+          onCl>Login</button>
         </form>
 
       </div>
@@ -57,7 +58,8 @@ export const Login = () => {
           <input type="email" placeholder="Email"/>
           <input type="password" placeholder="Password"/>
           <input type="password" placeholder="Confirm Password"/>
-          <button className="BtnTog" >Sign Up</button>
+          <button className="BtnTog" 
+          onClick={}>Sign Up</button>
         </form>
       </div>
       

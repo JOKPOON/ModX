@@ -1,7 +1,5 @@
 export * from './Homepage/Home';
 export * from './Account';
-export * from './Login&Register/Login';
-export * from './Register';
 export * from './Cart/Cart';
 export * from './Wishlist';
 export * from './Notification';
