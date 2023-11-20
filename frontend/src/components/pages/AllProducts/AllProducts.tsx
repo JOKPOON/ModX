@@ -200,9 +200,6 @@ export const AllProducts = () => {
               >
                 Rating
               </button>
-              <div className="AllProducts__Sortby__Text__Title">
-                result : 78
-              </div>
             </div>
           </div>
           <div className="AllProducts__Sortby__Select"> 
