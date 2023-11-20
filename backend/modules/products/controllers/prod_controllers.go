@@ -73,14 +73,21 @@ func (p *ProductController) Create(c *gin.Context) {
 		return
 	}
 
-	var req entities.ProductWithVariants
-	req.Product.Picture = res.FilePaths
-	req.Variant = getVariants(c)
-	req.Product.Title = c.PostForm("title")
-	req.Product.Desc = c.PostForm("desc")
-	req.Product.Category = c.PostForm("category")
-	req.Product.SubType = c.PostForm("sub_type")
-	req.Product.Rating = 0
+	var req entities.Product
+	req.Title = c.PostForm("title")
+	req.Desc = c.PostForm("desc")
+	req.Category = c.PostForm("category")
+	optionsStr := c.PostForm("options")
+
+	var options entities.ProductOptions
+	err = json.Unmarshal([]byte(optionsStr), &options)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	req.Options = options.Options
+	req.Picture = res.FilePaths
 
 	nres, err := p.ProductUsecase.Create(&req)
 	if err != nil {
@@ -110,16 +117,6 @@ func (p *ProductController) GetAllProduct(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, res.Data)
-}
-
-func getVariants(c *gin.Context) []entities.ProductVariant {
-	jsonData := c.PostForm("json_data")
-	var jsonDataMap []entities.ProductVariant
-	if err := json.Unmarshal([]byte(jsonData), &jsonDataMap); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return nil
-	}
-	return jsonDataMap
 }
 
 func (p *ProductController) GetProduct(c *gin.Context) {
