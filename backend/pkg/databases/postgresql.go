@@ -25,9 +25,10 @@ CREATE TABLE IF NOT EXISTS "products" (
 	"id" SERIAL PRIMARY KEY,
 	"title" VARCHAR(255) NOT NULL,
 	"description" VARCHAR(255) NOT NULL,
-	"price" FLOAT NOT NULL,
+	"price" INT NOT NULL,
 	"category" VARCHAR(255) NOT NULL,
 	"sub_type" VARCHAR(255) NOT NULL,
+	"rating" INT NOT NULL,
 	"sold" INT NOT NULL,
 	"stock" INT NOT NULL,
 	"picture" VARCHAR(255) NOT NULL,
@@ -38,7 +39,7 @@ CREATE TABLE IF NOT EXISTS "products" (
 CREATE TABLE IF NOT EXISTS "product_variants" (
     "id" SERIAL PRIMARY KEY,
     "product_id" INT NOT NULL REFERENCES "products" ("id") ON DELETE CASCADE,
-    "price" FLOAT NOT NULL,
+    "price" INT NOT NULL,
     "stock" INT NOT NULL,
     "color" VARCHAR(255) NOT NULL,
     "size" VARCHAR(255) NOT NULL,
@@ -65,9 +66,9 @@ CREATE TABLE IF NOT EXISTS "orders" (
 	"user_id" INT NOT NULL REFERENCES "users" ("id") ON DELETE CASCADE,
 	"shipping_id" INT NOT NULL REFERENCES "shippings" ("id") ON DELETE CASCADE,
 	"shipping_type" VARCHAR(255) NOT NULL,
-	"shipping_cost" FLOAT NOT NULL,
-	"items_cost" FLOAT NOT NULL,
-	"total_cost" FLOAT NOT NULL,
+	"shipping_cost" INT NOT NULL,
+	"items_cost" INT NOT NULL,
+	"total_cost" INT NOT NULL,
 	"payment_type" VARCHAR(255) NOT NULL,
 	"payment_status" VARCHAR(255) NOT NULL,
 	"status" VARCHAR(255) NOT NULL,
@@ -86,7 +87,7 @@ CREATE TABLE IF NOT EXISTS "items" (
 	"id" SERIAL PRIMARY KEY,
 	"order_products_id" INT NOT NULL REFERENCES "order_products" ("id") ON DELETE CASCADE,
 	"quantity" INT NOT NULL,
-	"price" FLOAT NOT NULL,
+	"price" INT NOT NULL,
 	"color" VARCHAR(255) NOT NULL,
 	"size" VARCHAR(255) NOT NULL,
 	"model" VARCHAR(255) NOT NULL
@@ -106,8 +107,18 @@ CREATE TABLE IF NOT EXISTS "reviews" (
 	"id" SERIAL PRIMARY KEY,
 	"user_id" INT NOT NULL REFERENCES "users" ("id") ON DELETE CASCADE,
 	"product_id" INT NOT NULL REFERENCES "products" ("id") ON DELETE CASCADE,
-	"rating" FLOAT NOT NULL,
+	"rating" INT NOT NULL,
 	"comment" VARCHAR(255) NOT NULL,
+	"created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	"updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS "payments" (
+	"id" SERIAL PRIMARY KEY,
+	"order_id" INT NOT NULL REFERENCES "orders" ("id") ON DELETE CASCADE,
+	"token" VARCHAR(255) NOT NULL,
+	"amount" INT NOT NULL,
+	"charge" VARCHAR(255) NOT NULL,
 	"created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	"updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

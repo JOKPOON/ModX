@@ -28,9 +28,10 @@ func (p *ProductRepo) Create(req *entities.ProductWithVariants) (*entities.Produ
 		"sub_type",
 		"sold",
 		"stock",
-		"picture"
+		"picture",
+		"rating"
 	)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 	RETURNING "id", "title";
 	`
 
@@ -45,7 +46,18 @@ func (p *ProductRepo) Create(req *entities.ProductWithVariants) (*entities.Produ
 		}
 	}
 
-	row, err := p.Db.Queryx(query, req.Product.Title, req.Product.Desc, req.Product.Price, req.Product.Category, req.Product.SubType, req.Product.Sold, req.Product.Stock, stringOfPicture)
+	row, err := p.Db.Queryx(
+		query,
+		req.Product.Title,
+		req.Product.Desc,
+		req.Product.Price,
+		req.Product.Category,
+		req.Product.SubType,
+		req.Product.Sold,
+		req.Product.Stock,
+		stringOfPicture,
+		req.Product.Rating,
+	)
 	if err != nil {
 		p.DeleteFile(&req.Product)
 		return nil, err
@@ -58,8 +70,6 @@ func (p *ProductRepo) Create(req *entities.ProductWithVariants) (*entities.Produ
 			return nil, err
 		}
 	}
-
-	log.Println(req.Product.Id)
 
 	query = `
 	INSERT INTO "product_variants"(
@@ -225,15 +235,44 @@ func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, erro
 		return nil, err
 	}
 
-	for row.Next() {
-		err = row.StructScan(&req)
-		if err != nil {
-			return nil, err
-		}
+	if !row.Next() {
+		return nil, fmt.Errorf("error, product not found")
 	}
 
-	if req.Id == 0 {
-		return nil, fmt.Errorf("error, product not found")
+	type Product struct {
+		Id       int    `json:"id" db:"id"`
+		Title    string `json:"title" db:"title"`
+		Desc     string `json:"desc" db:"description"`
+		Price    int    `json:"price" db:"price"`
+		Picture  string `json:"picture" db:"picture"`
+		Category string `json:"category" db:"category"`
+		SubType  string `json:"sub_type" db:"sub_type"`
+		Rating   int    `json:"rating" db:"rating"`
+		Sold     int    `json:"sold" db:"sold"`
+		Stock    int    `json:"stock" db:"stock"`
+		Created  string `json:"created" db:"created_at"`
+		Updated  string `json:"updated" db:"updated_at"`
+	}
+	res := new(Product)
+	err = row.StructScan(&res)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Id = res.Id
+	req.Title = res.Title
+	req.Desc = res.Desc
+	req.Price = res.Price
+	req.Category = res.Category
+	req.SubType = res.SubType
+	req.Rating = res.Rating
+	req.Sold = res.Sold
+	req.Stock = res.Stock
+	req.Created = res.Created
+	req.Updated = res.Updated
+	req.Picture = strings.Split(res.Picture, ",")
+	for i, v := range req.Picture {
+		req.Picture[i] = fmt.Sprintf("http://localhost:8080/static/products/%s", v)
 	}
 
 	query = `
@@ -269,9 +308,49 @@ func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, erro
 		if err != nil {
 			return nil, err
 		}
-
 		req.Variants = append(req.Variants, variant)
 	}
 
 	return req, nil
+}
+
+func (p *ProductRepo) AddReview(req *entities.Review) error {
+	query := `
+	INSERT INTO "reviews"(
+		"user_id",
+		"product_id",
+		"rating",
+		"comment"
+	)
+	VALUES ($1, $2, $3, $4)
+	RETURNING "id";
+	`
+
+	row, err := p.Db.Queryx(query, req.UserId, req.ProductId, req.Rating, req.Comment)
+	if err != nil {
+		return err
+	}
+
+	for row.Next() {
+		err = row.StructScan(&req)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (p *ProductRepo) DeleteProduct(req *entities.Product) error {
+	query := `
+	DELETE FROM "products"
+	WHERE "id" = $1;
+	`
+
+	_, err := p.Db.Queryx(query, req.Id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

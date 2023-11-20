@@ -4,20 +4,23 @@ type ProductRepository interface {
 	Create(req *ProductWithVariants) (*ProductCreateRes, error)
 	GetAll(req *ProductQuery) (*AllProductRes, error)
 	GetProduct(req *Product) (*Product, error)
+	AddReview(req *Review) error
+	DeleteProduct(req *Product) error
 }
 
 type ProductUsecase interface {
 	Create(req *ProductWithVariants) (*ProductCreateRes, error)
-	Upload(req *FileUploadReq) (*FileUploadRes, error)
 	GetAllProduct(req *ProductQuery) (*AllProductRes, error)
 	GetProduct(req *Product) (*Product, error)
+	AddReview(req *Review) error
+	DeleteProduct(req *Product) error
 }
 
 type Product struct {
 	Id       int              `json:"id" db:"id"`
 	Title    string           `json:"title" db:"title"`
 	Price    int              `json:"price" db:"price"`
-	Desc     string           `json:"desc" db:"desc"`
+	Desc     string           `json:"desc" db:"description"`
 	Picture  []string         `json:"picture" db:"picture"`
 	Category string           `json:"category" db:"category"`
 	SubType  string           `json:"sub_type" db:"sub_type"`
@@ -43,6 +46,8 @@ type ProductVariant struct {
 	Model     string `json:"model" db:"model"`
 	Price     int    `json:"price" db:"price"`
 	Stock     int    `json:"stock" db:"stock"`
+	Created   string `json:"created" db:"created_at"`
+	Updated   string `json:"updated" db:"updated_at"`
 }
 
 type ProductCreate struct {
