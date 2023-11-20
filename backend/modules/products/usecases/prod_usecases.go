@@ -43,3 +43,13 @@ func (p *ProductUsecases) GetAllProduct(req *entities.ProductQuery) (*entities.A
 func (p *ProductUsecases) Upload(req *entities.FileUploadReq) (*entities.FileUploadRes, error) {
 	return nil, nil
 }
+
+func (p *ProductUsecases) GetProduct(req *entities.Product) (*entities.Product, error) {
+	res := new(entities.Product)
+	res, err := p.ProductRepo.GetProduct(req)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}

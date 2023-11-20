@@ -68,3 +68,21 @@ func hashPassword(password string) (string, error) {
 
 	return string(hashedPassword), nil
 }
+
+func (a *UsersUsecases) GetUserByUsername(username string) (*entities.UsersPassport, error) {
+	user, err := a.UsersRepo.GetUserByUsername(username)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (a *UsersUsecases) CreateUserShipping(req *entities.UsersShippingReq) (*entities.UsersShippingRes, error) {
+	res, err := a.UsersRepo.CreateUserShipping(req)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}

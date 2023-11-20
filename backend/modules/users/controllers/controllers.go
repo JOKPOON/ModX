@@ -21,6 +21,7 @@ func NewUsersControllers(r gin.IRoutes, usersUsecase entities.UsersUsecase) {
 
 	r.POST("/register", controllers.Register)
 	r.POST("/change-password", middlewares.JwtAuthentication(), controllers.ChangePassword)
+	r.POST("/shipping", controllers.Shipping, middlewares.JwtAuthentication())
 }
 
 func (u *UsersController) Register(c *gin.Context) {
@@ -65,6 +66,36 @@ func (u *UsersController) ChangePassword(c *gin.Context) {
 	}
 
 	res, err := u.UsersUsecase.ChangePassword(req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+func (u *UsersController) Shipping(c *gin.Context) {
+	req := new(entities.UsersShippingReq)
+	err := c.ShouldBind(req)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	user, err := middlewares.GetUserByToken(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	req.UserId = user.Id
+
+	res, err := u.UsersUsecase.CreateUserShipping(req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),

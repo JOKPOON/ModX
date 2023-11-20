@@ -3,27 +3,31 @@ package entities
 type ProductRepository interface {
 	Create(req *ProductWithVariants) (*ProductCreateRes, error)
 	GetAll(req *ProductQuery) (*AllProductRes, error)
+	GetProduct(req *Product) (*Product, error)
 }
 
 type ProductUsecase interface {
 	Create(req *ProductWithVariants) (*ProductCreateRes, error)
 	Upload(req *FileUploadReq) (*FileUploadRes, error)
 	GetAllProduct(req *ProductQuery) (*AllProductRes, error)
+	GetProduct(req *Product) (*Product, error)
 }
 
 type Product struct {
-	Id       int      `json:"id" db:"id"`
-	Title    string   `json:"title" db:"title"`
-	Price    float32  `json:"price" db:"price"`
-	Desc     string   `json:"desc" db:"desc"`
-	Picture  []string `json:"picture" db:"picture"`
-	Category string   `json:"category" db:"category"`
-	SubType  string   `json:"sub_type" db:"sub_type"`
-	Rating   float32  `json:"rating" db:"rating"`
-	Sold     int      `json:"sold" db:"sold"`
-	Stock    int      `json:"stock" db:"stock"`
-	Created  string   `json:"created" db:"created_at"`
-	Updated  string   `json:"updated" db:"updated_at"`
+	Id       int              `json:"id" db:"id"`
+	Title    string           `json:"title" db:"title"`
+	Price    int              `json:"price" db:"price"`
+	Desc     string           `json:"desc" db:"desc"`
+	Picture  []string         `json:"picture" db:"picture"`
+	Category string           `json:"category" db:"category"`
+	SubType  string           `json:"sub_type" db:"sub_type"`
+	Rating   int              `json:"rating" db:"rating"`
+	Sold     int              `json:"sold" db:"sold"`
+	Stock    int              `json:"stock" db:"stock"`
+	Variants []ProductVariant `json:"variants"`
+	Reviews  []Review         `json:"review"`
+	Created  string           `json:"created" db:"created_at"`
+	Updated  string           `json:"updated" db:"updated_at"`
 }
 
 type ProductWithVariants struct {
@@ -32,12 +36,13 @@ type ProductWithVariants struct {
 }
 
 type ProductVariant struct {
-	Id    int     `json:"id" db:"id"`
-	Color string  `json:"color" db:"color"`
-	Size  string  `json:"size" db:"size"`
-	Model string  `json:"model" db:"model"`
-	Price float32 `json:"price" db:"price"`
-	Stock int     `json:"stock" db:"stock"`
+	Id        int    `json:"id" db:"id"`
+	ProductId int    `json:"product_id" db:"product_id"`
+	Color     string `json:"color" db:"color"`
+	Size      string `json:"size" db:"size"`
+	Model     string `json:"model" db:"model"`
+	Price     int    `json:"price" db:"price"`
+	Stock     int    `json:"stock" db:"stock"`
 }
 
 type ProductCreate struct {
@@ -58,18 +63,18 @@ type AllProductRes struct {
 }
 
 type AllProductReq struct {
-	Id       int     `json:"id" db:"id"`
-	Title    string  `json:"title" db:"title"`
-	Desc     string  `json:"desc" db:"desc"`
-	Price    float32 `json:"price" db:"price"`
-	Picture  string  `json:"picture" db:"picture"`
-	Category string  `json:"category" db:"category"`
-	SubType  string  `json:"sub_type" db:"sub_type"`
-	Rating   float32 `json:"rating" db:"rating"`
-	Sold     int     `json:"sold" db:"sold"`
-	Stock    int     `json:"stock" db:"stock"`
-	Created  string  `json:"created" db:"created_at"`
-	Updated  string  `json:"updated" db:"updated_at"`
+	Id       int    `json:"id" db:"id"`
+	Title    string `json:"title" db:"title"`
+	Desc     string `json:"desc" db:"description"`
+	Price    int    `json:"price" db:"price"`
+	Picture  string `json:"picture" db:"picture"`
+	Category string `json:"category" db:"category"`
+	SubType  string `json:"sub_type" db:"sub_type"`
+	Rating   int    `json:"rating" db:"rating"`
+	Sold     int    `json:"sold" db:"sold"`
+	Stock    int    `json:"stock" db:"stock"`
+	Created  string `json:"created" db:"created_at"`
+	Updated  string `json:"updated" db:"updated_at"`
 }
 
 type ProductQuery struct {

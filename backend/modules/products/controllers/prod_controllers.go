@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/Bukharney/ModX/configs"
 	"github.com/Bukharney/ModX/modules/entities"
@@ -17,7 +18,12 @@ type ProductController struct {
 	UsersUsecase   entities.UsersUsecase
 }
 
-func NewProductControllers(r gin.IRoutes, cfg *configs.Configs, usersUsecase entities.UsersUsecase, productUsecase entities.ProductUsecase, fileUsecase entities.FileUsecase) {
+func NewProductControllers(
+	r gin.IRoutes,
+	cfg *configs.Configs,
+	usersUsecase entities.UsersUsecase,
+	productUsecase entities.ProductUsecase,
+	fileUsecase entities.FileUsecase) {
 	controllers := &ProductController{
 		Cfg:            cfg,
 		ProductUsecase: productUsecase,
@@ -79,16 +85,14 @@ func (p *ProductController) Create(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, nres)
+	c.JSON(http.StatusCreated, gin.H{"status": "success", "message": nres.Message})
 }
 
 func (p *ProductController) GetAllProduct(c *gin.Context) {
-
 	var req entities.ProductQuery
 	req.Id = c.Query("id")
 	req.Title = c.Query("title")
 	req.Category = c.Query("category")
-	req.SubType = c.Query("sub_type")
 	req.Rating = c.Query("rating")
 	req.Limit = c.Query("limit")
 	req.MaxPrice = c.Query("max_price")
@@ -102,7 +106,7 @@ func (p *ProductController) GetAllProduct(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusOK, res.Data)
 }
 
 func getVariants(c *gin.Context) []entities.ProductVariant {
@@ -113,4 +117,23 @@ func getVariants(c *gin.Context) []entities.ProductVariant {
 		return nil
 	}
 	return jsonDataMap
+}
+
+func (p *ProductController) GetProduct(c *gin.Context) {
+	var req entities.Product
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	req.Id = id
+
+	res, err := p.ProductUsecase.GetProduct(&req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
 }
