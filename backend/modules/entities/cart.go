@@ -4,7 +4,6 @@ type CartRepository interface {
 	GetCartItems(req *Cart) (*Cart, error)
 	AddCartItem(req *Cart) error
 	DeleteCartItem(req *CartDeleteReq) error
-	GetProductVariantById(*ProductVariant) error
 }
 
 type CartUsecase interface {
@@ -22,8 +21,7 @@ type Cart struct {
 }
 
 type CartProductItem struct {
-	ProductVariant ProductVariant `json:"product_variant"`
-	Quantity       int            `json:"quantity"`
+	Quantity int `json:"quantity"`
 }
 
 type CartRes struct {

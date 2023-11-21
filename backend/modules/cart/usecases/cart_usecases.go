@@ -13,35 +13,36 @@ func NewCartUsecase(cartRepo entities.CartRepository) entities.CartUsecase {
 }
 
 func (c *CartUsecases) AddCartItem(req *entities.Cart) error {
-	for i, item := range req.Items {
-		err := c.CartRepo.GetProductVariantById(&item.ProductVariant)
-		if err != nil {
-			return err
-		}
+	// for i, item := range req.Items {
+	// 	err := c.CartRepo.GetProductVariantById(&item.ProductVariant)
+	// 	if err != nil {
+	// 		return err
+	// 	}
 
-		req.Items[i].ProductVariant = item.ProductVariant
-		req.Total += item.Quantity * item.ProductVariant.Price
-	}
+	// 	req.Items[i].ProductVariant = item.ProductVariant
+	// 	req.Total += item.Quantity * item.ProductVariant.Price
+	// }
 
-	return c.CartRepo.AddCartItem(req)
+	// return c.CartRepo.AddCartItem(req)
+	return nil
 }
 
 func (c *CartUsecases) GetCartItems(req *entities.Cart) (*entities.Cart, error) {
-	cart, err := c.CartRepo.GetCartItems(req)
-	if err != nil {
-		return nil, err
-	}
-	for i, item := range cart.Items {
-		err := c.CartRepo.GetProductVariantById(&item.ProductVariant)
-		if err != nil {
-			return nil, err
-		}
+	// cart, err := c.CartRepo.GetCartItems(req)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// for i, item := range cart.Items {
+	// 	err := c.CartRepo.GetProductVariantById(&item.ProductVariant)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
 
-		cart.Items[i].ProductVariant = item.ProductVariant
-		cart.Total += item.Quantity * item.ProductVariant.Price
-	}
+	// 	cart.Items[i].ProductVariant = item.ProductVariant
+	// 	cart.Total += item.Quantity * item.ProductVariant.Price
+	// }
 
-	return cart, nil
+	return nil, nil
 }
 
 func (c *CartUsecases) DeleteCartItem(req *entities.CartDeleteReq) error {

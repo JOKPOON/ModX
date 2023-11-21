@@ -1,6 +1,10 @@
 package repositories
 
 import (
+	"encoding/json"
+	"errors"
+	"fmt"
+
 	"github.com/jmoiron/sqlx"
 
 	"github.com/Bukharney/ModX/modules/entities"
@@ -14,7 +18,7 @@ func NewOrderRepo(db *sqlx.DB) *OrderRepo {
 	return &OrderRepo{Db: db}
 }
 
-func (o *OrderRepo) CreateOrder(req *entities.OrderCreateReq) (*entities.OrderCreateReq, error) {
+func (o *OrderRepo) CreateOrder(req *entities.OrderCreateReq) (*entities.OrderCreateRes, error) {
 	query := `
 	INSERT INTO "orders"(
 		"user_id",
@@ -31,6 +35,7 @@ func (o *OrderRepo) CreateOrder(req *entities.OrderCreateReq) (*entities.OrderCr
 	RETURNING "id";
 	`
 
+	var res entities.OrderCreateRes
 	err := o.Db.QueryRowx(
 		query,
 		req.UserId,
@@ -42,66 +47,12 @@ func (o *OrderRepo) CreateOrder(req *entities.OrderCreateReq) (*entities.OrderCr
 		req.PaymentType,
 		req.PaymentStatus,
 		req.Status,
-	).Scan(&req.Id)
+	).Scan(&res.OrderId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create order: %w", err)
 	}
 
-	return req, nil
-}
-
-func (o *OrderRepo) GetProductVariantById(id int) (*entities.ProductVariant, error) {
-	query := `
-	SELECT
-		"product_variants"."id",
-		"product_variants"."product_id",
-		"product_variants"."price",
-		"product_variants"."color",
-		"product_variants"."size",
-		"product_variants"."model"
-	FROM "product_variants"
-	WHERE "product_variants"."id" = $1;
-	`
-
-	product_variant := new(entities.ProductVariant)
-	err := o.Db.QueryRowx(query, id).StructScan(product_variant)
-	if err != nil {
-		return nil, err
-	}
-
-	return product_variant, nil
-}
-
-func (o *OrderRepo) SaveItemsByProductVariantId(id int, product *entities.ProductVariant, v *entities.OrderItems) (*entities.OrderItems, error) {
-	query := `
-			INSERT INTO "items"(
-				"order_products_id",
-				"quantity",
-				"price",
-				"color",
-				"size",
-				"model"
-			)
-			VALUES ($1, $2, $3, $4, $5, $6)
-			RETURNING "id";
-			`
-
-	items := new(entities.OrderItems)
-	err := o.Db.QueryRowx(
-		query,
-		id,
-		v.Quantity,
-		product.Price,
-		product.Color,
-		product.Size,
-		product.Model,
-	).Scan(&items.Id)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return items, nil
+	return &res, nil
 }
 
 func (o *OrderRepo) Create(req *entities.OrderCreateReq) (*entities.OrderCreateRes, error) {
@@ -109,42 +60,33 @@ func (o *OrderRepo) Create(req *entities.OrderCreateReq) (*entities.OrderCreateR
 		query := `
 		INSERT INTO "order_products"(
 			"order_id",
-			"product_id"
+			"product_id",
+			"options",
+			"price",
+			"quantity"
 		)
-
-		VALUES ($1, $2)
-		RETURNING "id";
+		VALUES ($1, $2, $3, $4, $5);
 		`
 
-		order_items := entities.OrderItems{}
-		err := o.Db.QueryRowx(
+		option, err := json.Marshal(v.Options)
+		if err != nil {
+			return nil, err
+		}
+
+		_, err = o.Db.Exec(
 			query,
 			req.Id,
 			v.ProductId,
-		).Scan(&order_items.Id)
-
+			option,
+			v.Price,
+			v.Quantity,
+		)
 		if err != nil {
 			return nil, err
 		}
-
-		product, err := o.GetProductVariantById(v.ProductId)
-		if err != nil {
-			return nil, err
-		}
-
-		for _, v := range v.OrderItems {
-			_, err := o.SaveItemsByProductVariantId(order_items.Id, product, &v)
-			if err != nil {
-				return nil, err
-			}
-		}
-
 	}
 
-	return &entities.OrderCreateRes{
-		OrderId: req.Id,
-	}, nil
-
+	return &entities.OrderCreateRes{OrderId: req.Id}, nil
 }
 
 func (o *OrderRepo) Update(req *entities.OrderUpdateReq) error {
@@ -258,11 +200,35 @@ func (o *OrderRepo) GetOrderById(id int64) (*entities.OrderGetByIdRes, error) {
 	WHERE "shippings"."id" = $1;
 	`
 
-	err = o.Db.QueryRowx(query, order.Shipping.ID).StructScan(order.Shipping)
+	err = o.Db.QueryRowx(query, order.Shipping.Id).StructScan(order.Shipping)
 	if err != nil {
 		return nil, err
 	}
 
 	return order, nil
 
+}
+
+func (o *OrderRepo) GetProductOptions(product_id int) (*entities.ProductOptions, error) {
+	query := `
+	SELECT options FROM products WHERE id = $1;
+	`
+
+	type Options struct {
+		Options string `db:"options"`
+	}
+
+	var options Options
+	err := o.Db.QueryRowx(query, product_id).StructScan(&options)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get product options: %w", err)
+	}
+
+	var options_json map[string]interface{}
+	err = json.Unmarshal([]byte(options.Options), &options_json)
+	if err != nil {
+		return nil, errors.New("failed to unmarshal product options")
+	}
+
+	return &entities.ProductOptions{Options: options_json}, nil
 }

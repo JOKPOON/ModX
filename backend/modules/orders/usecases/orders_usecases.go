@@ -1,6 +1,8 @@
 package usecases
 
 import (
+	"errors"
+
 	"github.com/Bukharney/ModX/modules/entities"
 )
 
@@ -18,28 +20,44 @@ func NewOrderUsecases(orderRepo entities.OrderRepository, userRepo entities.User
 
 func (o *OrderUsecases) Create(req *entities.OrderCreateReq) (*entities.OrderCreateRes, error) {
 	req.ItemCost = 0
-	items_count := 0
-	products := req.OrderProducts
-	for _, v := range products {
-		for _, item := range v.OrderItems {
-			variant, err := o.OrderRepo.GetProductVariantById(item.ProductVariantId)
-			if err != nil {
-				return nil, err
-			}
+	req.ShippingCost = 0
+	req.TotalCost = 0
 
-			req.ItemCost += variant.Price * item.Quantity
-			items_count += item.Quantity
+	for _, product := range req.OrderProducts {
+		option_1 := product.Options["option_1"]
+		option_2 := product.Options["option_2"]
+
+		option, err := o.OrderRepo.GetProductOptions(product.ProductId)
+		if err != nil {
+			return nil, err
 		}
+
+		if option.Options["option_1"] == nil {
+			return nil, errors.New("invalid options 1")
+		}
+
+		for s, v := range option.Options["option_1"].(map[string]interface{}) {
+			if s == option_1 {
+				for s2, v2 := range v.(map[string]interface{})["option_2"].(map[string]interface{}) {
+					if s2 == option_2 {
+						product.Price = int(v2.(map[string]interface{})["price"].(float64))
+						if int(v2.(map[string]interface{})["stock"].(float64)) < product.Quantity {
+							return nil, errors.New("stock not enough")
+						}
+					}
+				}
+			}
+		}
+
+		req.ItemCost += product.Price * product.Quantity
 	}
 
-	req.ShippingCost = 0
-	if req.ShippingType == "Self Pickup" {
+	if req.ShippingType == "SPU" {
 		req.ShippingCost = 0
+	} else if req.ShippingType == "EMS" {
+		req.ShippingCost = 3000
 	} else {
-		for items_count > 0 {
-			req.ShippingCost += 5000
-			items_count -= 10
-		}
+		req.ShippingCost = 5000
 	}
 
 	req.TotalCost = req.ItemCost + req.ShippingCost
@@ -49,7 +67,9 @@ func (o *OrderUsecases) Create(req *entities.OrderCreateReq) (*entities.OrderCre
 		return nil, err
 	}
 
-	res, err := o.OrderRepo.Create(order)
+	req.Id = order.OrderId
+
+	res, err := o.OrderRepo.Create(req)
 	if err != nil {
 		return nil, err
 	}

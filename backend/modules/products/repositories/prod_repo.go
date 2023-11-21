@@ -3,7 +3,6 @@ package repositories
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 
@@ -81,7 +80,7 @@ func (p *ProductRepo) GetAll(req *entities.ProductQuery) (*entities.AllProductRe
 
 	stmt, err := p.Db.PrepareNamed(sqlQuery)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	rows, err := stmt.Queryx(req)
@@ -89,34 +88,22 @@ func (p *ProductRepo) GetAll(req *entities.ProductQuery) (*entities.AllProductRe
 		return nil, err
 	}
 
-	if !rows.Next() {
-		return nil, fmt.Errorf("error, product not found")
-	}
-
-	var res entities.AllProduct
 	var result entities.AllProductRes
 	for rows.Next() {
-		err := rows.Scan(
-			&res.Id,
-			&res.Title,
-			&res.Price,
-			&res.Discount,
-			&res.Picture,
-			&res.Rating,
-			&res.Sold,
-		)
+		res := new(entities.AllProduct)
+		err = rows.StructScan(&res)
 		if err != nil {
-			return &result, err
+			return nil, err
 		}
 
-		picture := strings.Split(res.Picture, ",")
-		for i, v := range picture {
-			picture[i] = fmt.Sprintf("http://localhost:8080/static/products/%s", v)
+		data := strings.Split(res.Picture, ",")
+		for i, v := range data {
+			data[i] = fmt.Sprintf("http://localhost:8080/static/products/%s", v)
 		}
 
-		res.Picture = picture[0]
+		res.Picture = data[0]
 
-		result.Data = append(result.Data, res)
+		result.Data = append(result.Data, *res)
 	}
 
 	return &result, nil
@@ -197,29 +184,13 @@ func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, erro
 		return nil, fmt.Errorf("error, product not found")
 	}
 
-	type Product struct {
-		Id       int    `json:"id" db:"id"`
-		Title    string `json:"title" db:"title"`
-		Desc     string `json:"desc" db:"description"`
-		Price    int    `json:"price" db:"price"`
-		Picture  string `json:"picture" db:"picture"`
-		Category string `json:"category" db:"category"`
-		Option   string `json:"option" db:"options"`
-		Rating   int    `json:"rating" db:"rating"`
-		Sold     int    `json:"sold" db:"sold"`
-		Stock    int    `json:"stock" db:"stock"`
-		Created  string `json:"created" db:"created_at"`
-		Updated  string `json:"updated" db:"updated_at"`
-	}
-
-	res := new(Product)
+	res := new(entities.ProductRes)
 	err = row.StructScan(&res)
 	if err != nil {
 		return nil, err
 	}
-
 	var data map[string]interface{}
-	err = json.Unmarshal([]byte(res.Option), &data)
+	err = json.Unmarshal([]byte(res.Options), &data)
 	if err != nil {
 		return nil, err
 	}
@@ -300,4 +271,54 @@ func (p *ProductRepo) DeleteProduct(req *entities.Product) error {
 	}
 
 	return nil
+}
+
+func (p *ProductRepo) UpdateProduct(req *entities.Product) (*entities.Product, error) {
+	query := `
+	UPDATE "products"
+	SET
+		"title" = $1,
+		"price" = $2,
+		"discount" = $3,
+		"description" = $4,
+		"picture" = $5,
+		"options" = $6,
+		"category" = $7,
+		"rating" = $8,
+		"sold" = $9,
+		"stock" = $10
+	WHERE "id" = $11;
+	`
+
+	option, err := json.Marshal(req.Options)
+	if err != nil {
+		return nil, err
+	}
+
+	row, err := p.Db.Queryx(query,
+		req.Title,
+		req.Price,
+		req.Discount,
+		req.Desc,
+		strings.Join(req.Picture, ","),
+		option,
+		req.Category,
+		req.Rating,
+		req.Sold,
+		req.Stock,
+		req.Id,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for row.Next() {
+		err = row.StructScan(&req)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return req, nil
 }

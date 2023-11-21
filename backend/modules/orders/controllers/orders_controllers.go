@@ -28,7 +28,7 @@ func (o *OrderController) Create(c *gin.Context) {
 	var req entities.OrderCreateReq
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(400, gin.H{
-			"message": err.Error(),
+			"message 1": err.Error(),
 		})
 		return
 	}
@@ -36,7 +36,7 @@ func (o *OrderController) Create(c *gin.Context) {
 	user, err := middlewares.GetUserByToken(c)
 	if err != nil {
 		c.JSON(400, gin.H{
-			"message": err.Error(),
+			"message 2": err.Error(),
 		})
 		return
 	}
@@ -46,7 +46,7 @@ func (o *OrderController) Create(c *gin.Context) {
 	res, err := o.OrderUsecases.Create(&req)
 	if err != nil {
 		c.JSON(400, gin.H{
-			"message": err.Error(),
+			"message 3": err.Error(),
 		})
 		return
 	}

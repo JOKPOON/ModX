@@ -39,45 +39,19 @@ func NewProductControllers(
 
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 100
 
-func (p *ProductController) Upload(c *gin.Context) (*entities.FileUploadRes, error) {
-	return nil, nil
-}
-
 func (p *ProductController) Create(c *gin.Context) {
-	var freq entities.FileUploadReq
-	err := c.ShouldBind(&freq.File)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if err := c.Request.ParseMultipartForm(MAX_UPLOAD_SIZE); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	files := c.Request.MultipartForm.File["file"]
-	freq.File = files
-
-	role, err := middlewares.GetUserByToken(c)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	freq.Claims = &role
-
-	res, err := p.FileUsecase.Upload(&freq)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
 	var req entities.Product
 	req.Title = c.PostForm("title")
 	req.Desc = c.PostForm("desc")
 	req.Category = c.PostForm("category")
 	optionsStr := c.PostForm("options")
+
+	upload_res, err := p.UploadProduct(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	req.Picture = upload_res.FilePaths
 
 	var options entities.ProductOptions
 	err = json.Unmarshal([]byte(optionsStr), &options)
@@ -85,17 +59,15 @@ func (p *ProductController) Create(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	req.Options = options.Options
-	req.Picture = res.FilePaths
 
-	nres, err := p.ProductUsecase.Create(&req)
+	res, err := p.ProductUsecase.Create(&req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"status": "success", "message": nres.Message})
+	c.JSON(http.StatusCreated, gin.H{"status": "success", "message": res.Message})
 }
 
 func (p *ProductController) GetAllProduct(c *gin.Context) {
@@ -116,7 +88,7 @@ func (p *ProductController) GetAllProduct(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, res.Data)
+	c.JSON(http.StatusOK, &res.Data)
 }
 
 func (p *ProductController) GetProduct(c *gin.Context) {
@@ -180,4 +152,33 @@ func (p *ProductController) DeleteProduct(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, err)
+}
+
+func (p *ProductController) UploadProduct(c *gin.Context) (*entities.FileUploadRes, error) {
+	var freq entities.FileUploadReq
+	err := c.ShouldBind(&freq.File)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := c.Request.ParseMultipartForm(MAX_UPLOAD_SIZE); err != nil {
+		return nil, err
+	}
+
+	files := c.Request.MultipartForm.File["file"]
+	freq.File = files
+
+	role, err := middlewares.GetUserByToken(c)
+	if err != nil {
+		return nil, err
+	}
+
+	freq.Claims = &role
+
+	res, err := p.FileUsecase.Upload(&freq)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res, nil
 }

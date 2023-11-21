@@ -68,6 +68,9 @@ CREATE TABLE IF NOT EXISTS "order_products" (
     "id" SERIAL PRIMARY KEY,
     "order_id" INT NOT NULL REFERENCES "orders" ("id") ON DELETE CASCADE,
     "product_id" INT NOT NULL REFERENCES "products" ("id") ON DELETE CASCADE,
+	"options" JSON NOT NULL,
+	"price" INT NOT NULL,
+	"quantity" INT NOT NULL,
     CONSTRAINT "order_products_key" UNIQUE ("order_id", "product_id")
 );
 

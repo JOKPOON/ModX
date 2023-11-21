@@ -110,24 +110,24 @@ func (c *CartRepo) DeleteCartItem(req *entities.CartDeleteReq) error {
 	return nil
 }
 
-func (c *CartRepo) GetProductVariantById(req *entities.ProductVariant) error {
-	query := `
-	SELECT
-		"product_variants"."id",
-		"product_variants"."product_id",
-		"product_variants"."stock",
-		"product_variants"."price",
-		"product_variants"."color",
-		"product_variants"."size",
-		"product_variants"."model"
-	FROM "product_variants"
-	WHERE "product_variants"."id" = $1;
-	`
+// func (c *CartRepo) GetProductVariantById(req *entities.ProductVariant) error {
+// 	query := `
+// 	SELECT
+// 		"product_variants"."id",
+// 		"product_variants"."product_id",
+// 		"product_variants"."stock",
+// 		"product_variants"."price",
+// 		"product_variants"."color",
+// 		"product_variants"."size",
+// 		"product_variants"."model"
+// 	FROM "product_variants"
+// 	WHERE "product_variants"."id" = $1;
+// 	`
 
-	err := c.Db.QueryRowx(query, req.Id).StructScan(req)
-	if err != nil {
-		return err
-	}
+// 	err := c.Db.QueryRowx(query, req.Id).StructScan(req)
+// 	if err != nil {
+// 		return err
+// 	}
 
-	return nil
-}
+// 	return nil
+// }

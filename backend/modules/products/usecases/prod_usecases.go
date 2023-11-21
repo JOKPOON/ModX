@@ -26,14 +26,18 @@ func findMinPriceAndStock(data map[string]interface{}) (float64, float64, error)
 
 	for _, v := range data["option_1"].(map[string]interface{}) {
 		if v.(map[string]interface{})["option_2"] == nil {
-			return 0, 0, errors.New("invalid options")
-		}
-
-		for _, v2 := range v.(map[string]interface{})["option_2"].(map[string]interface{}) {
-			if v2.(map[string]interface{})["price"].(float64) < minPrice {
-				minPrice = v2.(map[string]interface{})["price"].(float64)
+			if v.(map[string]interface{})["price"].(float64) < minPrice {
+				minPrice = v.(map[string]interface{})["price"].(float64)
 			}
-			totalStock += v2.(map[string]interface{})["stock"].(float64)
+
+			totalStock += v.(map[string]interface{})["stock"].(float64)
+		} else {
+			for _, v2 := range v.(map[string]interface{})["option_2"].(map[string]interface{}) {
+				if v2.(map[string]interface{})["price"].(float64) < minPrice {
+					minPrice = v2.(map[string]interface{})["price"].(float64)
+				}
+				totalStock += v2.(map[string]interface{})["stock"].(float64)
+			}
 		}
 	}
 
