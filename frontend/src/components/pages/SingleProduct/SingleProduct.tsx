@@ -2,127 +2,88 @@ import "./SingleProduct.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-interface item {
+interface Item {
+  stock: number | undefined;
+  price: number | undefined;
   picture?: string[];
   name: string;
   sold: number;
-  price: number;
   discount?: number;
   rating?: number;
-  index?: number;
-  itemAvailable?: number;
   description?: string;
   options?: {
-    option_1?: {
-      [size: string]: {
-        option_2?: {
-          [color: string]: {
-            price: number;
-            stock: number;
-          };
-        };
+    [option: string]: {
+      [subOption: string]: {
+        price: number;
+        stock: number;
       };
     };
   };
+  option_name?: {
+    [key: string]: string;
+  };
 }
 
-const SingleItem: item[] = [
-  {
-    picture: [
-      "https://image.makewebeasy.net/makeweb/m_1920x0/o3WoPJcHm/content/%E0%B9%80%E0%B8%97%E0%B8%84%E0%B8%99%E0%B8%B4%E0%B8%84%E0%B8%A7%E0%B8%B4%E0%B8%98%E0%B8%B5%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%80%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%81%E0%B8%8B%E0%B8%B7%E0%B9%89%E0%B8%AD%E0%B9%80%E0%B8%82%E0%B9%87%E0%B8%A1%E0%B8%82%E0%B8%B1%E0%B8%94%E0%B8%9C%E0%B8%B9%E0%B9%89%E0%B8%8A%E0%B8%B2%E0%B8%A2.jpg",
-      "https://shopee.co.th/blog/wp-content/uploads/2019/10/FACTFULNESS-%E0%B8%88%E0%B8%A3%E0%B8%B4%E0%B8%87-%E0%B9%86-%E0%B9%81%E0%B8%A5%E0%B9%89%E0%B8%A7%E0%B9%82%E0%B8%A5%E0%B8%81%E0%B8%94%E0%B8%B5%E0%B8%82%E0%B8%B6%E0%B9%89%E0%B8%99%E0%B8%97%E0%B8%B8%E0%B8%81%E0%B8%A7%E0%B8%B1%E0%B8%99.png",
-      "https://shoppo-file.sgp1.cdn.digitaloceanspaces.com/natpopshop/product-images/310960155_477469997675145_5855571439791689059_n.jpeg",
-      "https://www.kmutt.ac.th/wp-content/uploads/2020/08/HDR_0001-5-HDR-scaled.jpg",
-      "https://steco.kmutt.ac.th/wp-content/uploads/2019/12/KMUTT-Landscape.jpg",
-      "https://www.kmutt.ac.th/wp-content/uploads/2020/09/MG_0703-scaled.jpg",
-      "https://www.kmutt.ac.th/wp-content/uploads/2020/08/%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B8%A1%E0%B8%94_%E0%B9%91%E0%B9%98%E0%B9%91%E0%B9%92%E0%B9%92%E0%B9%97_0091.jpg",
-    ],
-    name: "Female Uniform From KMUTT Fear of Natacha 2nd hand",
-    sold: 4500,
-    price: 9259,
-    discount: 10,
-    rating: 4.5,
-    itemAvailable: 10,
-    description:
-      "Female Uniform From KMUTT Fear of Natacha 2nd hand Female Uniform From KMUTT Fear of Natacha 2nd hand Female Uniform From KMUTT Fear of Natacha 2nd hand Female Uniform From KMUTT Fear of Natacha 2nd hand",
-    options: {
-      option_1: {
-        S: {
-          option_2: {
-            Black: {
-              price: 15,
-              stock: 5,
-            },
-            White: {
-              price: 17,
-              stock: 10,
-            },
-            Red: {
-              price: 19,
-              stock: 8,
-            },
-            Blue: {
-              price: 21,
-              stock: 15,
-            },
-            Green: {
-              price: 23,
-              stock: 20,
-            },
-          },
-        },
-        M: {
-          option_2: {
-            Black: {
-              price: 18,
-              stock: 7,
-            },
-            White: {
-              price: 20,
-              stock: 12,
-            },
-            Red: {
-              price: 22,
-              stock: 10,
-            },
-            Blue: {
-              price: 24,
-              stock: 18,
-            },
-            Green: {
-              price: 26,
-              stock: 25,
-            },
-          },
-        },
-        L: {
-          option_2: {
-            Black: {
-              price: 20,
-              stock: 10,
-            },
-            White: {
-              price: 22,
-              stock: 15,
-            },
-            Red: {
-              price: 24,
-              stock: 12,
-            },
-            Blue: {
-              price: 26,
-              stock: 20,
-            },
-            Green: {
-              price: 28,
-              stock: 30,
-            },
-          },
-        },
+const SingleItem: Item = {
+  picture: [
+    "https://image.makewebeasy.net/makeweb/m_1920x0/o3WoPJcHm/content/%E0%B9%80%E0%B8%97%E0%B8%84%E0%B8%99%E0%B8%B4%E0%B8%84%E0%B8%A7%E0%B8%B4%E0%B8%98%E0%B8%B5%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%80%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%81%E0%B8%8B%E0%B8%B7%E0%B9%89%E0%B8%AD%E0%B9%80%E0%B8%82%E0%B9%87%E0%B8%A1%E0%B8%82%E0%B8%B1%E0%B8%94%E0%B8%9C%E0%B8%B9%E0%B9%89%E0%B8%8A%E0%B8%B2%E0%B8%A2.jpg",
+    "https://shopee.co.th/blog/wp-content/uploads/2019/10/FACTFULNESS-%E0%B8%88%E0%B8%A3%E0%B8%B4%E0%B8%87-%E0%B9%86-%E0%B9%81%E0%B8%A5%E0%B9%89%E0%B8%A7%E0%B9%82%E0%B8%A5%E0%B8%81%E0%B8%94%E0%B8%B5%E0%B8%82%E0%B8%B6%E0%B9%89%E0%B8%99%E0%B8%97%E0%B8%B8%E0%B8%81%E0%B8%A7%E0%B8%B1%E0%B8%99.png",
+    "https://shoppo-file.sgp1.cdn.digitaloceanspaces.com/natpopshop/product-images/310960155_477469997675145_5855571439791689059_n.jpeg",
+    "https://www.kmutt.ac.th/wp-content/uploads/2020/08/HDR_0001-5-HDR-scaled.jpg",
+    "https://steco.kmutt.ac.th/wp-content/uploads/2019/12/KMUTT-Landscape.jpg",
+    "https://www.kmutt.ac.th/wp-content/uploads/2020/09/MG_0703-scaled.jpg",
+    "https://www.kmutt.ac.th/wp-content/uploads/2020/08/%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B8%A1%E0%B8%94_%E0%B9%91%E0%B9%98%E0%B9%91%E0%B9%92%E0%B9%92%E0%B9%97_0091.jpg",
+  ],
+  name: "Female Uniform From KMUTT Fear of Natacha 2nd hand",
+  sold: 4500,
+  discount: 10,
+  rating: 4.5,
+  description: "Female Uniform From KMUTT Fear of Natacha 2nd hand Female Uniform From KMUTT Fear of Natacha 2nd hand Female Uniform From KMUTT Fear of Natacha 2nd hand Female Uniform From KMUTT Fear of Natacha 2nd hand",
+  options: {
+    option_1: {
+      S: {
+        price: 1502,
+        stock: 5,
+      },
+      M: {
+        price: 1815,
+        stock: 7,
+      },
+      L: {
+        price: 2021,
+        stock: 10,
+      },
+    },
+    option_2: {
+      Black: {
+        price: 1215,
+        stock: 5,
+      },
+      White: {
+        price: 1725,
+        stock: 10,
+      },
+      Red: {
+        price: 1329,
+        stock: 8,
+      },
+      Blue: {
+        price: 23321,
+        stock: 15,
+      },
+      Green: {
+        price: 2233,
+        stock: 20,
       },
     },
   },
-];
+  option_name: {
+    option_1: "size",
+    option_2: "color",
+  },
+  price: undefined,
+  stock: undefined
+};
 
 interface Comment {
   name: string;
@@ -185,6 +146,8 @@ const Comment: Comment[] = [
   },
 ];
 
+
+
 export const SingleProduct = () => {
   const navigate = useNavigate();
   const HandlegoBack = () => {
@@ -192,49 +155,81 @@ export const SingleProduct = () => {
   };
   const [currentPic, setCurrentPic] = useState(0);
   const index = 0;
-  const currentItem = SingleItem[index];
 
   const [visiblePics] = useState(3);
 
+  const firstOptionKey = Object.keys(SingleItem.options ?? {})[0];
+  const firstSubOptionKey = Object.keys(SingleItem.options?.[firstOptionKey] ?? {})[0];
+
+  const [selectedOption, setSelectedOption] = useState<{
+    price: number;
+    stock: number;
+  }>({
+    price: SingleItem.options?.[firstOptionKey]?.[firstSubOptionKey]?.price ?? 0,
+    stock: SingleItem.options?.[firstOptionKey]?.[firstSubOptionKey]?.stock ?? 0,
+  });
+
+  const selectedPrice = selectedOption?.price ?? 0;
+  const selectedStock = selectedOption?.stock ?? 0;
+
   const HandleToppic = () => {
     setCurrentPic((prevPic) =>
-      prevPic > 0 ? prevPic - 1 : (currentItem?.picture?.length ?? 0) - 1
+      prevPic > 0 ? prevPic - 1 : (SingleItem?.picture?.length ?? 0) - 1
     );
   };
 
   const HandleBtmPic = () => {
     setCurrentPic((prevPic) =>
-      prevPic < (currentItem?.picture?.length ?? 0) - 1 ? prevPic + 1 : 0
+      prevPic < (SingleItem?.picture?.length ?? 0) - 1 ? prevPic + 1 : 0
     );
   };
 
   const renderSelectOptions = () => {
-    return Object.keys(currentItem)
-      .filter(
-        (key): key is keyof typeof currentItem =>
-          key !== "picture" && Array.isArray(currentItem[key as keyof item])
-      )
-      .map((key) => (
-        <div className={`Single__Product__Quantity`}>
-          <span style={{ color: "#222222" }}>{key}&nbsp;&nbsp;</span>
-          <span className="Single__Select">
-            <select>
-              {(currentItem[key] as string[]).map((item) => (
-                <option key={item} value={item}>
-                  {item}
+    return Object.keys(SingleItem.options ?? {}).map((optionKey) => (
+      <div className={`Single__Product__Quantity`} key={optionKey}>
+        <span style={{ color: "#222222" }}>
+          {SingleItem.option_name?.[optionKey]}&nbsp;&nbsp;
+        </span>
+        <span className="Single__Select">
+          <select
+            onChange={(e) => handleOptionChange(optionKey, e.target.value)}
+          >
+            {Object.keys(SingleItem.options?.[optionKey] ?? {}).map(
+              (subOptionKey) => (
+                <option key={subOptionKey} value={subOptionKey}>
+                  {subOptionKey}
                 </option>
-              ))}
-            </select>
-          </span>
-        </div>
-      ));
+              )
+            )}
+          </select>
+        </span>
+      </div>
+    ));
   };
+  
+  const handleOptionChange = (optionKey: string, selectedSubOption: string) => {
+    const updatedOption = SingleItem.options?.[optionKey]?.[selectedSubOption];
+    setSelectedOption(updatedOption || { price: 0, stock: 0 });
+  };
+
 
   const formatPrice = (price: number) => {
     const priceString = price.toString();
     const formatPriced = priceString.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return formatPriced;
   };
+
+  const HandleSingleItemToWishlist = () => {
+    console.log("Add to Wishlist Add by index of Item");
+  }
+
+  const HandleSingleItemToCart = () => {
+    console.log("Add to Cart Add by index of Item");
+  }
+
+  const HandleSingleItemBuyNow = () => {
+    navigate("/Cart");
+  }
 
   return (
     <div className="Single__Product__Container">
@@ -251,7 +246,7 @@ export const SingleProduct = () => {
                 </button>
               </div>
               <div className="Single__Product__Left__Top__Picture">
-                {currentItem?.picture
+                {SingleItem?.picture
                   ?.slice(0, visiblePics)
                   .map((_imageUrl, imgIndex) => (
                     <div
@@ -259,9 +254,8 @@ export const SingleProduct = () => {
                       key={imgIndex}
                       style={{
                         backgroundImage: `url(${
-                          currentItem?.picture?.[
-                            (currentPic + imgIndex) %
-                              currentItem?.picture.length
+                          SingleItem?.picture?.[
+                            (currentPic + imgIndex) % SingleItem?.picture.length
                           ]
                         })`,
                       }}
@@ -278,7 +272,7 @@ export const SingleProduct = () => {
             <div
               className="Single__Product__Pic__Right"
               style={{
-                backgroundImage: `url(${SingleItem[index]?.picture?.[currentPic]})`,
+                backgroundImage: `url(${SingleItem?.picture?.[currentPic]})`,
               }}
             ></div>
           </div>
@@ -329,31 +323,28 @@ export const SingleProduct = () => {
         <div className="Single__Product__Right">
           <div className="Single__Product__Right__Container">
             <div className="Single__Product__Datails">
-              <div className="Single__Product__Name">{SingleItem[0].name}</div>
+              <div className="Single__Product__Name">{SingleItem.name}</div>
               <div className="Single__Product__RateNSold">
                 <span style={{ color: "#222222" }}>Rating&nbsp;&nbsp;</span>
-                {SingleItem[index].rating}
+                {SingleItem.rating}
                 &nbsp;&nbsp;&nbsp;
                 <span style={{ color: "#222222" }}>Sold&nbsp;&nbsp;</span>
-                {formatPrice(SingleItem[index].sold)}
+                {formatPrice(SingleItem.sold)}
               </div>
               <div className="Single__Product__Price">
                 <span className="Single__Price" style={{ color: "#222222" }}>
                   Price&nbsp;&nbsp;
                 </span>
-                {(SingleItem[index].discount ?? 0) > 0 && (
+                {(SingleItem.discount ?? 0) > 0 && (
                   <span
                     className="Single__Price"
                     style={{ textDecoration: "line-through", color: "#FF6E1F" }}
                   >
-                    {formatPrice(
-                      SingleItem[index].price -
-                        (SingleItem[index].discount ?? 0)
-                    )}
+                    {formatPrice(selectedPrice)}
                   </span>
                 )}
                 <span style={{ color: "#222222", fontWeight: "500" }}>
-                  &nbsp;{formatPrice(SingleItem[index].price)}&nbsp;THB
+                  &nbsp;{formatPrice( ((selectedPrice ?? 0) - (SingleItem.discount ?? 0)) ?? 0)}&nbsp;THB
                 </span>
               </div>
               <div className="Single__Product__Sub">
@@ -364,7 +355,7 @@ export const SingleProduct = () => {
                 <span className="Single__Select">
                   <select>
                     {Array.from(
-                      { length: SingleItem[index].itemAvailable ?? 0 },
+                      { length: selectedStock ?? 0 },
                       (_, i) => (
                         <option key={i} value={i + 1}>
                           {i + 1}
@@ -374,20 +365,22 @@ export const SingleProduct = () => {
                   </select>
                 </span>
                 <span style={{ color: "#656464" }}>
-                  &nbsp;&nbsp;{SingleItem[index].itemAvailable} Pieces Available{" "}
+                  &nbsp;&nbsp;{selectedStock} Pieces Available{" "}
                 </span>
               </div>
               <div className="Single__Product__Description">
                 <div style={{ color: "#222222" }}>Description&nbsp;&nbsp;</div>
-                <div style={{ color: "#656464" }}>
-                  {SingleItem[index].description}
-                </div>
+                <div style={{ color: "#656464" }}>{SingleItem.description}</div>
               </div>
             </div>
             <div className="Single__Product__Button">
-              <button className="Single__Button__W">Add To Wishlist</button>
-              <button className="Single__Button__W">Add to Cart</button>
-              <button className="Single__Button__B">Buy Now</button>
+              <button className="Single__Button__W"
+              onClick={HandleSingleItemToWishlist}>
+              Add To Wishlist</button>
+              <button className="Single__Button__W"
+              onClick={HandleSingleItemToCart}>Add to Cart</button>
+              <button className="Single__Button__B"
+              onClick={HandleSingleItemBuyNow}>Buy Now</button>
             </div>
           </div>
         </div>

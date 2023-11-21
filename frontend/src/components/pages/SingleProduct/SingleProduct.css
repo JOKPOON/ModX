@@ -284,7 +284,7 @@
 .Single__Product__Sub {
   margin-top: 3px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 3%;
 }
 
@@ -323,6 +323,16 @@
   margin-top: 20px;
   display: flex;
   flex-direction: row;
+}
+
+.Single__Button__B:hover {
+  background-color: #ff6e1f;
+  color: #fefcfc;
+  transform: translateY(-2px);
+}
+
+.Single__Button__W:hover {
+  transform: translateY(-2px);
 }
 
 @media (max-width: 1200px) {
