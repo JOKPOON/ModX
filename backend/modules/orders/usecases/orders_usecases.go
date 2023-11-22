@@ -78,5 +78,10 @@ func (o *OrderUsecases) Create(req *entities.OrderCreateReq) (*entities.OrderCre
 }
 
 func (o *OrderUsecases) Update(req *entities.OrderUpdateReq) error {
+	err := o.OrderRepo.Update(req)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

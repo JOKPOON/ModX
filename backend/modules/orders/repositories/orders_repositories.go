@@ -206,7 +206,6 @@ func (o *OrderRepo) GetOrderById(id int64) (*entities.OrderGetByIdRes, error) {
 	}
 
 	return order, nil
-
 }
 
 func (o *OrderRepo) GetProductOptions(product_id int) (*entities.ProductOptions, error) {

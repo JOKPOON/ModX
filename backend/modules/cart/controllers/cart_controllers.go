@@ -32,7 +32,7 @@ func NewCartControllers(
 }
 
 func (c *CartController) GetCartItems(ctx *gin.Context) {
-	var req entities.Cart
+	var req entities.CartGetReq
 
 	role, err := middlewares.GetUserByToken(ctx)
 	if err != nil {
@@ -52,43 +52,52 @@ func (c *CartController) GetCartItems(ctx *gin.Context) {
 }
 
 func (c *CartController) AddCartItem(ctx *gin.Context) {
-	var req entities.Cart
+	var req entities.CartAddReq
 	err := ctx.ShouldBind(&req)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error bilding": err.Error()})
 		return
 	}
 
-	role, err := middlewares.GetUserByToken(ctx)
+	user, err := middlewares.GetUserByToken(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error get users": err.Error()})
 		return
 	}
 
-	req.UserId = role.Id
+	req.UserId = user.Id
 
-	err = c.CartUsecase.AddCartItem(&req)
+	res, err := c.CartUsecase.AddCartItem(&req)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, err)
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (c *CartController) DeleteCartItem(ctx *gin.Context) {
 	var req entities.CartDeleteReq
 	err := ctx.ShouldBind(&req)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error bilding": err.Error()})
 		return
 	}
 
-	err = c.CartUsecase.DeleteCartItem(&req)
+	user, err := middlewares.GetUserByToken(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error get users": err.Error()})
+		return
+	}
+
+	req.UserId = user.Id
+
+	res, err := c.CartUsecase.DeleteCartItem(&req)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, req)
+	ctx.JSON(http.StatusOK, res)
+
 }

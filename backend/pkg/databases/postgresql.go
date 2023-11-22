@@ -74,19 +74,12 @@ CREATE TABLE IF NOT EXISTS "order_products" (
     CONSTRAINT "order_products_key" UNIQUE ("order_id", "product_id")
 );
 
-CREATE TABLE IF NOT EXISTS "items" (
-	"id" SERIAL PRIMARY KEY,
-	"order_products_id" INT NOT NULL REFERENCES "order_products" ("id") ON DELETE CASCADE,
-	"quantity" INT NOT NULL,
-	"price" INT NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS "carts" (
 	"id" SERIAL PRIMARY KEY,
 	"user_id" INT NOT NULL REFERENCES "users" ("id") ON DELETE CASCADE,
 	"product_id" INT NOT NULL REFERENCES "products" ("id") ON DELETE CASCADE,
-	"total" INT NOT NULL,
-	"items" JSON NOT NULL,
+	"options" TEXT NOT NULL,
+	"quantity" INT NOT NULL,
 	"created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	"updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

@@ -12,40 +12,62 @@ func NewCartUsecase(cartRepo entities.CartRepository) entities.CartUsecase {
 	return &CartUsecases{CartRepo: cartRepo}
 }
 
-func (c *CartUsecases) AddCartItem(req *entities.Cart) error {
-	// for i, item := range req.Items {
-	// 	err := c.CartRepo.GetProductVariantById(&item.ProductVariant)
-	// 	if err != nil {
-	// 		return err
-	// 	}
+func (c *CartUsecases) AddCartItem(req *entities.CartAddReq) (*entities.CartAddRes, error) {
+	res, err := c.CartRepo.AddCartItem(req)
+	if err != nil {
+		return nil, err
+	}
 
-	// 	req.Items[i].ProductVariant = item.ProductVariant
-	// 	req.Total += item.Quantity * item.ProductVariant.Price
-	// }
-
-	// return c.CartRepo.AddCartItem(req)
-	return nil
+	return res, nil
 }
 
-func (c *CartUsecases) GetCartItems(req *entities.Cart) (*entities.Cart, error) {
-	// cart, err := c.CartRepo.GetCartItems(req)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// for i, item := range cart.Items {
-	// 	err := c.CartRepo.GetProductVariantById(&item.ProductVariant)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
+func (c *CartUsecases) GetCartItems(req *entities.CartGetReq) (*entities.CartGetRes, error) {
+	res, err := c.CartRepo.GetCartItems(req)
+	if err != nil {
+		return nil, err
+	}
 
-	// 	cart.Items[i].ProductVariant = item.ProductVariant
-	// 	cart.Total += item.Quantity * item.ProductVariant.Price
-	// }
+	for i, product := range res.Products {
+		option_1 := product.Options["option_1"]
+		option_2 := product.Options["option_2"]
 
-	return nil, nil
+		option, err := c.CartRepo.GetProductOptions(product.ProductId)
+		if err != nil {
+			return nil, err
+		}
+
+		for s, v := range option.Options["option_1"].(map[string]interface{}) {
+			if s == option_1 {
+				for s2, v2 := range v.(map[string]interface{})["option_2"].(map[string]interface{}) {
+					if s2 == option_2 {
+						res.Products[i].Price = int(v2.(map[string]interface{})["price"].(float64))
+					}
+				}
+			}
+		}
+
+		res.Totals += res.Products[i].Price * res.Products[i].Quantity
+		product_detail, err := c.CartRepo.GetProductDetails(product.ProductId)
+		if err != nil {
+			return nil, err
+		}
+
+		res.Products[i].ProductTitle = product_detail.Title
+		res.Products[i].ProductImage = product_detail.Picture
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }
 
-func (c *CartUsecases) DeleteCartItem(req *entities.CartDeleteReq) error {
-	err := c.CartRepo.DeleteCartItem(req)
-	return err
+func (c *CartUsecases) DeleteCartItem(req *entities.CartDeleteReq) (*entities.CartDeleteRes, error) {
+	res, err := c.CartRepo.DeleteCartItem(req)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }
