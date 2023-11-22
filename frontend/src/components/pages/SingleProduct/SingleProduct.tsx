@@ -146,8 +146,6 @@ const Comment: Comment[] = [
   },
 ];
 
-
-
 export const SingleProduct = () => {
   const navigate = useNavigate();
   const HandlegoBack = () => {
@@ -208,10 +206,12 @@ export const SingleProduct = () => {
   };
   
   const handleOptionChange = (optionKey: string, selectedSubOption: string) => {
-    const updatedOption = SingleItem.options?.[optionKey]?.[selectedSubOption];
-    setSelectedOption(updatedOption || { price: 0, stock: 0 });
+    setSelectedOption((prevState) => ({
+      ...prevState,
+      price: SingleItem.options?.[optionKey]?.[selectedSubOption]?.price ?? 0,
+      stock: SingleItem.options?.[optionKey]?.[selectedSubOption]?.stock ?? 0,
+    }));
   };
-
 
   const formatPrice = (price: number) => {
     const priceString = price.toString();
@@ -228,7 +228,8 @@ export const SingleProduct = () => {
   }
 
   const HandleSingleItemBuyNow = () => {
-    navigate("/Cart");
+    console.log("Buy Now Add by index of Item")
+    navigate("/Cart" , {state: {selectedItems: [SingleItem]}})
   }
 
   return (

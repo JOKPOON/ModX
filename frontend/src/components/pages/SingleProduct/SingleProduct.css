@@ -52,7 +52,7 @@
 
 .Single__Product__Pic__Left {
   width: 30%;
-  height: 40vh;
+  height: 37vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -105,7 +105,7 @@
   border-radius: 10px;
   background-size: cover;
   background-position: center;
-  background-blend-mode: luminosity;
+  background-color: #fefefe;
   border: none;
   position: relative;
   overflow: hidden;
@@ -124,7 +124,7 @@
   border-radius: 25px;
   background-size: cover;
   background-position: center;
-  background-blend-mode: luminosity;
+  background-color: #fefefe;
   border: none;
   position: relative;
   overflow: hidden;

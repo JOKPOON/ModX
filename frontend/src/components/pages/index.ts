@@ -8,3 +8,4 @@ export * from './Notification';
 export * from './ContactUs';
 export * from './AllProducts/AllProducts';
 export * from './SingleProduct/SingleProduct';
+export * from './Comment/Comment';
