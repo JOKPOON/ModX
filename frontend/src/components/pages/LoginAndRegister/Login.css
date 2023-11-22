@@ -1,9 +1,3 @@
-:root {
-  --org: #FF6E1F;
-  --blk: #222222;
-  --wht: #FEFCFC;
-}
-
 .main {
   display: flex;
   justify-content: center;
