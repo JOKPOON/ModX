@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import "./Cart.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { formatPrice } from "../Helper/Calculator";
 
 interface items {
   picture?: string;
@@ -60,6 +61,7 @@ export const Cart = () => {
   const [selectedItemIndices, setSelectedItemIndices] = useState<number[]>([]);
 
   const handleDeleteItemsFromcart = () => {
+    // Delete items from cart
     setSelectedItemIndices((prevSelectedIndices) =>
       prevSelectedIndices.filter(
         (index) => !selectedItemIndices.includes(index)
@@ -73,11 +75,12 @@ export const Cart = () => {
   };
 
   const [itemQuantities, setItemQuantities] = useState<number[]>(
-    CartProducts.map(() => 1)
+    CartProducts.map(() => 1) // Initialize all quantities to 1
   );
 
   const handleQuantityChange = (index: number, quantity: number) => {
     setItemQuantities((prevQuantities) => {
+      // Make a copy of the previous quantities array
       const newQuantities = [...prevQuantities];
       newQuantities[index] = quantity;
       return newQuantities;
@@ -86,11 +89,14 @@ export const Cart = () => {
 
   const handleToggleCart = (index: number) => {
     setSelectedItemIndices((prevSelectedIndices) => {
+      // Check if the item is already selected
       const isSelected = prevSelectedIndices.includes(index);
 
       if (isSelected) {
+        // Remove the item from the list
         return prevSelectedIndices.filter((i) => i !== index);
       } else {
+        // Add the item to the list
         return [...prevSelectedIndices, index];
       }
     });
@@ -101,6 +107,7 @@ export const Cart = () => {
   }, [selectedItemIndices]);
 
   const calculateOverallPrice = (): number => {
+    // Calculate the total price of all selected items
     return selectedItemIndices.reduce(
       (total, index) =>
         total + CartProducts[index].price * itemQuantities[index],
@@ -109,6 +116,7 @@ export const Cart = () => {
   };
 
   const calculateOverallDiscount = (): number => {
+    // Calculate the total discount of all selected items
     return selectedItemIndices.reduce(
       (total, index) =>
         total + (CartProducts[index].discount || 0) * itemQuantities[index],
@@ -117,6 +125,7 @@ export const Cart = () => {
   };
 
   const calculateShippingPrice = (): number => {
+    // Calculate the shipping price of all selected items
     const shippingCostPerItem = 15;
     const totalQuantity = selectedItemIndices.reduce(
       (total, index) => total + itemQuantities[index],
@@ -126,6 +135,7 @@ export const Cart = () => {
   };
 
   const calculateTotal = (): number => {
+    // Calculate the total price of all selected items
     const overallPrice = calculateOverallPrice();
     const overallDiscount = calculateOverallDiscount();
     const ShippingPrice = calculateShippingPrice();
@@ -213,17 +223,23 @@ export const Cart = () => {
                             color: "#FF6E1F",
                           }}
                         >
-                          {CartProducts[index].price * itemQuantities[index]}{" "}
+                          {formatPrice(
+                            CartProducts[index].price * itemQuantities[index]
+                          )}{" "}
                         </span>
                         <br />
-                        {(CartProducts[index].price -
-                          (CartProducts[index].discount ?? 0)) *
-                          itemQuantities[index]}{" "}
+                        {formatPrice(
+                          (CartProducts[index].price -
+                            (CartProducts[index].discount ?? 0)) *
+                            itemQuantities[index]
+                        )}{" "}
                       </div>
                     )}
                     {CartProducts[index].discount === 0 && (
                       <div>
-                        {CartProducts[index].price * itemQuantities[index]}
+                        {formatPrice(
+                          CartProducts[index].price * itemQuantities[index]
+                        )}
                       </div>
                     )}{" "}
                     THB
@@ -252,25 +268,25 @@ export const Cart = () => {
                 )
               </div>
               <div className="Cart__text__Right__Content">
-                {calculateOverallPrice()}THB
+                {formatPrice(calculateOverallPrice())}THB
               </div>
             </div>
             <div className="Cart__text__Right">
               <div className="Cart__text__Right__Toppic">Shipping</div>
               <div className="Cart__text__Right__Content">
-                {calculateShippingPrice()} THB
+                {formatPrice(calculateShippingPrice())} THB
               </div>
             </div>
             <div className="Cart__text__Right">
               <div className="Cart__text__Right__Toppic">Discount</div>
               <div className="Cart__text__Right__Content">
-                - {calculateOverallDiscount()} THB
+                - {formatPrice(calculateOverallDiscount())} THB
               </div>
             </div>
             <div className="Cart__text__Right">
               <div className="Cart__text__Right__Toppic__Total">Total</div>
               <div className="Cart__text__Right__Content__Total">
-                {totalPrice} THB
+                {formatPrice(totalPrice)} THB
               </div>
             </div>
             <div className="Cart__Right__Box">

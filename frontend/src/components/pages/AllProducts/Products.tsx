@@ -1,5 +1,6 @@
 import "./Products.css";
 import { useNavigate } from "react-router-dom";
+import { formatPrice } from "../Helper/Calculator";
 
 interface items {
   picture?: string;
@@ -110,32 +111,30 @@ const ProductsData: items[] = [
 
 const Products = () => {
   const navigate = useNavigate();
-  const formatPrice = (price: number) => {
-    const priceString = price.toString();
-    const formatPriced = priceString.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return formatPriced;
-  };
 
   let itemsPerRow = 4;
 
+  // To change number of items per row when screen size is smaller
   if (window.innerWidth <= 1200) {
     itemsPerRow = 3;
   }
 
+  // To change number of items per row when screen size is smaller
   const rows = Array.from(
     { length: Math.ceil(ProductsData.length / itemsPerRow) },
     (_, rowIndex) =>
       ProductsData.slice(rowIndex * itemsPerRow, (rowIndex + 1) * itemsPerRow)
   );
 
+  // To handle when user click on add to cart button
   const handleAddToCartClick = (item: items, rowIndex: number, itemIndex: number) => {
-    const overallIndex = rowIndex * itemsPerRow + itemIndex;
+    const overallIndex = rowIndex * itemsPerRow + itemIndex; // to get the index of the item in the overall array 
     console.log(`Selected item at index : ${overallIndex}:`, item);
     navigate("/SingleProduct", { state: { selectedItems: [item] }});
   };
 
   const handleAddToWishlist = (item: items, rowIndex: number, itemIndex: number) => {
-    const overallIndex = rowIndex * itemsPerRow + itemIndex;
+    const overallIndex = rowIndex * itemsPerRow + itemIndex; // to get the index of the item in the overall array
     console.log(`Add item to wishlist at index : ${overallIndex}:`, item);
   };
 

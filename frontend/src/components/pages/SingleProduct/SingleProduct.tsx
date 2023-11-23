@@ -1,6 +1,7 @@
 import "./SingleProduct.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { formatPrice } from "../Helper/Calculator";
 
 interface Item {
   stock: number | undefined;
@@ -38,7 +39,8 @@ const SingleItem: Item = {
   sold: 4500,
   discount: 10,
   rating: 4.5,
-  description: "Female Uniform From KMUTT Fear of Natacha 2nd hand Female Uniform From KMUTT Fear of Natacha 2nd hand Female Uniform From KMUTT Fear of Natacha 2nd hand Female Uniform From KMUTT Fear of Natacha 2nd hand",
+  description:
+    "Female Uniform From KMUTT Fear of Natacha 2nd hand Female Uniform From KMUTT Fear of Natacha 2nd hand Female Uniform From KMUTT Fear of Natacha 2nd hand Female Uniform From KMUTT Fear of Natacha 2nd hand",
   options: {
     option_1: {
       S: {
@@ -82,7 +84,7 @@ const SingleItem: Item = {
     option_2: "color",
   },
   price: undefined,
-  stock: undefined
+  stock: undefined,
 };
 
 interface Comment {
@@ -146,45 +148,53 @@ const Comment: Comment[] = [
   },
 ];
 
-
-
 export const SingleProduct = () => {
   const navigate = useNavigate();
   const HandlegoBack = () => {
-    navigate(-1);
+    navigate(-1); // Go back to the previous page
   };
+
   const [currentPic, setCurrentPic] = useState(0);
   const index = 0;
 
   const [visiblePics] = useState(3);
 
   const firstOptionKey = Object.keys(SingleItem.options ?? {})[0];
-  const firstSubOptionKey = Object.keys(SingleItem.options?.[firstOptionKey] ?? {})[0];
+  const firstSubOptionKey = Object.keys(
+    SingleItem.options?.[firstOptionKey] ?? {}
+  )[0];
 
   const [selectedOption, setSelectedOption] = useState<{
     price: number;
     stock: number;
   }>({
-    price: SingleItem.options?.[firstOptionKey]?.[firstSubOptionKey]?.price ?? 0,
-    stock: SingleItem.options?.[firstOptionKey]?.[firstSubOptionKey]?.stock ?? 0,
+    price:
+      SingleItem.options?.[firstOptionKey]?.[firstSubOptionKey]?.price ?? 0,
+    stock:
+      SingleItem.options?.[firstOptionKey]?.[firstSubOptionKey]?.stock ?? 0,
   });
 
   const selectedPrice = selectedOption?.price ?? 0;
   const selectedStock = selectedOption?.stock ?? 0;
 
   const HandleToppic = () => {
-    setCurrentPic((prevPic) =>
-      prevPic > 0 ? prevPic - 1 : (SingleItem?.picture?.length ?? 0) - 1
+    setCurrentPic(
+      (prevPic) =>
+        prevPic > 0 ? prevPic - 1 : (SingleItem?.picture?.length ?? 0) - 1
+      //to change the number of picture
     );
   };
 
   const HandleBtmPic = () => {
-    setCurrentPic((prevPic) =>
-      prevPic < (SingleItem?.picture?.length ?? 0) - 1 ? prevPic + 1 : 0
+    setCurrentPic(
+      (prevPic) =>
+        prevPic < (SingleItem?.picture?.length ?? 0) - 1 ? prevPic + 1 : 0
+      //to change the number of picture
     );
   };
 
   const renderSelectOptions = () => {
+    // To render the select options
     return Object.keys(SingleItem.options ?? {}).map((optionKey) => (
       <div className={`Single__Product__Quantity`} key={optionKey}>
         <span style={{ color: "#222222" }}>
@@ -206,30 +216,29 @@ export const SingleProduct = () => {
       </div>
     ));
   };
-  
+
   const handleOptionChange = (optionKey: string, selectedSubOption: string) => {
-    const updatedOption = SingleItem.options?.[optionKey]?.[selectedSubOption];
-    setSelectedOption(updatedOption || { price: 0, stock: 0 });
-  };
-
-
-  const formatPrice = (price: number) => {
-    const priceString = price.toString();
-    const formatPriced = priceString.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return formatPriced;
+    setSelectedOption((prevState) => ({
+      ...prevState,
+      // To update the price and stock when user change the option
+      price: SingleItem.options?.[optionKey]?.[selectedSubOption]?.price ?? 0,
+      stock: SingleItem.options?.[optionKey]?.[selectedSubOption]?.stock ?? 0,
+    }));
   };
 
   const HandleSingleItemToWishlist = () => {
     console.log("Add to Wishlist Add by index of Item");
-  }
+  };
 
   const HandleSingleItemToCart = () => {
     console.log("Add to Cart Add by index of Item");
-  }
+  };
 
   const HandleSingleItemBuyNow = () => {
-    navigate("/Cart");
-  }
+    console.log("Buy Now Add by index of Item");
+    console.log("Option of Item", selectedOption);
+    navigate("/Cart", { state: { selectedItems: [SingleItem] } });
+  };
 
   return (
     <div className="Single__Product__Container">
@@ -344,7 +353,11 @@ export const SingleProduct = () => {
                   </span>
                 )}
                 <span style={{ color: "#222222", fontWeight: "500" }}>
-                  &nbsp;{formatPrice( ((selectedPrice ?? 0) - (SingleItem.discount ?? 0)) ?? 0)}&nbsp;THB
+                  &nbsp;
+                  {formatPrice(
+                    (selectedPrice ?? 0) - (SingleItem.discount ?? 0) ?? 0
+                  )}
+                  &nbsp;THB
                 </span>
               </div>
               <div className="Single__Product__Sub">
@@ -354,14 +367,11 @@ export const SingleProduct = () => {
                 <span style={{ color: "#222222" }}>Quantity&nbsp;&nbsp;</span>
                 <span className="Single__Select">
                   <select>
-                    {Array.from(
-                      { length: selectedStock ?? 0 },
-                      (_, i) => (
-                        <option key={i} value={i + 1}>
-                          {i + 1}
-                        </option>
-                      )
-                    )}
+                    {Array.from({ length: selectedStock ?? 0 }, (_, i) => (
+                      <option key={i} value={i + 1}>
+                        {i + 1}
+                      </option>
+                    ))}
                   </select>
                 </span>
                 <span style={{ color: "#656464" }}>
@@ -374,13 +384,24 @@ export const SingleProduct = () => {
               </div>
             </div>
             <div className="Single__Product__Button">
-              <button className="Single__Button__W"
-              onClick={HandleSingleItemToWishlist}>
-              Add To Wishlist</button>
-              <button className="Single__Button__W"
-              onClick={HandleSingleItemToCart}>Add to Cart</button>
-              <button className="Single__Button__B"
-              onClick={HandleSingleItemBuyNow}>Buy Now</button>
+              <button
+                className="Single__Button__W"
+                onClick={HandleSingleItemToWishlist}
+              >
+                Add To Wishlist
+              </button>
+              <button
+                className="Single__Button__W"
+                onClick={HandleSingleItemToCart}
+              >
+                Add to Cart
+              </button>
+              <button
+                className="Single__Button__B"
+                onClick={HandleSingleItemBuyNow}
+              >
+                Buy Now
+              </button>
             </div>
           </div>
         </div>

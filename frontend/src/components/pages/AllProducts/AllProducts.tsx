@@ -8,13 +8,16 @@ interface CategoryButtonProps {
   isSelected: boolean;
   onClick: () => void;
 }
+
 const mockCategories = ["Education", "Clothes", "Electronics", "Accessories"];
 
+//All Products Page Component
 const CategoryButton: React.FC<CategoryButtonProps> = ({
   text,
   isSelected,
   onClick,
 }) => {
+  //Category Button
   return (
     <button
       className={`AllProducts__Categories__Text__Option ${
@@ -32,19 +35,26 @@ const CategoryButton: React.FC<CategoryButtonProps> = ({
   );
 };
 
+/*  All Products Page Component in this page we can filter the products by categories, price range and rating
+    and sort the products by top sale, latest and rating 
+
+    And we can also toggle the categories to show/hide the categories in different devices
+  */
 export const AllProducts = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const initialMinPrice = location.state?.minPrice || "";
   const initialMaxPrice = location.state?.maxPrice || "";
   const initialSelectedRating = location.state?.selectedRating || null;
   const initialSelectedCategories = location.state?.selectedCategories || [];
+
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     initialSelectedCategories
-    
-  );
+  ); // selectedCategories is an array of strings
   const [selectedRating, setSelectedRating] = useState<number | null>(
     initialSelectedRating
   );
+
   const [minPrice, setMinPrice] = useState<string>(initialMinPrice);
   const [maxPrice, setMaxPrice] = useState<string>(initialMaxPrice);
   const [showCategories, setShowCategories] = useState(true);
@@ -52,8 +62,10 @@ export const AllProducts = () => {
   const [selectedButton, setSelectedButton] = useState<number | null>(null);
 
   const handleSortbyButtonClick = (buttonIndex: number) => {
-    setSelectedButton((prevIndex) =>
-      prevIndex === buttonIndex ? null : buttonIndex
+    setSelectedButton(
+      (prevIndex) => (prevIndex === buttonIndex ? null : buttonIndex)
+      /* if prevIndex === buttonIndex, then set selectedButton to null, 
+      else set selectedButton to buttonIndex */
     );
   };
 
@@ -61,6 +73,7 @@ export const AllProducts = () => {
     console.log("Selected button: ", selectedButton);
   }, [selectedButton]);
 
+  //Sort Button
   const handleSortToggle = () => {
     setSortType((prevSortType) =>
       prevSortType === "Low to High" ? "High to Low" : "Low to High"
@@ -69,15 +82,16 @@ export const AllProducts = () => {
   };
 
   useEffect(() => {
+    // for mobile devices
     const handleResize = () => {
-      setShowCategories(window.innerWidth > 968);
+      setShowCategories(window.innerWidth > 968); // if window width > 968, then show categories
     };
 
     handleResize();
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize); // add event listener to window
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", handleResize); // remove event listener from window
     };
   }, []);
 
@@ -87,8 +101,10 @@ export const AllProducts = () => {
 
   const handleCategoryButtonClick = (text: string) => {
     setSelectedCategories((prevSelected) => {
+      // if prevSelected is not an array, then set it to an empty array
       const categoriesArray = Array.isArray(prevSelected) ? prevSelected : [];
 
+      // if categoriesArray already includes text, then remove it from the array
       const updatedCategories = categoriesArray.includes(text)
         ? categoriesArray.filter((category) => category !== text)
         : [...categoriesArray, text];
@@ -107,6 +123,7 @@ export const AllProducts = () => {
 
   const handleRatingClick = (rating: number) => {
     setSelectedRating((prevRating) => (prevRating === rating ? null : rating));
+    // if prevRating === rating, then set selectedRating to null, else set selectedRating to rating
   };
 
   const RatingButton: React.FC<{ rate: number; onClick: () => void }> = ({
@@ -140,27 +157,37 @@ export const AllProducts = () => {
         text={category}
         isSelected={selectedCategories.includes(category)}
         onClick={() => handleCategoryButtonClick(category)}
+        /* if selectedCategories includes category, then isSelected is true, else isSelected is false 
+        to show/hide the checkmark in different devices
+        */
       />
     ));
   };
 
-  const navigate = useNavigate();
   const handleApplyButtonClick = () => {
     console.log("Apply button clicked!");
     console.log("Selected Categories: ", selectedCategories);
     console.log("Min Price: ", minPrice);
     console.log("Max Price: ", maxPrice);
     console.log("Selected Rating: ", selectedRating);
-    if(minPrice !== "" && maxPrice !== "" && parseInt(minPrice) > parseInt(maxPrice)) {
-      alert("You are stupid or what? Max price must be greater than min price!");
+    if (
+      minPrice !== "" &&
+      maxPrice !== "" &&
+      parseInt(minPrice) > parseInt(maxPrice)
+    ) {
+      alert(
+        "You are stupid or what? Max price must be greater than min price!"
+      );
       return;
     }
-    navigate("/Allproducts", 
-    {state: {
-      selectedCategories: selectedCategories, 
-      minPrice: minPrice, maxPrice: maxPrice, 
-      selectedRating: selectedRating,
-    }})
+    navigate("/Allproducts", {
+      state: {
+        selectedCategories: selectedCategories,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+        selectedRating: selectedRating,
+      },
+    });
   };
 
   useEffect(() => {
@@ -202,7 +229,7 @@ export const AllProducts = () => {
               </button>
             </div>
           </div>
-          <div className="AllProducts__Sortby__Select"> 
+          <div className="AllProducts__Sortby__Select">
             <button
               className="AllProducts__Sortby__Select__Button"
               onClick={handleSortToggle}
@@ -291,6 +318,5 @@ export const AllProducts = () => {
         </div>
       </div>
     </div>
-    
   );
 };
