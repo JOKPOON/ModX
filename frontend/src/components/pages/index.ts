@@ -4,7 +4,7 @@ export * from './LoginAndRegister/Login';
 export * from './LoginAndRegister/Register';
 export * from './Cart/Cart';
 export * from './Wishlist';
-export * from './Notification';
+export * from './Notification/Notification';
 export * from './AllProducts/AllProducts';
 export * from './SingleProduct/SingleProduct';
 export * from './Comment/Comment';
