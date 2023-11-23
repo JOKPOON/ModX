@@ -78,6 +78,7 @@ type ProductQuery struct {
 	MaxPrice  string   `json:"max_price" db:"max_price"`
 	PriceSort string   `json:"price_sort" db:"price_sort"`
 	Search    string   `json:"search" db:"search"`
+	Sort      string   `json:"sort" db:"sort"`
 }
 
 type ProductOptions struct {

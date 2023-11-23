@@ -175,6 +175,18 @@ func sqlQuery(req *entities.ProductQuery) (string, error) {
 		}
 		sqlQuery += " ORDER BY price " + req.PriceSort
 	}
+	if req.Sort != "" {
+		if req.Sort == "top_sale" {
+			sqlQuery += " ORDER BY sold DESC"
+		} else if req.Sort == "latest" {
+			sqlQuery += " ORDER BY created_at DESC"
+		} else if req.Sort == "rating" {
+			sqlQuery += " ORDER BY rating DESC"
+		} else {
+			return "", fmt.Errorf("error, sort must be top_sale, latest, or rating")
+		}
+	}
+
 	if req.Limit != "" {
 		sqlQuery += " LIMIT :limit"
 	}
