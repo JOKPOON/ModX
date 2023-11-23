@@ -226,9 +226,9 @@ export const Cart = () => {
                           {formatPrice(CartProducts[index].price * itemQuantities[index])}{" "}
                         </span>
                         <br />
-                        {(CartProducts[index].price -
+                        {formatPrice((CartProducts[index].price -
                           (CartProducts[index].discount ?? 0)) *
-                          itemQuantities[index]}{" "}
+                          itemQuantities[index])}{" "}
                       </div>
                     )}
                     {CartProducts[index].discount === 0 && (

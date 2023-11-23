@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { formatPrice } from "../Helper/Calculator";
+import { useNavigate } from "react-router-dom";
 
 interface Newitem {
   picture?: string;
@@ -7,6 +8,7 @@ interface Newitem {
   sold: number;
   price: number;
   discount?: number;
+  id?: number;
 }
 
 const newItemsData: Newitem[] = [
@@ -17,6 +19,7 @@ const newItemsData: Newitem[] = [
     sold: 40000,
     price: 999,
     discount: 0,
+    id: 1,
   },
   {
     picture:
@@ -25,6 +28,7 @@ const newItemsData: Newitem[] = [
     sold: 20,
     price: 960,
     discount: 445,
+    id: 2,
   },
   {
     picture:
@@ -33,6 +37,7 @@ const newItemsData: Newitem[] = [
     sold: 10,
     price: 99,
     discount: 20,
+    id: 3,
   },
   {
     picture:
@@ -41,6 +46,7 @@ const newItemsData: Newitem[] = [
     sold: 9,
     price: 800,
     discount: 0,
+    id: 4,
   },
   {
     picture:
@@ -49,12 +55,14 @@ const newItemsData: Newitem[] = [
     sold: 20,
     price: 1590,
     discount: 200,
+    id: 5,
   },
 ];
 
 const ITEMS_PER_PAGE = 2;
 
 const NewItems = () => {
+  const navigate = useNavigate();
   const [startIndex, setStartIndex] = useState(0);
 
   const handlePrevClick = () => {
@@ -81,7 +89,8 @@ const NewItems = () => {
   };
 
   const handleSelectItemFromNewItem = (item: Newitem) => {
-    console.log("Selected item", item);
+    console.log("Selected item ID :", item.id);
+    navigate('/SingleProduct');
   };
 
   return (

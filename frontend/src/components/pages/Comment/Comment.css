@@ -202,6 +202,8 @@
   justify-content: center;
 }
 
+.Comment__Back button,
+.Comment__input input,
 .Comment__Button,
 .Comment__input,
 .Comment__Rate,
@@ -211,6 +213,7 @@
 
 @media (max-width: 1200px) {
 
+  .Comment__Back button,
   .Comment__input input,
   .Comment__Rate,
   .Comment__Bottom,
@@ -256,6 +259,7 @@
     padding-right: 60px;
   }
 
+  .Comment__Back button,
   .Comment__Button,
   .Comment__input input,
   .Comment__Rate,
