@@ -1,10 +1,14 @@
 import { useState } from "react";
+import { formatPrice } from "../Helper/Calculator";
+import { useNavigate } from "react-router-dom";
 
 interface Newitem {
   picture?: string;
   name: string;
   sold: number;
   price: number;
+  discount?: number;
+  id?: number;
 }
 
 const newItemsData: Newitem[] = [
@@ -14,6 +18,8 @@ const newItemsData: Newitem[] = [
     name: "เข็มขัดผู้ชาย สำหรับนักศึกษาชายที่มีความต้องการที่จะสอบผ่านวิชา Engineering Economics",
     sold: 40000,
     price: 999,
+    discount: 0,
+    id: 1,
   },
   {
     picture:
@@ -21,6 +27,8 @@ const newItemsData: Newitem[] = [
     name: "เครื่องคิดเลข CASIO รุ่น MX-120B",
     sold: 20,
     price: 960,
+    discount: 445,
+    id: 2,
   },
   {
     picture:
@@ -28,6 +36,8 @@ const newItemsData: Newitem[] = [
     name: "ปากกาเจลวันพีช One-piece Gel Pen M&G 0.5mm Blue ink ( 5 ด้าม/แพ็ค)",
     sold: 10,
     price: 99,
+    discount: 20,
+    id: 3,
   },
   {
     picture:
@@ -35,6 +45,8 @@ const newItemsData: Newitem[] = [
     name: "FACTFULNESS จริง ๆ แล้วโลกดีขึ้นทุกวัน",
     sold: 9,
     price: 800,
+    discount: 0,
+    id: 4,
   },
   {
     picture:
@@ -42,42 +54,43 @@ const newItemsData: Newitem[] = [
     name: "21 บทเรียน สำหรับศตวรรษที่ 21 : 21 lessons for 21st century",
     sold: 20,
     price: 1590,
+    discount: 200,
+    id: 5,
   },
 ];
 
 const ITEMS_PER_PAGE = 2;
 
 const NewItems = () => {
+  const navigate = useNavigate();
   const [startIndex, setStartIndex] = useState(0);
 
   const handlePrevClick = () => {
-    setStartIndex((prevIndex) => Math.max(prevIndex - ITEMS_PER_PAGE, 0));
+    setStartIndex((prevIndex) => Math.max(prevIndex - ITEMS_PER_PAGE, 0)); 
   };
 
   const handleNextClick = () => {
     setStartIndex((prevIndex) => prevIndex + ITEMS_PER_PAGE);
   };
 
+  // To set the number of items per page
   const visibleItems = newItemsData.slice(
     startIndex,
     startIndex + ITEMS_PER_PAGE
   );
+
+  // To check if the last item is visible
   const isLastItemVisible = startIndex + ITEMS_PER_PAGE >= newItemsData.length;
   const showNextButton =
     newItemsData.length > ITEMS_PER_PAGE && !isLastItemVisible;
-
-  const formatPrice = (price: number) => {
-    const priceString = price.toString();
-    const formatPriced = priceString.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return formatPriced;
-  };
 
   const handleNewItemToWishlist = (item: Newitem) => {
     console.log("Add item to wishlits", item);
   };
 
   const handleSelectItemFromNewItem = (item: Newitem) => {
-    console.log("Selected item", item);
+    console.log("Selected item ID :", item.id);
+    navigate('/SingleProduct');
   };
 
   return (
@@ -111,7 +124,22 @@ const NewItems = () => {
                     {formatPrice(item.sold)} Sold
                   </div>
                   <div className="Home__New__Item__Price">
-                    {formatPrice(item.price)} THB
+                    {(item.discount || item.discount === 0) &&
+                      item.price - (item.discount || 0) > 0 && (
+                        <div style={{ color: "#222222" }}>
+                          {item.discount > 0 && (
+                            <span style={{  color: "#FF6E1F" ,textDecoration: "line-through", fontWeight: "400"}}>
+                              {formatPrice(item.price)}
+                            </span>
+                          )}
+                          {item.price - (item.discount || 0) > 0 && (
+                            <span>
+                              {" "}{formatPrice(item.price - (item.discount || 0))}{" "}
+                              THB
+                            </span>
+                          )}
+                        </div>
+                      )}
                   </div>
                 </div>
                 <div className="Home__NewItem__Arrow__Container">

@@ -13,14 +13,18 @@ export const Home = () => {
     navigate("/Allproducts");
   };
 
+  const handleContactUsClick = () => {
+    window.open("https://www.facebook.com/messages/t/100002755273377");
+  };
+
   const [currentBackground, setCurrentBackground] = useState(0);
   const Categories = ["Education", "Clothes", "Electronics", "Accessories"];
 
   const handleCategoryClick = (text: string) => {
     console.log("Selected Category : ", text);
-    navigate("/Allproducts", { state: { selectedCategories: [text] }});
+    navigate("/Allproducts", { state: { selectedCategories: [text] } });
   };
-  
+
   const backgrounds = [
     "https://www.kmutt.ac.th/wp-content/uploads/2020/08/HDR_0001-5-HDR-scaled.jpg",
     "https://steco.kmutt.ac.th/wp-content/uploads/2019/12/KMUTT-Landscape.jpg",
@@ -30,9 +34,12 @@ export const Home = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentBackground((prevBackground) => (prevBackground + 1) % backgrounds.length);
+      setCurrentBackground(
+        //To change background every 5 seconds
+        (prevBackground) => (prevBackground + 1) % backgrounds.length
+      );
     }, 5000);
-  
+
     return () => clearInterval(interval);
   }, []);
 
@@ -132,6 +139,11 @@ export const Home = () => {
             </div>
           </div>
         </div>
+        <div className="Home__ContactUs">
+        <div className="ContactUs">
+          <div className="ContactUs__header" onClick={handleContactUsClick}><i className='bx bx-chat'></i></div>
+        </div>
+      </div>
       </div>
     </div>
   );
