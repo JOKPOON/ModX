@@ -46,7 +46,7 @@ export const Comment = () => {
       itemID: 3,
       quantity: 1,
       rating: null,
-    },
+    }, 
   ]);
 
   const [, setSelectedRating] = useState<number | null>(null);
@@ -108,7 +108,6 @@ export const Comment = () => {
     });
   
     console.log('Review Data:', reviewData);
-    setCommentData({});
   };
 
   return (
@@ -193,6 +192,5 @@ export const Comment = () => {
         </div>
       </div>
     </div>
-  );
-
+  ); 
 };

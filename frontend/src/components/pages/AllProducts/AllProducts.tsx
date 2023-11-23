@@ -40,7 +40,6 @@ export const AllProducts = () => {
   const initialSelectedCategories = location.state?.selectedCategories || [];
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     initialSelectedCategories
-    
   );
   const [selectedRating, setSelectedRating] = useState<number | null>(
     initialSelectedRating
@@ -151,16 +150,24 @@ export const AllProducts = () => {
     console.log("Min Price: ", minPrice);
     console.log("Max Price: ", maxPrice);
     console.log("Selected Rating: ", selectedRating);
-    if(minPrice !== "" && maxPrice !== "" && parseInt(minPrice) > parseInt(maxPrice)) {
-      alert("You are stupid or what? Max price must be greater than min price!");
+    if (
+      minPrice !== "" &&
+      maxPrice !== "" &&
+      parseInt(minPrice) > parseInt(maxPrice)
+    ) {
+      alert(
+        "You are stupid or what? Max price must be greater than min price!"
+      );
       return;
     }
-    navigate("/Allproducts", 
-    {state: {
-      selectedCategories: selectedCategories, 
-      minPrice: minPrice, maxPrice: maxPrice, 
-      selectedRating: selectedRating,
-    }})
+    navigate("/Allproducts", {
+      state: {
+        selectedCategories: selectedCategories,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+        selectedRating: selectedRating,
+      },
+    });
   };
 
   useEffect(() => {
@@ -202,7 +209,7 @@ export const AllProducts = () => {
               </button>
             </div>
           </div>
-          <div className="AllProducts__Sortby__Select"> 
+          <div className="AllProducts__Sortby__Select">
             <button
               className="AllProducts__Sortby__Select__Button"
               onClick={handleSortToggle}
@@ -291,6 +298,5 @@ export const AllProducts = () => {
         </div>
       </div>
     </div>
-    
   );
 };

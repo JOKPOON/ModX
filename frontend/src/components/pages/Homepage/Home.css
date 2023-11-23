@@ -1,10 +1,47 @@
 body {
   margin: 0;
+  background-color: #fefcfe;
 }
 
 ::-webkit-scrollbar {
   width: 0px;
   background: transparent;
+}
+
+.Home__ContactUs{
+  position: fixed;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  margin-left: 2vh;
+  margin-bottom: 2vh;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  cursor: pointer;
+  z-index: 100;
+}
+
+.ContactUs{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.ContactUs__header{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  font-weight: 500;
+  font-size: 20px;
+  border-radius: 10px;
+  background-color: #fefcfc;
+  color: #222222;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .Home__Top {
