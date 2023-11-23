@@ -33,6 +33,8 @@ func NewProductControllers(
 
 	r.POST("/create", controllers.Create, middlewares.JwtAuthentication())
 	r.GET("/all", controllers.GetAllProduct)
+	r.GET("/get/:id", controllers.GetProduct)
+	r.POST("/review", controllers.AddReview, middlewares.JwtAuthentication())
 }
 
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 100
@@ -78,6 +80,7 @@ func (p *ProductController) Create(c *gin.Context) {
 	req.Product.Desc = c.PostForm("desc")
 	req.Product.Category = c.PostForm("category")
 	req.Product.SubType = c.PostForm("sub_type")
+	req.Product.Rating = 0
 
 	nres, err := p.ProductUsecase.Create(&req)
 	if err != nil {
@@ -136,4 +139,48 @@ func (p *ProductController) GetProduct(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, res)
+}
+
+func (p *ProductController) AddReview(c *gin.Context) {
+	var req entities.Review
+	err := c.ShouldBind(&req)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	role, err := middlewares.GetUserByToken(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	req.UserId = role.Id
+
+	err = p.ProductUsecase.AddReview(&req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, err)
+}
+
+func (p *ProductController) DeleteProduct(c *gin.Context) {
+	var req entities.Product
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	req.Id = id
+
+	err = p.ProductUsecase.DeleteProduct(&req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, err)
 }

@@ -15,23 +15,25 @@ type ReviewUsecase interface {
 }
 
 type Review struct {
-	ID        int64   `json:"id"`
-	ProductID int64   `json:"product_id"`
-	UserID    int64   `json:"user_id"`
-	Comment   string  `json:"comment"`
-	Rating    float64 `json:"rating"`
+	Id        int    `json:"id" db:"id"`
+	ProductId int    `json:"product_id" db:"product_id"`
+	UserId    int    `json:"user_id" db:"user_id" `
+	Comment   string `json:"comment" db:"comment" `
+	Rating    int    `json:"rating" db:"rating" `
+	CreatedAt string `json:"created_at" db:"created_at"`
+	UpdatedAt string `json:"updated_at" db:"updated_at"`
 }
 
 type ReviewRes struct {
-	ID        int64   `json:"id"`
-	ProductID int64   `json:"product_id"`
-	UserID    int64   `json:"user_id"`
-	Comment   string  `json:"comment"`
-	Rating    float64 `json:"rating"`
+	ID        int    `json:"id"`
+	ProductID int    `json:"product_id"`
+	UserID    int    `json:"user_id"`
+	Comment   string `json:"comment"`
+	Rating    int    `json:"rating"`
 }
 
 type ReviewReq struct {
-	ProductID int64 `json:"product_id" binding:"required"`
+	ProductID int `json:"product_id" binding:"required"`
 }
 
 type ReviewResList struct {

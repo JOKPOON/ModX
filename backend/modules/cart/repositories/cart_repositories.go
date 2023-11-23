@@ -58,6 +58,10 @@ func (c *CartRepo) GetCartItems(req *entities.Cart) (*entities.Cart, error) {
 		return nil, err
 	}
 
+	if !rows.Next() {
+		return nil, errors.New("cart item not found")
+	}
+
 	var product_json []byte
 	for rows.Next() {
 		err = rows.Scan(&req.Id, &req.ProductId, &req.Total, &product_json)
