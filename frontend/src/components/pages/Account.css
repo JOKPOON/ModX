@@ -1,4 +1,4 @@
-.main {
+.main-Account {
     /* background-color: antiquewhite; */
     margin: 0 24%;
 }
@@ -209,13 +209,13 @@ button:hover {
   
 
 @media screen and ( max-width : 600px) {
-    .main {
-        /* background-color: antiquewhite; */
+    .main-Account {
+        background-color: antiquewhite;
         margin: 0 12%;
     }
     
     .Head {
-    width: 50%;
+    width: 100%;
     height: 60px;
     font-size: 16px;
     font-weight: 500;
@@ -231,7 +231,7 @@ button:hover {
         height: 100%;
         justify-content: start;
         align-items: center;
-        padding-top: 40px;
+        padding-top: 0px;
         /* background-color: #666; */
     }
 

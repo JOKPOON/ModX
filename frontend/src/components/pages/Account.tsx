@@ -23,7 +23,7 @@ export const Account = () => {
   };
 
   return (
-    <div className='main'>
+    <div className='main-Account'>
     <div className="Container">
     <button className="Back-Account">{'<'+'Back' }</button>
       <div className="Head">

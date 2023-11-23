@@ -241,6 +241,7 @@ font-size: 36px;
     justify-content: center;
     align-items: start;
     padding-top: 24%;
+    margin: 0 12%;
     height: 100vh;
   }
   .container{
