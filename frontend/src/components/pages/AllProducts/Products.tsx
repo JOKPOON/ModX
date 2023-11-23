@@ -24,7 +24,9 @@ function Products({ product }: { product: items[] | null }) {
   console.log("ProductsData", ProductsData);
   // To change number of items per row when screen size is smaller
   if (ProductsData == null || ProductsData.length == 0) {
-    return <div className="Product__Not__Found">Product Not Found</div>;
+    return (
+        <div className="Product__Not__Found">Product Not Found!</div>
+    );
   }
   const rows = Array.from(
     { length: Math.ceil(ProductsData.length / itemsPerRow) },
