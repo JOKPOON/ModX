@@ -6,7 +6,7 @@
 }
 
 .container{
-  background-color: var(--wbht);
+  background-color: var(--wht);
   border-radius: 30px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
   position: relative;
@@ -14,7 +14,7 @@
   width: 768px;
   max-width: 100%;
   min-height: 480px;
-
+  z-index: 1;
 }
 
 .container p{
@@ -236,6 +236,13 @@ font-size: 36px;
 }
 
 @media screen and ( max-width : 600px) {
+  .main {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    padding-top: 24%;
+    height: 100vh;
+  }
   .container{
       background-color: #fff;
       border-radius: 20px;
