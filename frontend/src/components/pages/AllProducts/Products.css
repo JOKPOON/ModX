@@ -1,10 +1,14 @@
-.Product__Not__Found {
-  width: 1000px;
-  height: 1000px;
-  margin: 100 auto;
-  padding: 80px;
-  overflow-y: auto;
-  background-color: red;
+.Product__Not__Found {  
+  display: flex;
+  width: 100vw;
+  height: 100vh !important;
+  background-color: #fefefe;
+  justify-content: center;
+  align-items: center;
+  color: #222222;
+  margin-left: 150px;
+  position: fixed;
+  font-weight: 500;
 }
 
 .AllProducts__Products__Container {
@@ -170,6 +174,9 @@
 }
 
 @media (max-width: 968px) {
+  .Product__Not__Found {  
+    margin-left: 0px;
+  }
   .AllProducts__Products__Items {
     gap: 20px;
     height: 225px;
