@@ -229,6 +229,7 @@ export const SingleProduct = () => {
 
   const HandleSingleItemBuyNow = () => {
     console.log("Buy Now Add by index of Item")
+    console.log("Option of Item", selectedOption)
     navigate("/Cart" , {state: {selectedItems: [SingleItem]}})
   }
 
