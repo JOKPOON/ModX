@@ -109,7 +109,7 @@
   border: none;
   position: relative;
   overflow: hidden;
-  border:1px solid #909090;
+  border: 1px solid #909090;
 }
 
 .Single__Product__Left__Container:first-child {
@@ -402,7 +402,7 @@
   .Single__Product__Review__Content__Name {
     font-size: 14px;
   }
-    
+
   .Single__Product__Review__length,
   .Single__Product__Review__Content__Container {
     font-size: 14px;
@@ -415,7 +415,6 @@
   .Single__Product__Quantity select {
     font-size: 14px;
   }
-  
 }
 
 @media (max-width: 768px) {
@@ -465,7 +464,7 @@
   .Single__Product__Review__Content__Name {
     font-size: 14px;
   }
-    
+
   .Single__Product__Review__length,
   .Single__Product__Review__Content__Container {
     font-size: 12px;
@@ -478,8 +477,6 @@
   .Single__Product__Quantity select {
     font-size: 12px;
   }
-  
-
 }
 
 @media (max-width: 400px) {
@@ -522,7 +519,7 @@
   .Single__Product__Review__Content__Name {
     font-size: 12px;
   }
-    
+
   .Single__Product__Review__length,
   .Single__Product__Review__Content__Container {
     font-size: 12px;
@@ -542,7 +539,6 @@
     margin-top: -20px;
   }
 
-  
   .Single__Product__Quantity select {
     font-size: 10px;
   }
