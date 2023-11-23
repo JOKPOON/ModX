@@ -145,7 +145,7 @@ export const Cart = () => {
   const HandleShopMoreItem = () => {
     navigate("/AllProducts");
   };
-  
+
   const totalPrice = calculateTotal();
 
   const HandleConfirmPayment = () => {
@@ -223,17 +223,23 @@ export const Cart = () => {
                             color: "#FF6E1F",
                           }}
                         >
-                          {formatPrice(CartProducts[index].price * itemQuantities[index])}{" "}
+                          {formatPrice(
+                            CartProducts[index].price * itemQuantities[index]
+                          )}{" "}
                         </span>
                         <br />
-                        {formatPrice((CartProducts[index].price -
-                          (CartProducts[index].discount ?? 0)) *
-                          itemQuantities[index])}{" "}
+                        {formatPrice(
+                          (CartProducts[index].price -
+                            (CartProducts[index].discount ?? 0)) *
+                            itemQuantities[index]
+                        )}{" "}
                       </div>
                     )}
                     {CartProducts[index].discount === 0 && (
                       <div>
-                        {formatPrice(CartProducts[index].price * itemQuantities[index])}
+                        {formatPrice(
+                          CartProducts[index].price * itemQuantities[index]
+                        )}
                       </div>
                     )}{" "}
                     THB

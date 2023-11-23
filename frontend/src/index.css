@@ -7,6 +7,10 @@
   font-family: 'poppins', sans-serif;
 }
 
+body {
+  background-color: var(--wht);
+}
+
 :root {
   --org: #FF6E1F;
   --blk: #222222;
