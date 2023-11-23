@@ -1,0 +1,222 @@
+.Track__Header {
+    width: 100%;
+    height: 60px;
+    margin-top: 60px;
+    background-color: #171717;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    z-index: 1;
+    /* display: flex; */
+    transition: all 0.5s ease;
+  }
+  
+  .Title__Container{
+    padding: 20px 220px 20px 220px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1.0fr 1.0fr 1.0fr 1.0fr 1.0fr;
+    gap: 20px;
+    color: #ffffff;
+    transition: all 0.5s ease;
+  }
+  
+  .Title__Container .Title__Grid1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .Title__Container .Title__Grid2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .Title__Container .Title__Grid3 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .Title__Container .Title__Grid4 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .Title__Container .Title__Grid5 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .Order__Body {
+    padding: 20px 100px 20px 100px;
+    width: 100%;
+  }
+  
+  
+  .Order__Body .Order__Container{
+    padding: 20px 120px 20px 120px;
+    width: 100%;
+    height: 100px;
+    align-items: center;
+    border: 1px solid #909090;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: 1.0fr 1.0fr 1.0fr 1.0fr 1.0fr;
+    gap: 20px;
+    transition: all 0.5s ease;
+  }
+  
+  .Order__Body .Order__Container:hover{
+    cursor: pointer;
+    transform: scale(1.01);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  }
+  
+  .Order__Body .Order__Container .Order__Grid1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .Order__Body .Order__Container .Order__Grid1 :hover{
+    transform: none;
+  }
+  
+  .Order__Body .Order__Container .Order__Grid2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .Order__Body .Order__Container .Order__Grid3 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .Order__Body .Order__Container .Order__Grid4 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .Order__Body .Order__Container .Order__Grid5 {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+  }
+  
+  .Order__Body .Order__Container .Order__Grid5 .Shipping {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #ff6e1f;
+    background-color: #ff6e1f;
+    color: #ffffff;
+    border-radius: 25px;
+    height: 35px;
+    width: 95px;
+    transition: all 0.5 ease;
+  }
+  
+  .Order__Body .Order__Container .Order__Grid5 .Pending {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #cecece;
+    background-color: #cecece;
+    color: #000000;
+    border-radius: 25px;
+    height: 35px;
+    width: 95px;
+    transition: all 0.5 ease;
+  }
+  
+  .Order__Body .Order__Container .Order__Grid5 .Complete {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #44e927;
+    background-color: #44e927;
+    color: #000000;
+    border-radius: 25px;
+    height: 35px;
+    width: 95px;
+    transition: all 0.5 ease;
+  }
+  
+  @media screen and (max-width: 1024px) {
+  
+    .notification-container .button {
+      padding-left: 25px;
+    }
+  
+    .notification-container .dropdown {
+      width: 300px;
+    }
+  
+    .notification-container .dropdown.active {
+      display: block;
+    }
+  }
+  
+  @media screen and (max-width: 768px) {
+    .Track__Header {
+      margin-top: 50px;
+    }
+  
+    .Title__Container{
+      font-size: 12px;
+      padding: 20px 200px 20px 160px;
+      gap: 20px;
+    }
+  
+    .Order__Body .Order__Container{
+      font-size: 12px;
+      padding: 20px 80px 20px 80px;
+    }
+  
+    .Order__Body .Order__Container .Order__Grid5 .Status {
+      height: 30px;
+      width: 85px;
+    }
+  
+    .notification-container .dropdown.active {
+      display: none;
+    }
+  
+    .notification-container .button {
+      padding-left: 21px;
+      padding-bottom: 7px;
+      transition: none;
+    }
+  
+    .notification-container .button:hover {
+      padding-left: 29px;
+      transition: none;
+    }
+  
+  }
+  
+  @media screen and (max-width: 600px) {
+  
+    .Track__Header {
+      height: 50px;
+    }
+  
+    .Title__Container{
+      font-size: 12px;
+      padding: 10px 120px 10px 120px;
+      grid-template-columns: 1.0fr 0.2fr 1.2fr 1.2fr 1.0fr;
+      gap: 5px;
+    }
+  
+    .Order__Body .Order__Container{
+      font-size: 12px;
+      padding: 20px 30px 20px 30px;
+    }
+  
+  }

@@ -1,14 +1,46 @@
-import  { useState } from "react";
+import  { useState, useEffect} from "react";
 import "./Navbar.css";
 import "boxicons/css/boxicons.min.css";
 import Logo from "./Pages/assets/Logo.svg";
+import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
   const [menuVisible, setMenuVisible] = useState(false);
 
+  const [dropdownNotiActive, setDropdownNotiActive] = useState(false);
+
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  const updateIsMobile = () => {
+    setIsMobile(window.innerWidth <= 768);
+  };
+
+  window.addEventListener('resize', updateIsMobile);
+
+  useEffect(() => {
+    updateIsMobile();
+
+    return () => {
+      window.removeEventListener('resize', updateIsMobile);
+    };
+  }, []);
+
   const toggleMenu = () => {
     setMenuVisible(!menuVisible);
   };
+
+  const navigate = useNavigate();
+
+  const handledropdownNotigo = () => {
+    navigate("/Notification");
+    setDropdownNotiActive(!dropdownNotiActive)
+    setMenuVisible(!menuVisible);
+  };
+
+  
+  const handledropdownNotiClick = () => {
+    setDropdownNotiActive(!dropdownNotiActive)
+  }
 
   return (
     <nav className={`nav ${menuVisible ? "active" : ""}`}>
@@ -35,11 +67,81 @@ export const Navbar = () => {
       </div>
 
       <ul className={`nav-links ${menuVisible ? "active" : ""}`}>
-        <li>
-          <a href="/Notification" className="icon-container">
-            <i className="bx bx-bell icon"></i>
-            <p className="Nav__Text">Notification</p>
-          </a>
+      <li>
+          <div className="dropdown-container">
+            <div className={`icon-wrapper ${isMobile ? 'mobile-mode' : 'deskop-mode'}`}>
+              {isMobile ? (
+                <div className="icon-container" onClick={handledropdownNotigo}>
+                  <div className="button">
+                    <i className="bx bx-bell icon"></i>
+                    <p className="Nav__Text">Notification</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="icon-container" onClick={handledropdownNotiClick}>
+                  <div className="button">
+                    <i className="bx bx-bell icon"></i>
+                    <p className="Nav__Text">Notification</p>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className={`dropdown ${dropdownNotiActive ? "active" : ""}`}>
+              <div className="title">
+                <span>Notification</span>
+              </div>
+              <div className="item_container">
+                <div className="dropdown_item">
+                  <div className="dropdown_img">
+                    <img src={Logo} className="dropdown_icon" />
+                  </div>
+                  <div className="dropdown_info">
+                    <p>
+                      <span>ชุดนักศึกษา</span> ที่อยู่ใน Wishlist ตอนนี้มีของแล้ว
+                    </p>
+                    <span className="dropdown_time">10 minutes ago</span>
+                  </div>
+                </div>
+                <div className="dropdown_item">
+                  <div className="dropdown_img">
+                    <img src={Logo} className="dropdown_icon" />
+                  </div>
+                  <div className="dropdown_info">
+                    <p>
+                      <span>Ipad Case</span> ขณะนี้ได้ถูกจัดส่งแล้วเป็นที่เรียบร้อย
+                    </p>
+                    <span className="dropdown_time">55 minutes ago</span>
+                  </div>
+                </div>
+                <div className="dropdown_item">
+                  <div className="dropdown_img">
+                    <img src={Logo} className="dropdown_icon" />
+                  </div>
+                  <div className="dropdown_info">
+                    <p>
+                      <span>กระติกน้ำ kmutt</span> ที่คุณถูกใจกำลังลดราคา 10%!!
+                    </p>
+                    <span className="dropdown_time">1 hours ago</span>
+                  </div>
+                </div>
+                <div className="dropdown_item">
+                  <div className="dropdown_img">
+                    <img src={Logo} className="dropdown_icon" />
+                  </div>
+                  <div className="dropdown_info">
+                    <p>
+                      <span>หนังสือ</span> ที่คุณถูกใจกำลังลดราคา 20%!!
+                    </p>
+                    <span className="dropdown_time">2 hours ago</span>
+                  </div>
+                </div>
+              </div>
+              <div className="show_all_container">
+                <button onClick={handledropdownNotigo}>Show All Notificaions</button>
+              </div>
+            </div>
+          </div>
+
         </li>
         <li>
           <a href="/Wishlist" className="icon-container">
