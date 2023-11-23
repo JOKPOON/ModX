@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatPrice } from "../Helper/Calculator";
 
 interface Newitem {
   picture?: string;
@@ -57,26 +58,23 @@ const NewItems = () => {
   const [startIndex, setStartIndex] = useState(0);
 
   const handlePrevClick = () => {
-    setStartIndex((prevIndex) => Math.max(prevIndex - ITEMS_PER_PAGE, 0));
+    setStartIndex((prevIndex) => Math.max(prevIndex - ITEMS_PER_PAGE, 0)); 
   };
 
   const handleNextClick = () => {
     setStartIndex((prevIndex) => prevIndex + ITEMS_PER_PAGE);
   };
 
+  // To set the number of items per page
   const visibleItems = newItemsData.slice(
     startIndex,
     startIndex + ITEMS_PER_PAGE
   );
+
+  // To check if the last item is visible
   const isLastItemVisible = startIndex + ITEMS_PER_PAGE >= newItemsData.length;
   const showNextButton =
     newItemsData.length > ITEMS_PER_PAGE && !isLastItemVisible;
-
-  const formatPrice = (price: number) => {
-    const priceString = price.toString();
-    const formatPriced = priceString.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return formatPriced;
-  };
 
   const handleNewItemToWishlist = (item: Newitem) => {
     console.log("Add item to wishlits", item);

@@ -35,6 +35,7 @@ export const Home = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentBackground(
+        //To change background every 5 seconds
         (prevBackground) => (prevBackground + 1) % backgrounds.length
       );
     }, 5000);

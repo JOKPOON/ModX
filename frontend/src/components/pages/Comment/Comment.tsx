@@ -1,6 +1,7 @@
 import "./Comment.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { formatPrice } from "../Helper/Calculator";
 
 interface items {
   name: string;
@@ -49,11 +50,12 @@ export const Comment = () => {
     }, 
   ]);
 
-  const [, setSelectedRating] = useState<number | null>(null);
+  const [, setSelectedRating] = useState<number | null>(null); 
   const [commentData, setCommentData] = useState<{ [itemID: number]: { rating: number | null; comment: string } }>({});
   const handleRatingClick = (rate: number, itemID: number) => {
-    const updatedProducts = products.map((product) =>
-      product.itemID === itemID ? { ...product, rating: rate } : product
+    const updatedProducts = products.map((product) => 
+      product.itemID === itemID ? { ...product, rating: rate } : product 
+      // if itemID === itemID then rating = rate else rating = product.rating
     );
     setProducts(updatedProducts);
     setSelectedRating(rate);
@@ -65,6 +67,7 @@ export const Comment = () => {
       setCommentData((prevData) => ({
         ...prevData,
         [itemID]: { ...prevData[itemID], rating: ratedItem.rating },
+        // if itemID === itemID then rating = ratedItem.rating else rating = prevData[itemID].rating
       }));
     }
   };
@@ -92,6 +95,7 @@ export const Comment = () => {
     setCommentData((prevData) => ({
       ...prevData,
       [orderID]: { ...prevData[orderID], comment },
+      // if orderID === orderID then comment = comment else comment = prevData[orderID].comment
     }));
   };
 
@@ -139,7 +143,7 @@ export const Comment = () => {
                   </div>
                   <div className="Comment__Name">{product.name}</div>
                   <div className="Comment__Quantity">{product.quantity}</div>
-                  <div className="Comment__Price">{product.price} THB</div>
+                  <div className="Comment__Price">{formatPrice(product.price)} THB</div>
                 </div>
                 <div className="Comment__Bottom">
                   <div className="Comment__Rate">
