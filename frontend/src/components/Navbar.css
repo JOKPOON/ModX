@@ -7,7 +7,7 @@ nav {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   position: fixed;
   width: 100%;
-  background-color:#FEFCFC ;
+  background-color: #FEFCFC;
   top: 0;
   z-index: 999;
 }
@@ -73,12 +73,12 @@ nav .Search__Button {
 }
 
 nav .Search__Box button {
-    transition: transform 0.2s ease-in-out;
-  }
+  transition: transform 0.2s ease-in-out;
+}
 
 nav .Search__Box button:hover {
-    transform: scale(1.01);
-  }
+  transform: scale(1.01);
+}
 
 nav ul {
   display: flex;
@@ -103,7 +103,7 @@ nav ul li a {
 
 nav .icon {
   font-size: 24px;
-  color:#222222;
+  color: #222222;
 }
 
 nav .menu-toggle {
@@ -115,10 +115,149 @@ nav .Nav__Text {
   display: none;
 }
 
-nav .nav-links :hover {
-    color: #ff6e1f;
-    transform: scale(1.01);
+nav .icon-container :hover {
+  color: #ff6e1f;
+  transform: scale(1.01);
+}
+
+.dropdown-container {
+  position: relative;
+}
+
+.dropdown-container .button {
+  display: flex;
+  cursor: pointer;
+
+}
+
+.dropdown-container .dropdown {
+  width: 380px;
+  height: auto;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 5px 2px 15px rgba(0, 0, 0, 0.125);
+  margin: 15px auto 0;
+  padding: 0 15px;
+  position: absolute;
+  display: none;
+  margin-left: 0;
+  transform: none;
+  right: -30px;
+  transition: width 0.3s ease;
+}
+
+.dropdown-container .dropdown .title {
+  font-weight: 600;
+  font-size: 18px;
+  display: flex;
+  position: relative;
+  border-bottom: 1px solid #00000046;
+  padding: 20px 0;
+  padding-left: 20px;
+}
+
+.dropdown_item {
+  display: flex;
+  align-items: center;
+  padding: 15px 0;
+  padding-left: 9px;
+  border-bottom: 1px solid #00000046;
+}
+
+.dropdown_item:hover {
+  cursor: pointer;
+  transform: scale(1.01);
+}
+
+
+.dropdown_item:last-child {
+  border-bottom: 0px;
+}
+
+.dropdown_item .dropdown_img {
+  margin-right: 15px;
+}
+
+.dropdown_item .dropdown_img .dropdown_icon {
+  width: 40px;
+  height: 42px;
+}
+
+.dropdown_item .wish-icon {
+  display: flex;
+  padding-right: 15px;
+  margin-left: 20px;
+  font-size: 24px;
+  color: #ff6e1f;
+  justify-content: center;
+}
+
+.dropdown_item .wish-icon :hover {
+  cursor: pointer;
+}
+
+.dropdown_item .dropdown_info p {
+  margin-bottom: 5px;
+}
+
+.dropdown_item .dropdown_info p span {
+  color: #605dff;
+}
+
+.dropdown-container .dropdown::before {
+  content: "";
+  position: absolute;
+  top: -25px;
+  right: 11.9px;
+  transform: translateX(-50%);
+  border: 15px solid;
+  border-color: transparent transparent #ffffff transparent;
+}
+
+.dropdown-container .dropdown.active {
+  display: block;
+  color: black;
+}
+
+.dropdown-container .dropdown .show_all_container {
+  height: auto;
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  background-color: #ffffff;
+  color: #000;
+}
+
+.dropdown-container .dropdown .show_all_container :hover {
+  color: #ffffff;
+  background-color: #000;
+}
+
+.dropdown-container .dropdown .show_all_container button {
+  color: #000;
+  background-color: #ffffff;
+  border-radius: 20px;
+  width: 300px;
+  height: 50px;
+  border: 2px solid black;
+  cursor: pointer;
+  padding: 15px;
+}
+
+@media screen and (max-width: 1024px) {
+
+  .dropdown-container .button {
+    padding-left: 25px;
   }
+
+  .dropdown-container .dropdown {
+    width: 300px;
+  }
+
+  .dropdown-container .dropdown.active {
+    display: block;
+  }
+}
 
 @media screen and (min-width: 768px) {
   nav .Search__Box {
@@ -136,7 +275,7 @@ nav .nav-links :hover {
     height: 20px;
     width: auto;
   }
-   
+
   nav .Search__Container {
     display: flex;
     align-items: center;
@@ -159,7 +298,7 @@ nav .nav-links :hover {
     display: none;
   }
 
-  nav .Search input{
+  nav .Search input {
     font-size: 12px;
   }
 
@@ -206,6 +345,22 @@ nav .nav-links :hover {
   nav .icon {
     font-size: 20px;
   }
+
+  .dropdown-container .dropdown.active {
+    display: none;
+  }
+
+  .dropdown-container .button {
+    padding-left: 21px;
+    padding-bottom: 7px;
+    transition: none;
+  }
+
+  .dropdown-container .button:hover {
+    padding-left: 29px;
+    transition: none;
+  }
+
 }
 
 @media screen and (max-width: 400px) {
@@ -229,7 +384,7 @@ nav .nav-links :hover {
     transform: scaleX(1.1);
   }
 
-  nav .Search input{
+  nav .Search input {
     font-size: 12px;
   }
 
