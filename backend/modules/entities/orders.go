@@ -1,18 +1,18 @@
 package entities
 
-type Order struct {
-	Id           int         `json:"id" db:"id"`
-	ShippingType string      `json:"shipping_type" db:"shipping_type"`
-	ShippingCost int         `json:"shipping_cost" db:"shipping_cost"`
-	ItemCost     int         `json:"item_cost" db:"item_cost"`
-	Total        int         `json:"total" db:"total"`
-	Status       string      `json:"status" db:"status"`
-	Shipping     Shipping    `json:"shipping" `
-	Items        []OrderItem `json:"items"`
+type OrderRepository interface {
+	Create(req *OrderCreateReq) (*OrderCreateRes, error)
+	Update(req *OrderUpdateReq) error
+	CreateOrder(req *OrderCreateReq) (*OrderCreateRes, error)
+	GetProductOptions(product_id int) (*ProductOptions, error)
 }
 
+type OrderUsecase interface {
+	Create(req *OrderCreateReq) (*OrderCreateRes, error)
+	Update(req *OrderUpdateReq) error
+}
 type Shipping struct {
-	ID      int    `json:"id"`
+	Id      int    `json:"id"`
 	UserId  int    `json:"user_id"`
 	Name    string `json:"name"`
 	Tel     string `json:"tel"`
@@ -23,23 +23,22 @@ type Shipping struct {
 	Contry  string `json:"contry"`
 	IsDef   bool   `json:"is_def"`
 }
-
-type OrderRepository interface {
-	Create(req *OrderCreateReq) (*OrderCreateRes, error)
-	Update(req *OrderUpdateReq) error
-	CreateOrder(req *OrderCreateReq) (*OrderCreateReq, error)
-	GetProductVariantById(id int) (*ProductVariant, error)
+type Order struct {
+	Id            int             `json:"id" db:"id"`
+	ShippingType  string          `json:"shipping_type" db:"shipping_type"`
+	ShippingCost  int             `json:"shipping_cost" db:"shipping_cost"`
+	ItemCost      int             `json:"item_cost" db:"item_cost"`
+	Total         int             `json:"total" db:"total"`
+	Status        string          `json:"status" db:"status"`
+	Shipping      Shipping        `json:"shipping" `
+	OrderProducts []OrderProducts `json:"order_products"`
 }
-
-type OrderUsecase interface {
-	Create(req *OrderCreateReq) (*OrderCreateRes, error)
-	Update(req *OrderUpdateReq) error
-}
-
-type OrderItem struct {
-	OrderId          int            `json:"order_id"`
-	ProductVariantId ProductVariant `json:"product_variant"`
-	Quantity         int            `json:"quantity"`
+type OrderProducts struct {
+	Id        int               `json:"id"`
+	ProductId int               `json:"product_id"`
+	Options   map[string]string `json:"options"`
+	Price     int               `json:"price"`
+	Quantity  int               `json:"quantity"`
 }
 
 type OrderCreateReq struct {
@@ -54,17 +53,6 @@ type OrderCreateReq struct {
 	PaymentStatus string          `json:"payment_status"`
 	Status        string          `json:"status"`
 	OrderProducts []OrderProducts `json:"order_products"`
-}
-
-type OrderProducts struct {
-	ProductId  int          `json:"product_id"`
-	OrderItems []OrderItems `json:"order_items"`
-}
-
-type OrderItems struct {
-	Id               int `json:"id"`
-	ProductVariantId int `json:"product_variant_id"`
-	Quantity         int `json:"quantity"`
 }
 
 type OrderCreateRes struct {

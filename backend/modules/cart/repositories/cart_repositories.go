@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"encoding/json"
-	"errors"
+	"strings"
 
 	"github.com/Bukharney/ModX/modules/entities"
 	"github.com/jmoiron/sqlx"
@@ -16,41 +16,47 @@ func NewCartRepo(db *sqlx.DB) entities.CartRepository {
 	return &CartRepo{Db: db}
 }
 
-func (c *CartRepo) AddCartItem(req *entities.Cart) error {
+func (c *CartRepo) AddCartItem(req *entities.CartAddReq) (*entities.CartAddRes, error) {
 	query := `
 	INSERT INTO "carts"(
 		"user_id",
-		"total",
 		"product_id",
-		"items"
+		"options",
+		"quantity"
 	)
 	VALUES ($1, $2, $3, $4)
 	RETURNING "id";
 	`
 
-	product_json := &req.Items
-	res, err := json.Marshal(product_json)
+	product_json, err := json.Marshal(req.Products.Options)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	_, err = c.Db.Queryx(query, req.UserId, req.Total, req.ProductId, res)
+	var res entities.CartAddRes
+	err = c.Db.QueryRowx(
+		query,
+		req.UserId,
+		req.Products.ProductId,
+		product_json,
+		req.Products.Quantity,
+	).Scan(&res.Id)
+
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return err
+	return &res, nil
 }
 
-func (c *CartRepo) GetCartItems(req *entities.Cart) (*entities.Cart, error) {
+func (c *CartRepo) GetCartItems(req *entities.CartGetReq) (*entities.CartGetRes, error) {
 	query := `
 	SELECT
-		"id",
-		"product_id",
-		"total",
-		"items"
+		"carts"."product_id",
+		"carts"."options",
+		"carts"."quantity"
 	FROM "carts"
-	WHERE "user_id" = $1;
+	WHERE "carts"."user_id" = $1;
 	`
 
 	rows, err := c.Db.Queryx(query, req.UserId)
@@ -58,76 +64,99 @@ func (c *CartRepo) GetCartItems(req *entities.Cart) (*entities.Cart, error) {
 		return nil, err
 	}
 
-	if !rows.Next() {
-		return nil, errors.New("cart item not found")
-	}
+	var cart entities.CartGetRes
+	var options map[string]string
 
-	var product_json []byte
 	for rows.Next() {
-		err = rows.Scan(&req.Id, &req.ProductId, &req.Total, &product_json)
+		var product entities.CartProduct
+		var options_json []byte
+
+		err = rows.Scan(
+			&product.ProductId,
+			&options_json,
+			&product.Quantity,
+		)
 		if err != nil {
 			return nil, err
 		}
+
+		err = json.Unmarshal(options_json, &options)
+		if err != nil {
+			return nil, err
+		}
+
+		product.Options = options
+
+		cart.Products = append(cart.Products, product)
 	}
 
-	err = json.Unmarshal(product_json, &req.Items)
+	return &cart, nil
+
+}
+
+func (c *CartRepo) GetProductOptions(product_id int) (*entities.ProductOptions, error) {
+	query := `
+	SELECT options FROM products WHERE id = $1;
+	`
+
+	type Options struct {
+		Options string `db:"options"`
+	}
+
+	var options Options
+	err := c.Db.QueryRowx(query, product_id).StructScan(&options)
 	if err != nil {
 		return nil, err
 	}
 
-	return req, nil
-
-}
-
-func (c *CartRepo) DeleteCartItem(req *entities.CartDeleteReq) error {
-	query := `
-	DELETE FROM "carts"
-	WHERE "id" = $1;
-	`
-
-	rows, err := c.Db.Queryx(query, req.Id)
+	var options_json map[string]interface{}
+	err = json.Unmarshal([]byte(options.Options), &options_json)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	type Id struct {
-		Id int `json:"id"`
-	}
-
-	var Ids Id
-
-	for rows.Next() {
-		err = rows.Scan(&Ids)
-		if err != nil {
-			return err
-		}
-	}
-
-	if Ids.Id == 0 {
-		return errors.New("cart item not found")
-	}
-
-	return nil
+	return &entities.ProductOptions{Options: options_json}, nil
 }
 
-func (c *CartRepo) GetProductVariantById(req *entities.ProductVariant) error {
+func (c *CartRepo) GetProductDetails(product_id int) (*entities.ProductGetByIdRes, error) {
 	query := `
 	SELECT
-		"product_variants"."id",
-		"product_variants"."product_id",
-		"product_variants"."stock",
-		"product_variants"."price",
-		"product_variants"."color",
-		"product_variants"."size",
-		"product_variants"."model"
-	FROM "product_variants"
-	WHERE "product_variants"."id" = $1;
+		products.id,
+		products.title,
+		products.picture
+	FROM products
+	WHERE products.id = $1;
 	`
 
-	err := c.Db.QueryRowx(query, req.Id).StructScan(req)
+	var res entities.ProductGetByIdRes
+	err := c.Db.QueryRowx(query, product_id).StructScan(&res)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	picture := strings.Split(res.Picture, ",")
+	for i, v := range picture {
+		picture[i] = "http://localhost:8080/static/products/" + v
+	}
+
+	res.Picture = picture[0]
+
+	return &res, nil
+}
+
+func (c *CartRepo) DeleteCartItem(req *entities.CartDeleteReq) (*entities.CartDeleteRes, error) {
+	query := `
+	DELETE FROM "carts"
+	WHERE "carts"."user_id" = $1
+	AND "carts"."product_id" = $2
+	RETURNING "id";
+	`
+
+	var res entities.CartDeleteRes
+	err := c.Db.QueryRowx(query, req.UserId, req.ProductId).Scan(&res.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res, nil
 }

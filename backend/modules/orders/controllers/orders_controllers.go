@@ -22,6 +22,7 @@ func NewOrderControllers(r gin.IRoutes, cfg *configs.Configs, userUsecase entiti
 	}
 
 	r.POST("/create", controllers.Create, middlewares.JwtAuthentication())
+	r.POST("/update", controllers.Update, middlewares.JwtAuthentication())
 }
 
 func (o *OrderController) Create(c *gin.Context) {
@@ -56,5 +57,38 @@ func (o *OrderController) Create(c *gin.Context) {
 }
 
 func (o *OrderController) Update(c *gin.Context) {
+	var req entities.OrderUpdateReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
 
+	user, err := middlewares.GetUserByToken(c)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	if user.Role != "admin" {
+		c.JSON(400, gin.H{
+			"message": "permission denied",
+		})
+		return
+	}
+
+	err = o.OrderUsecases.Update(&req)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"message": "success",
+	})
 }

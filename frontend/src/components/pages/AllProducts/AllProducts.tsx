@@ -50,7 +50,7 @@ export const AllProducts = () => {
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     initialSelectedCategories
-  ); // selectedCategories is an array of strings
+  );
   const [selectedRating, setSelectedRating] = useState<number | null>(
     initialSelectedRating
   );

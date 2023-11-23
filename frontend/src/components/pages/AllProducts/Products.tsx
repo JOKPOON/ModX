@@ -1,11 +1,17 @@
+import { useEffect, useState } from "react";
 import "./Products.css";
 import { useNavigate } from "react-router-dom";
 import { formatPrice } from "../Helper/Calculator";
 
+// interface items {
+//   picture?: string;
+//   name: string;
+//   sold: number;
+//   price: number;
+// }
+
 interface items {
-  picture?: string;
-  name: string;
-  sold: number;
+  title: string;
   price: number;
   discount?: number;
 }
@@ -110,8 +116,8 @@ const ProductsData: items[] = [
 ];
 
 const Products = () => {
+  const [ProductsData, setProducts] = useState<items[]>([]);
   const navigate = useNavigate();
-
   let itemsPerRow = 4;
 
   // To change number of items per row when screen size is smaller
@@ -126,17 +132,34 @@ const Products = () => {
       ProductsData.slice(rowIndex * itemsPerRow, (rowIndex + 1) * itemsPerRow)
   );
 
+
   // To handle when user click on add to cart button
   const handleAddToCartClick = (item: items, rowIndex: number, itemIndex: number) => {
     const overallIndex = rowIndex * itemsPerRow + itemIndex; // to get the index of the item in the overall array 
     console.log(`Selected item at index : ${overallIndex}:`, item);
-    navigate("/SingleProduct", { state: { selectedItems: [item] }});
+    navigate("/SingleProduct", { state: { selectedItems: [item] } });
   };
 
   const handleAddToWishlist = (item: items, rowIndex: number, itemIndex: number) => {
     const overallIndex = rowIndex * itemsPerRow + itemIndex; // to get the index of the item in the overall array
     console.log(`Add item to wishlist at index : ${overallIndex}:`, item);
   };
+
+  const fetchProducts = async () => {
+    const res = await fetch("http://localhost:8080/v1/product/all", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await res.json();
+    console.log(data[0].title);
+    setProducts(data);
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   return (
     <div className="AllProducts__Products__Container">
@@ -184,23 +207,39 @@ const Products = () => {
                       )}
                         </div>
                       </div>
-                      <div className="AllProducts__Products__Item__Button">
-                        <button
-                          className="AllProducts__Products__Item__Button__Add"
-                          onClick={() => handleAddToCartClick(item, rowIndex, itemIndex)}
-                        >
-                          <i className="bx bx-right-arrow-alt"></i>
-                        </button>
+                      <div>
+                        <div className="AllProducts__Products__Item__Buttom">
+                          <div className="AllProducts__Products__Item__Buttom__Text">
+                            <div className="AllProducts__Products__Item__Sold">
+                              Sold: {formatPrice(item.sold)}
+                            </div>
+                            <div className="AllProducts__Products__Item__Price">
+                              Price: {formatPrice(item.price)} THB
+                            </div>
+                          </div>
+                          <div className="AllProducts__Products__Item__Button">
+                            <button
+                              className="AllProducts__Products__Item__Button__Add"
+                              onClick={() =>
+                                handleAddToCartClick(item, rowIndex, itemIndex)
+                              }
+                            >
+                              <i className="bx bx-right-arrow-alt"></i>
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                ))}
               </div>
             ))}
           </div>
-        ))}
-      </div>
-    </div>
+        </div>
+      ) : (
+        <>Loading</>
+      )}
+    </>
   );
 };
 

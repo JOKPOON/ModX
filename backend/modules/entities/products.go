@@ -1,7 +1,7 @@
 package entities
 
 type ProductRepository interface {
-	Create(req *ProductWithVariants) (*ProductCreateRes, error)
+	Create(req *Product) (*ProductCreateRes, error)
 	GetAll(req *ProductQuery) (*AllProductRes, error)
 	GetProduct(req *Product) (*Product, error)
 	AddReview(req *Review) error
@@ -9,7 +9,7 @@ type ProductRepository interface {
 }
 
 type ProductUsecase interface {
-	Create(req *ProductWithVariants) (*ProductCreateRes, error)
+	Create(req *Product) (*ProductCreateRes, error)
 	GetAllProduct(req *ProductQuery) (*AllProductRes, error)
 	GetProduct(req *Product) (*Product, error)
 	AddReview(req *Review) error
@@ -17,45 +17,36 @@ type ProductUsecase interface {
 }
 
 type Product struct {
-	Id       int              `json:"id" db:"id"`
-	Title    string           `json:"title" db:"title"`
-	Price    int              `json:"price" db:"price"`
-	Desc     string           `json:"desc" db:"description"`
-	Picture  []string         `json:"picture" db:"picture"`
-	Category string           `json:"category" db:"category"`
-	SubType  string           `json:"sub_type" db:"sub_type"`
-	Rating   int              `json:"rating" db:"rating"`
-	Sold     int              `json:"sold" db:"sold"`
-	Stock    int              `json:"stock" db:"stock"`
-	Variants []ProductVariant `json:"variants"`
-	Reviews  []Review         `json:"review"`
-	Created  string           `json:"created" db:"created_at"`
-	Updated  string           `json:"updated" db:"updated_at"`
+	Id       int                    `json:"id" db:"id"`
+	Title    string                 `json:"title" db:"title"`
+	Price    int                    `json:"price" db:"price"`
+	Discount int                    `json:"discount" db:"discount"`
+	Desc     string                 `json:"desc" db:"description"`
+	Picture  []string               `json:"picture" db:"picture"`
+	Options  map[string]interface{} `json:"options" db:"options"`
+	Category string                 `json:"category" db:"category"`
+	Rating   int                    `json:"rating" db:"rating"`
+	Sold     int                    `json:"sold" db:"sold"`
+	Stock    int                    `json:"stock" db:"stock"`
+	Reviews  []Review               `json:"review"`
+	Created  string                 `json:"created" db:"created_at"`
+	Updated  string                 `json:"updated" db:"updated_at"`
 }
 
-type ProductWithVariants struct {
-	Product Product          `json:"product"`
-	Variant []ProductVariant `json:"variant"`
-}
-
-type ProductVariant struct {
-	Id        int    `json:"id" db:"id"`
-	ProductId int    `json:"product_id" db:"product_id"`
-	Color     string `json:"color" db:"color"`
-	Size      string `json:"size" db:"size"`
-	Model     string `json:"model" db:"model"`
-	Price     int    `json:"price" db:"price"`
-	Stock     int    `json:"stock" db:"stock"`
-	Created   string `json:"created" db:"created_at"`
-	Updated   string `json:"updated" db:"updated_at"`
-}
-
-type ProductCreate struct {
-	Title    string   `json:"title" db:"title"`
-	Desc     string   `json:"desc" db:"desc"`
-	Category string   `json:"category" db:"category"`
-	SubType  string   `json:"sub_type" db:"sub_type"`
-	Picture  []string `json:"picture" db:"picture"`
+type ProductRes struct {
+	Id       int    `json:"id" db:"id"`
+	Title    string `json:"title" db:"title"`
+	Price    int    `json:"price" db:"price"`
+	Discount int    `json:"discount" db:"discount"`
+	Desc     string `json:"desc" db:"description"`
+	Picture  string `json:"picture" db:"picture"`
+	Options  string `json:"options" db:"options"`
+	Category string `json:"category" db:"category"`
+	Rating   int    `json:"rating" db:"rating"`
+	Sold     int    `json:"sold" db:"sold"`
+	Stock    int    `json:"stock" db:"stock"`
+	Created  string `json:"created" db:"created_at"`
+	Updated  string `json:"updated" db:"updated_at"`
 }
 
 type ProductCreateRes struct {
@@ -64,33 +55,31 @@ type ProductCreateRes struct {
 }
 
 type AllProductRes struct {
-	Data []Product `json:"data"`
+	Data []AllProduct `json:"data"`
 }
 
-type AllProductReq struct {
+type AllProduct struct {
 	Id       int    `json:"id" db:"id"`
 	Title    string `json:"title" db:"title"`
-	Desc     string `json:"desc" db:"description"`
 	Price    int    `json:"price" db:"price"`
 	Picture  string `json:"picture" db:"picture"`
-	Category string `json:"category" db:"category"`
-	SubType  string `json:"sub_type" db:"sub_type"`
 	Rating   int    `json:"rating" db:"rating"`
 	Sold     int    `json:"sold" db:"sold"`
-	Stock    int    `json:"stock" db:"stock"`
-	Created  string `json:"created" db:"created_at"`
-	Updated  string `json:"updated" db:"updated_at"`
+	Discount int    `json:"discount" db:"discount"`
 }
 
 type ProductQuery struct {
 	Id        string `json:"id" db:"id"`
 	Title     string `json:"title" db:"title"`
 	Category  string `json:"category" db:"category"`
-	SubType   string `json:"sub_type" db:"sub_type"`
 	Rating    string `json:"rating" db:"rating"`
 	Limit     string `json:"limit" db:"limit"`
 	MinPrice  string `json:"min_price" db:"min_price"`
 	MaxPrice  string `json:"max_price" db:"max_price"`
 	PriceSort string `json:"price_sort" db:"price_sort"`
 	Search    string `json:"search" db:"search"`
+}
+
+type ProductOptions struct {
+	Options map[string]interface{} `json:"options" db:"options"`
 }

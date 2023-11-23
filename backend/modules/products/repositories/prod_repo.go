@@ -1,8 +1,8 @@
 package repositories
 
 import (
+	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 
@@ -18,95 +18,61 @@ func NewProductRepo(db *sqlx.DB) entities.ProductRepository {
 	return &ProductRepo{Db: db}
 }
 
-func (p *ProductRepo) Create(req *entities.ProductWithVariants) (*entities.ProductCreateRes, error) {
+func (p *ProductRepo) Create(req *entities.Product) (*entities.ProductCreateRes, error) {
 	query := `
 	INSERT INTO "products"(
 		"title",
-		"description",
 		"price",
-		"category",
-		"sub_type",
-		"sold",
-		"stock",
+		"discount",
+		"description",
 		"picture",
-		"rating"
+		"options",
+		"category",
+		"rating",
+		"sold",
+		"stock"
 	)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-	RETURNING "id", "title";
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+	RETURNING "id";
 	`
 
-	product := new(entities.ProductCreateRes)
-
-	stringOfPicture := ""
-	for i, v := range req.Product.Picture {
-		if i == len(req.Product.Picture)-1 {
-			stringOfPicture += v
-		} else {
-			stringOfPicture += v + ","
-		}
+	option, err := json.Marshal(req.Options)
+	if err != nil {
+		return nil, err
 	}
 
-	row, err := p.Db.Queryx(
-		query,
-		req.Product.Title,
-		req.Product.Desc,
-		req.Product.Price,
-		req.Product.Category,
-		req.Product.SubType,
-		req.Product.Sold,
-		req.Product.Stock,
-		stringOfPicture,
-		req.Product.Rating,
+	row, err := p.Db.Queryx(query,
+		req.Title,
+		req.Price,
+		req.Discount,
+		req.Desc,
+		strings.Join(req.Picture, ","),
+		option,
+		req.Category,
+		req.Rating,
+		req.Sold,
+		req.Stock,
 	)
+
 	if err != nil {
-		p.DeleteFile(&req.Product)
 		return nil, err
 	}
 
 	for row.Next() {
-		err = row.Scan(&req.Product.Id, &req.Product.Title)
+		err = row.StructScan(&req)
 		if err != nil {
-			p.DeleteFile(&req.Product)
 			return nil, err
 		}
 	}
 
-	query = `
-	INSERT INTO "product_variants"(
-		"product_id",
-		"price",
-		"stock",
-		"color",
-		"size",
-		"model"
-	)
-	VALUES ($1, $2, $3, $4, $5, $6)
-	RETURNING "id";
-	`
+	return &entities.ProductCreateRes{
+		Status:  "success",
+		Message: fmt.Sprintf("product %s successfully created", req.Title),
+	}, nil
 
-	if len(req.Variant) > 0 {
-		for _, v := range req.Variant {
-			_, err := p.Db.Queryx(query, req.Product.Id, v.Price, v.Stock, v.Color, v.Size, v.Model)
-			if err != nil {
-				p.DeleteFile(&req.Product)
-				p.Delete(&req.Product)
-				return nil, err
-			}
-		}
-	} else {
-		p.DeleteFile(&req.Product)
-		p.Delete(&req.Product)
-		return nil, fmt.Errorf("error, variants cannot be empty")
-	}
-
-	product.Status = "success"
-	product.Message = "product created"
-
-	return product, nil
 }
 
 func (p *ProductRepo) GetAll(req *entities.ProductQuery) (*entities.AllProductRes, error) {
-
 	sqlQuery, err := sqlQuery(req)
 	if err != nil {
 		return nil, err
@@ -114,47 +80,30 @@ func (p *ProductRepo) GetAll(req *entities.ProductQuery) (*entities.AllProductRe
 
 	stmt, err := p.Db.PrepareNamed(sqlQuery)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	rows, err := stmt.Queryx(req)
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
 
-	var res entities.AllProductReq
-	var product entities.Product
 	var result entities.AllProductRes
 	for rows.Next() {
-
+		res := new(entities.AllProduct)
 		err = rows.StructScan(&res)
 		if err != nil {
-			return &result, err
-		}
-		picture := strings.Split(res.Picture, ",")
-		for i, v := range picture {
-			picture[i] = fmt.Sprintf("http://localhost:8080/static/products/%s", v)
+			return nil, err
 		}
 
-		product.Id = res.Id
-		product.Title = res.Title
-		product.Desc = res.Desc
-		product.Price = res.Price
-		product.Category = res.Category
-		product.SubType = res.SubType
-		product.Rating = res.Rating
-		product.Sold = res.Sold
-		product.Stock = res.Stock
-		product.Created = res.Created
-		product.Updated = res.Updated
-		product.Picture = picture
+		data := strings.Split(res.Picture, ",")
+		for i, v := range data {
+			data[i] = fmt.Sprintf("http://localhost:8080/static/products/%s", v)
+		}
 
-		result.Data = append(result.Data, product)
-	}
+		res.Picture = data[0]
 
-	if res.Id == 0 {
-		return &result, fmt.Errorf("error, product not found")
+		result.Data = append(result.Data, *res)
 	}
 
 	return &result, nil
@@ -167,7 +116,6 @@ func (p *ProductRepo) DeleteFile(req *entities.Product) error {
 			return fmt.Errorf("error, failed to delete file")
 		}
 	}
-
 	return nil
 }
 
@@ -186,7 +134,7 @@ func (p *ProductRepo) Delete(req *entities.Product) error {
 }
 
 func sqlQuery(req *entities.ProductQuery) (string, error) {
-	sqlQuery := "SELECT * FROM products WHERE 1=1"
+	sqlQuery := "SELECT id, title, price, discount, picture, rating, sold FROM products WHERE 1=1"
 	if req.Id != "" {
 		sqlQuery += " AND id = :id"
 	}
@@ -199,9 +147,6 @@ func sqlQuery(req *entities.ProductQuery) (string, error) {
 	}
 	if req.Category != "" {
 		sqlQuery += " AND category = :category"
-	}
-	if req.SubType != "" {
-		sqlQuery += " AND sub_type = :sub_type"
 	}
 	if req.Rating != "" {
 		sqlQuery += " AND rating >= :rating"
@@ -239,22 +184,13 @@ func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, erro
 		return nil, fmt.Errorf("error, product not found")
 	}
 
-	type Product struct {
-		Id       int    `json:"id" db:"id"`
-		Title    string `json:"title" db:"title"`
-		Desc     string `json:"desc" db:"description"`
-		Price    int    `json:"price" db:"price"`
-		Picture  string `json:"picture" db:"picture"`
-		Category string `json:"category" db:"category"`
-		SubType  string `json:"sub_type" db:"sub_type"`
-		Rating   int    `json:"rating" db:"rating"`
-		Sold     int    `json:"sold" db:"sold"`
-		Stock    int    `json:"stock" db:"stock"`
-		Created  string `json:"created" db:"created_at"`
-		Updated  string `json:"updated" db:"updated_at"`
-	}
-	res := new(Product)
+	res := new(entities.ProductRes)
 	err = row.StructScan(&res)
+	if err != nil {
+		return nil, err
+	}
+	var data map[string]interface{}
+	err = json.Unmarshal([]byte(res.Options), &data)
 	if err != nil {
 		return nil, err
 	}
@@ -264,7 +200,7 @@ func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, erro
 	req.Desc = res.Desc
 	req.Price = res.Price
 	req.Category = res.Category
-	req.SubType = res.SubType
+	req.Options = data
 	req.Rating = res.Rating
 	req.Sold = res.Sold
 	req.Stock = res.Stock
@@ -291,24 +227,6 @@ func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, erro
 			return nil, err
 		}
 		req.Reviews = append(req.Reviews, review)
-	}
-
-	query = `
-	SELECT * FROM product_variants WHERE product_id = $1;
-	`
-
-	row, err = p.Db.Queryx(query, req.Id)
-	if err != nil {
-		return nil, err
-	}
-
-	var variant entities.ProductVariant
-	for row.Next() {
-		err = row.StructScan(&variant)
-		if err != nil {
-			return nil, err
-		}
-		req.Variants = append(req.Variants, variant)
 	}
 
 	return req, nil
@@ -353,4 +271,54 @@ func (p *ProductRepo) DeleteProduct(req *entities.Product) error {
 	}
 
 	return nil
+}
+
+func (p *ProductRepo) UpdateProduct(req *entities.Product) (*entities.Product, error) {
+	query := `
+	UPDATE "products"
+	SET
+		"title" = $1,
+		"price" = $2,
+		"discount" = $3,
+		"description" = $4,
+		"picture" = $5,
+		"options" = $6,
+		"category" = $7,
+		"rating" = $8,
+		"sold" = $9,
+		"stock" = $10
+	WHERE "id" = $11;
+	`
+
+	option, err := json.Marshal(req.Options)
+	if err != nil {
+		return nil, err
+	}
+
+	row, err := p.Db.Queryx(query,
+		req.Title,
+		req.Price,
+		req.Discount,
+		req.Desc,
+		strings.Join(req.Picture, ","),
+		option,
+		req.Category,
+		req.Rating,
+		req.Sold,
+		req.Stock,
+		req.Id,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for row.Next() {
+		err = row.StructScan(&req)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return req, nil
 }
