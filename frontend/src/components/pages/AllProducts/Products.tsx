@@ -1,26 +1,19 @@
-import { useEffect, useState } from "react";
 import "./Products.css";
 import { useNavigate } from "react-router-dom";
 import { formatPrice } from "../Helper/Calculator";
 
-// interface items {
-//   picture?: string;
-//   name: string;
-//   sold: number;
-//   price: number;
-// }
-
 interface items {
+  picture?: string;
   title: string;
-  picture: string;
-  price: number;
   sold: number;
+  price: number;
   discount?: number;
 }
 
-const Products = () => {
-  const [ProductsData, setProducts] = useState<items[]>([]);
+function Products({ product }: { product: items[] | null }) {
+  const ProductsData = product;
   const navigate = useNavigate();
+
   let itemsPerRow = 4;
 
   // To change number of items per row when screen size is smaller
@@ -28,7 +21,11 @@ const Products = () => {
     itemsPerRow = 3;
   }
 
+  console.log("ProductsData", ProductsData);
   // To change number of items per row when screen size is smaller
+  if (ProductsData == null || ProductsData.length == 0) {
+    return <div className="Product__Not__Found">Product Not Found</div>;
+  }
   const rows = Array.from(
     { length: Math.ceil(ProductsData.length / itemsPerRow) },
     (_, rowIndex) =>
@@ -55,110 +52,86 @@ const Products = () => {
     console.log(`Add item to wishlist at index : ${overallIndex}:`, item);
   };
 
-  const fetchProducts = async () => {
-    const res = await fetch("http://localhost:8080/v1/product/all", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await res.json();
-    console.log(data[0].title);
-    setProducts(data);
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
   return (
-    <div className="AllProducts__Products__Container">
-      <div className="AllProducts__Products__Rows">
-        {rows.map((row, rowIndex) => (
-          <div className="AllProducts__Products__Items" key={rowIndex}>
-            {row.map((item, itemIndex) => (
-              <div className="AllProducts__Products__Item" key={itemIndex}>
-                <button
-                  className="AllProducts__Products__Item__Wishlist"
-                  onClick={() => handleAddToWishlist(item, rowIndex, itemIndex)}
-                >
-                  <i className="bx bx-heart"></i>
-                </button>
-                <div
-                  className="AllProducts__Products__Item__Picture"
-                  style={{ backgroundImage: `url(${item.picture})` }}
-                ></div>
+    <>
+      <div className="AllProducts__Products__Container">
+        <div className="AllProducts__Products__Rows">
+          {rows.map((row, rowIndex) => (
+            <div className="AllProducts__Products__Items" key={rowIndex}>
+              {row.map((item, itemIndex) => (
+                <div className="AllProducts__Products__Item" key={itemIndex}>
+                  <button
+                    className="AllProducts__Products__Item__Wishlist"
+                    onClick={() =>
+                      handleAddToWishlist(item, rowIndex, itemIndex)
+                    }
+                  >
+                    <i className="bx bx-heart"></i>
+                  </button>
+                  <div
+                    className="AllProducts__Products__Item__Picture"
+                    style={{ backgroundImage: `url(${item.picture})` }}
+                  ></div>
 
-                <div className="AllProducts__Products__Item__Text">
-                  <div className="AllProducts__Products__Item__Name">
-                    {item.title}
-                  </div>
-                  <div>
-                    <div className="AllProducts__Products__Item__Buttom">
-                      <div className="AllProducts__Products__Item__Buttom__Text">
-                        <div className="AllProducts__Products__Item__Sold">
-                          Sold: {formatPrice(item.sold)}
-                        </div>
-                        <div className="AllProducts__Products__Item__Price">
-                          {(item.discount || item.discount === 0) &&
-                            item.price - (item.discount || 0) > 0 && (
-                              <div style={{ color: "#222222" }}>
-                                {item.discount > 0 && (
-                                  <span
-                                    style={{
-                                      color: "#FF6E1F",
-                                      textDecoration: "line-through",
-                                      fontWeight: "400",
-                                    }}
-                                  >
-                                    {formatPrice(item.price)}
-                                  </span>
-                                )}
-                                {item.price - (item.discount || 0) > 0 && (
-                                  <span>
-                                    {" "}
-                                    {formatPrice(
-                                      item.price - (item.discount || 0)
-                                    )}{" "}
-                                    THB
-                                  </span>
-                                )}
-                              </div>
-                            )}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="AllProducts__Products__Item__Buttom">
-                          <div className="AllProducts__Products__Item__Buttom__Text">
-                            <div className="AllProducts__Products__Item__Sold">
-                              Sold: {formatPrice(item.sold)}
-                            </div>
-                            <div className="AllProducts__Products__Item__Price">
-                              Price: {formatPrice(item.price)} THB
-                            </div>
+                  <div className="AllProducts__Products__Item__Text">
+                    <div className="AllProducts__Products__Item__Name">
+                      {item.title}
+                    </div>
+                    <div>
+                      <div className="AllProducts__Products__Item__Buttom">
+                        <div className="AllProducts__Products__Item__Buttom__Text">
+                          <div className="AllProducts__Products__Item__Sold">
+                            Sold: {formatPrice(item.sold)}
                           </div>
-                          <div className="AllProducts__Products__Item__Button">
-                            <button
-                              className="AllProducts__Products__Item__Button__Add"
-                              onClick={() =>
-                                handleAddToCartClick(item, rowIndex, itemIndex)
-                              }
-                            >
-                              <i className="bx bx-right-arrow-alt"></i>
-                            </button>
+                          <div className="AllProducts__Products__Item__Price">
+                            {(item.discount || item.discount === 0) &&
+                              item.price - (item.discount || 0) > 0 && (
+                                <div style={{ color: "#222222" }}>
+                                  {item.discount > 0 && (
+                                    <span
+                                      style={{
+                                        color: "#FF6E1F",
+                                        textDecoration: "line-through",
+                                        fontWeight: "400",
+                                      }}
+                                    >
+                                      {formatPrice(item.price)}
+                                    </span>
+                                  )}
+                                  {item.price - (item.discount || 0) > 0 && (
+                                    <span>
+                                      {" "}
+                                      {formatPrice(
+                                        item.price - (item.discount || 0)
+                                      )}{" "}
+                                      THB
+                                    </span>
+                                  )}
+                                </div>
+                              )}
                           </div>
+                        </div>
+                        <div className="AllProducts__Products__Item__Button">
+                          <button
+                            className="AllProducts__Products__Item__Button__Add"
+                            onClick={() =>
+                              handleAddToCartClick(item, rowIndex, itemIndex)
+                            }
+                          >
+                            <i className="bx bx-right-arrow-alt"></i>
+                          </button>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ))}
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
-};
+}
 
 export default Products;

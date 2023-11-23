@@ -106,6 +106,10 @@ func (p *ProductRepo) GetAll(req *entities.ProductQuery) (*entities.AllProductRe
 		result.Data = append(result.Data, *res)
 	}
 
+	if len(result.Data) == 0 {
+		return nil, fmt.Errorf("error, product not found")
+	}
+
 	return &result, nil
 }
 
@@ -145,8 +149,16 @@ func sqlQuery(req *entities.ProductQuery) (string, error) {
 	if req.Title != "" {
 		sqlQuery += " AND title = :title"
 	}
-	if req.Category != "" {
-		sqlQuery += " AND category = :category"
+	if len(req.Category) > 0 {
+		sqlQuery += " AND category IN ("
+		for i, v := range req.Category {
+			if i == 0 {
+				sqlQuery += "'" + v + "'"
+			} else {
+				sqlQuery += ", '" + v + "'"
+			}
+		}
+		sqlQuery += ")"
 	}
 	if req.Rating != "" {
 		sqlQuery += " AND rating >= :rating"

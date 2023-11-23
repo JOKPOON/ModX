@@ -1,12 +1,18 @@
+.Product__Not__Found {
+  width: 1000px;
+  height: 1000px;
+  margin: 100 auto;
+  padding: 80px;
+  overflow-y: auto;
+  background-color: red;
+}
+
 .AllProducts__Products__Container {
   width: 100%;
   height: 100%;
   margin-left: 250px;
   padding: 80px;
   overflow-y: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .AllProducts__Products__Items {
