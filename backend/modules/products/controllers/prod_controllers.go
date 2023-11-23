@@ -2,8 +2,10 @@ package controllers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/Bukharney/ModX/configs"
 	"github.com/Bukharney/ModX/modules/entities"
@@ -74,7 +76,7 @@ func (p *ProductController) GetAllProduct(c *gin.Context) {
 	var req entities.ProductQuery
 	req.Id = c.Query("id")
 	req.Title = c.Query("title")
-	req.Category = c.Query("category")
+	category := c.Query("category")
 	req.Rating = c.Query("rating")
 	req.Limit = c.Query("limit")
 	req.MaxPrice = c.Query("max_price")
@@ -82,6 +84,11 @@ func (p *ProductController) GetAllProduct(c *gin.Context) {
 	req.PriceSort = c.Query("price_sort")
 	req.Search = c.Query("search")
 
+	if category != "" {
+		req.Category = strings.Split(category, ",")
+	}
+
+	log.Println(req.Category)
 	res, err := p.ProductUsecase.GetAllProduct(&req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

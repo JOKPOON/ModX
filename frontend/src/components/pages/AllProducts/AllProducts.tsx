@@ -9,6 +9,14 @@ interface CategoryButtonProps {
   onClick: () => void;
 }
 
+interface items {
+  picture?: string;
+  title: string;
+  sold: number;
+  price: number;
+  discount?: number;
+}
+
 const mockCategories = ["Education", "Clothes", "Electronics", "Accessories"];
 
 //All Products Page Component
@@ -58,8 +66,10 @@ export const AllProducts = () => {
   const [minPrice, setMinPrice] = useState<string>(initialMinPrice);
   const [maxPrice, setMaxPrice] = useState<string>(initialMaxPrice);
   const [showCategories, setShowCategories] = useState(true);
-  const [sortType, setSortType] = useState("Low to High");
+  const [sortType, setSortType] = useState("ASC");
   const [selectedButton, setSelectedButton] = useState<number | null>(null);
+  const [ProductsData, setProductsData] = useState<items[] | null>(null);
+  const [ApplyButton, setApplyButton] = useState<boolean>(false);
 
   const handleSortbyButtonClick = (buttonIndex: number) => {
     setSelectedButton(
@@ -68,6 +78,45 @@ export const AllProducts = () => {
       else set selectedButton to buttonIndex */
     );
   };
+
+  const handleFethcString = () => {
+    let fetchString = "http://localhost:8080/v1/product/all?";
+    if (selectedCategories.length > 0) {
+      fetchString += "&category=" + selectedCategories.join(",");
+    }
+    if (minPrice !== "") {
+      fetchString += "&min_price=" + minPrice;
+    }
+    if (maxPrice !== "") {
+      fetchString += "&max_price=" + maxPrice;
+    }
+    if (selectedRating !== null) {
+      fetchString += "&rating=" + selectedRating;
+    }
+    if (sortType !== "ASC") {
+      fetchString += "&sortType=" + sortType;
+    }
+    return fetchString;
+  };
+
+  const getProductsData = async () => {
+    const response = await fetch(handleFethcString(), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    if (response.status !== 200) {
+      setProductsData(null);
+    } else {
+      setProductsData(data);
+    }
+  };
+
+  useEffect(() => {
+    getProductsData();
+  }, [ApplyButton]);
 
   useEffect(() => {
     console.log("Selected button: ", selectedButton);
@@ -188,6 +237,7 @@ export const AllProducts = () => {
         selectedRating: selectedRating,
       },
     });
+    setApplyButton(!ApplyButton);
   };
 
   useEffect(() => {
@@ -313,7 +363,7 @@ export const AllProducts = () => {
             </button>
           </div>
           <div className="AllProducts__Products">
-            <Products />
+            <Products product={ProductsData} />
           </div>
         </div>
       </div>

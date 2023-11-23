@@ -69,15 +69,15 @@ type AllProduct struct {
 }
 
 type ProductQuery struct {
-	Id        string `json:"id" db:"id"`
-	Title     string `json:"title" db:"title"`
-	Category  string `json:"category" db:"category"`
-	Rating    string `json:"rating" db:"rating"`
-	Limit     string `json:"limit" db:"limit"`
-	MinPrice  string `json:"min_price" db:"min_price"`
-	MaxPrice  string `json:"max_price" db:"max_price"`
-	PriceSort string `json:"price_sort" db:"price_sort"`
-	Search    string `json:"search" db:"search"`
+	Id        string   `json:"id" db:"id"`
+	Title     string   `json:"title" db:"title"`
+	Category  []string `json:"category" db:"category"`
+	Rating    string   `json:"rating" db:"rating"`
+	Limit     string   `json:"limit" db:"limit"`
+	MinPrice  string   `json:"min_price" db:"min_price"`
+	MaxPrice  string   `json:"max_price" db:"max_price"`
+	PriceSort string   `json:"price_sort" db:"price_sort"`
+	Search    string   `json:"search" db:"search"`
 }
 
 type ProductOptions struct {
