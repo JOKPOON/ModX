@@ -143,7 +143,7 @@ export const Account = () => {
 
   return (
     <div className="main">
-      <div className="Container">
+      <div className="Conta                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          iner">
         <button className="Back-Account" onClick={HandleBackButton}>
           {"<" + "Back"}
         </button>
