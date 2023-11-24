@@ -83,6 +83,7 @@ func (p *ProductController) GetAllProduct(c *gin.Context) {
 	req.MinPrice = c.Query("min_price")
 	req.PriceSort = c.Query("price_sort")
 	req.Search = c.Query("search")
+	req.Sort = c.Query("sort")
 
 	if category != "" {
 		req.Category = strings.Split(category, ",")

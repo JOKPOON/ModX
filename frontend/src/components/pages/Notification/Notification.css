@@ -1,222 +1,358 @@
+.dropdown-container {
+  position: relative;
+}
+
+.dropdown-container .button {
+  display: flex;
+  cursor: pointer;
+
+}
+
+.dropdown-container .dropdown {
+  width: 380px;
+  height: auto;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 5px 2px 15px rgba(0, 0, 0, 0.125);
+  margin: 15px auto 0;
+  padding: 0 15px;
+  position: absolute;
+  display: none;
+  margin-left: 0;
+  transform: none;
+  right: -30px;
+  transition: width 0.3s ease;
+}
+
+.dropdown-container .dropdown .title {
+  font-weight: 600;
+  font-size: 18px;
+  display: flex;
+  position: relative;
+  border-bottom: 1px solid #00000046;
+  padding: 20px 0;
+  padding-left: 20px;
+}
+
+.dropdown_item {
+  display: flex;
+  align-items: center;
+  padding: 15px 0;
+  padding-left: 9px;
+  border-bottom: 1px solid #00000046;
+}
+
+.dropdown_item:hover {
+  cursor: pointer;
+  transform: scale(1.01);
+}
+
+.dropdown_item_info {
+  display: flex;
+}
+
+.dropdown_item:last-child {
+  border-bottom: 0px;
+}
+
+.dropdown_item .dropdown_img {
+  margin-right: 15px;
+}
+
+.dropdown_item .dropdown_img .dropdown_icon {
+  width: 40px;
+  height: 42px;
+}
+
+
+.dropdown_item .dropdown_info p {
+  margin-bottom: 5px;
+}
+
+.dropdown_item .dropdown_info p span {
+  color: #ff6e1f;
+  margin-right: 5px;
+}
+
+.dropdown_item .dropdown_Time p{
+  color: #a9a9a9;
+}
+
+.dropdown_item .Deleted_Noti{
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-end;
+  font-size: 26px;
+  padding-left: 22px;
+  padding-right: 10px;
+}
+
+.dropdown_item .Deleted_Noti:hover{
+  cursor: pointer;
+  transform: scale(1.15);
+}
+
+.dropdown-container .dropdown::before {
+  content: "";
+  position: absolute;
+  top: -25px;
+  right: 11.9px;
+  transform: translateX(-50%);
+  border: 15px solid;
+  border-color: transparent transparent #ffffff transparent;
+}
+
+.dropdown-container .dropdown {
+  display: block;
+  color: black;
+}
+
+.dropdown-container .dropdown .show_all_container {
+  height: auto;
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  background-color: #ffffff;
+  color: #000;
+}
+
+.dropdown-container .dropdown .show_all_container :hover{
+  color: #ffffff;
+  background-color: #000;
+  transform: scale(1.01);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+.dropdown-container .dropdown .show_all_container button{
+  color: #000;
+  background-color: #ffffff;
+  border-radius: 20px;
+  width: 300px;
+  height: 50px;
+  border: 2px solid black;
+  cursor: pointer;
+  padding: 15px;
+}
+
 .Track__Header {
-    width: 100%;
-    height: 60px;
-    margin-top: 60px;
-    background-color: #171717;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-    z-index: 1;
-    /* display: flex; */
-    transition: all 0.5s ease;
+  width: 100%;
+  height: 60px;
+  margin-top: 60px;
+  background-color: #171717;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  z-index: 1;
+  /* display: flex; */
+  transition: all 0.5s ease;
+}
+
+.Title__Container{
+  padding: 20px 220px 20px 220px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1.0fr 1.0fr 1.0fr 1.0fr 1.0fr;
+  gap: 20px;
+  color: #ffffff;
+  transition: all 0.5s ease;
+}
+
+.Title__Container .Title__Grid1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Title__Container .Title__Grid2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Title__Container .Title__Grid3 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Title__Container .Title__Grid4 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Title__Container .Title__Grid5 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Order__Body {
+  padding: 20px 100px 20px 100px;
+  width: 100%;
+}
+
+
+.Order__Body .Order__Container{
+  padding: 20px 120px 20px 120px;
+  width: 100%;
+  height: 100px;
+  align-items: center;
+  border: 1px solid #909090;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  display: grid;
+  grid-template-columns: 1.0fr 1.0fr 1.0fr 1.0fr 1.0fr;
+  gap: 20px;
+  transition: all 0.5s ease;
+}
+
+.Order__Body .Order__Container:hover{
+  cursor: pointer;
+  transform: scale(1.01);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+.Order__Body .Order__Container .Order__Grid1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Order__Body .Order__Container .Order__Grid1 :hover{
+  transform: none;
+}
+
+.Order__Body .Order__Container .Order__Grid2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Order__Body .Order__Container .Order__Grid3 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Order__Body .Order__Container .Order__Grid4 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Order__Body .Order__Container .Order__Grid5 {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+}
+
+.Order__Body .Order__Container .Order__Grid5 .Shipping {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #ff6e1f;
+  background-color: #ff6e1f;
+  color: #ffffff;
+  border-radius: 25px;
+  height: 35px;
+  width: 95px;
+  transition: all 0.5 ease;
+}
+
+.Order__Body .Order__Container .Order__Grid5 .Pending {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #cecece;
+  background-color: #cecece;
+  color: #000000;
+  border-radius: 25px;
+  height: 35px;
+  width: 95px;
+  transition: all 0.5 ease;
+}
+
+.Order__Body .Order__Container .Order__Grid5 .Complete {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #44e927;
+  background-color: #44e927;
+  color: #000000;
+  border-radius: 25px;
+  height: 35px;
+  width: 95px;
+  transition: all 0.5 ease;
+}
+
+@media screen and (max-width: 1024px) {
+
+  .notification-container .button {
+    padding-left: 25px;
   }
-  
+
+  .notification-container .dropdown {
+    width: 300px;
+  }
+
+  .notification-container .dropdown.active {
+    display: block;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .Track__Header {
+    margin-top: 50px;
+  }
+
   .Title__Container{
-    padding: 20px 220px 20px 220px;
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1.0fr 1.0fr 1.0fr 1.0fr 1.0fr;
+    font-size: 12px;
+    padding: 20px 200px 20px 160px;
     gap: 20px;
-    color: #ffffff;
-    transition: all 0.5s ease;
   }
-  
-  .Title__Container .Title__Grid1 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .Title__Container .Title__Grid2 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .Title__Container .Title__Grid3 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .Title__Container .Title__Grid4 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .Title__Container .Title__Grid5 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .Order__Body {
-    padding: 20px 100px 20px 100px;
-    width: 100%;
-  }
-  
-  
+
   .Order__Body .Order__Container{
-    padding: 20px 120px 20px 120px;
-    width: 100%;
-    height: 100px;
-    align-items: center;
-    border: 1px solid #909090;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    display: grid;
-    grid-template-columns: 1.0fr 1.0fr 1.0fr 1.0fr 1.0fr;
-    gap: 20px;
-    transition: all 0.5s ease;
+    font-size: 12px;
+    padding: 20px 80px 20px 80px;
   }
-  
-  .Order__Body .Order__Container:hover{
-    cursor: pointer;
-    transform: scale(1.01);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+
+  .Order__Body .Order__Container .Order__Grid5 .Status {
+    height: 30px;
+    width: 85px;
   }
-  
-  .Order__Body .Order__Container .Order__Grid1 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+
+  .notification-container .dropdown.active {
+    display: none;
   }
-  
-  .Order__Body .Order__Container .Order__Grid1 :hover{
-    transform: none;
+
+  .notification-container .button {
+    padding-left: 21px;
+    padding-bottom: 7px;
+    transition: none;
   }
-  
-  .Order__Body .Order__Container .Order__Grid2 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+
+  .notification-container .button:hover {
+    padding-left: 29px;
+    transition: none;
   }
-  
-  .Order__Body .Order__Container .Order__Grid3 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+
+}
+
+@media screen and (max-width: 600px) {
+
+  .Track__Header {
+    height: 50px;
   }
-  
-  .Order__Body .Order__Container .Order__Grid4 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+
+  .Title__Container{
+    font-size: 12px;
+    padding: 10px 120px 10px 120px;
+    grid-template-columns: 1.0fr 0.2fr 1.2fr 1.2fr 1.0fr;
+    gap: 5px;
   }
-  
-  .Order__Body .Order__Container .Order__Grid5 {
-    display: flex;
-    justify-content: center;
-    align-items: center; 
+
+  .Order__Body .Order__Container{
+    font-size: 12px;
+    padding: 20px 30px 20px 30px;
   }
-  
-  .Order__Body .Order__Container .Order__Grid5 .Shipping {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 2px solid #ff6e1f;
-    background-color: #ff6e1f;
-    color: #ffffff;
-    border-radius: 25px;
-    height: 35px;
-    width: 95px;
-    transition: all 0.5 ease;
-  }
-  
-  .Order__Body .Order__Container .Order__Grid5 .Pending {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 2px solid #cecece;
-    background-color: #cecece;
-    color: #000000;
-    border-radius: 25px;
-    height: 35px;
-    width: 95px;
-    transition: all 0.5 ease;
-  }
-  
-  .Order__Body .Order__Container .Order__Grid5 .Complete {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 2px solid #44e927;
-    background-color: #44e927;
-    color: #000000;
-    border-radius: 25px;
-    height: 35px;
-    width: 95px;
-    transition: all 0.5 ease;
-  }
-  
-  @media screen and (max-width: 1024px) {
-  
-    .notification-container .button {
-      padding-left: 25px;
-    }
-  
-    .notification-container .dropdown {
-      width: 300px;
-    }
-  
-    .notification-container .dropdown.active {
-      display: block;
-    }
-  }
-  
-  @media screen and (max-width: 768px) {
-    .Track__Header {
-      margin-top: 50px;
-    }
-  
-    .Title__Container{
-      font-size: 12px;
-      padding: 20px 200px 20px 160px;
-      gap: 20px;
-    }
-  
-    .Order__Body .Order__Container{
-      font-size: 12px;
-      padding: 20px 80px 20px 80px;
-    }
-  
-    .Order__Body .Order__Container .Order__Grid5 .Status {
-      height: 30px;
-      width: 85px;
-    }
-  
-    .notification-container .dropdown.active {
-      display: none;
-    }
-  
-    .notification-container .button {
-      padding-left: 21px;
-      padding-bottom: 7px;
-      transition: none;
-    }
-  
-    .notification-container .button:hover {
-      padding-left: 29px;
-      transition: none;
-    }
-  
-  }
-  
-  @media screen and (max-width: 600px) {
-  
-    .Track__Header {
-      height: 50px;
-    }
-  
-    .Title__Container{
-      font-size: 12px;
-      padding: 10px 120px 10px 120px;
-      grid-template-columns: 1.0fr 0.2fr 1.2fr 1.2fr 1.0fr;
-      gap: 5px;
-    }
-  
-    .Order__Body .Order__Container{
-      font-size: 12px;
-      padding: 20px 30px 20px 30px;
-    }
-  
-  }
+
+}

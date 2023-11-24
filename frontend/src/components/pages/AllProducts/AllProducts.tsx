@@ -67,17 +67,9 @@ export const AllProducts = () => {
   const [maxPrice, setMaxPrice] = useState<string>(initialMaxPrice);
   const [showCategories, setShowCategories] = useState(true);
   const [sortType, setSortType] = useState("ASC");
-  const [selectedButton, setSelectedButton] = useState<number | null>(null);
   const [ProductsData, setProductsData] = useState<items[] | null>(null);
   const [ApplyButton, setApplyButton] = useState<boolean>(false);
-
-  const handleSortbyButtonClick = (buttonIndex: number) => {
-    setSelectedButton(
-      (prevIndex) => (prevIndex === buttonIndex ? null : buttonIndex)
-      /* if prevIndex === buttonIndex, then set selectedButton to null, 
-      else set selectedButton to buttonIndex */
-    );
-  };
+  const [selectedSort, setSelectedSort] = useState<string>("");
 
   const handleFethcString = () => {
     let fetchString = "http://localhost:8080/v1/product/all?";
@@ -94,7 +86,10 @@ export const AllProducts = () => {
       fetchString += "&rating=" + selectedRating;
     }
     if (sortType !== "ASC") {
-      fetchString += "&sortType=" + sortType;
+      fetchString += "&price_sort=" + sortType;
+    }
+    if (selectedSort !== "") {
+      fetchString += "&sort=" + selectedSort;
     }
     return fetchString;
   };
@@ -116,17 +111,11 @@ export const AllProducts = () => {
 
   useEffect(() => {
     getProductsData();
-  }, [ApplyButton]);
-
-  useEffect(() => {
-    console.log("Selected button: ", selectedButton);
-  }, [selectedButton]);
+  }, [ApplyButton, sortType, selectedSort]);
 
   //Sort Button
   const handleSortToggle = () => {
-    setSortType((prevSortType) =>
-      prevSortType === "Low to High" ? "High to Low" : "Low to High"
-    );
+    setSortType((prevSortType) => (prevSortType === "ASC" ? "DESC" : "ASC"));
     console.log("Sort button clicked!\nSort type: ", sortType);
   };
 
@@ -255,25 +244,25 @@ export const AllProducts = () => {
               <div className="AllProducts__Sortby__Text__Title">Sort By</div>
               <button
                 className={`AllProducts__Sortby__Text__Options__Button ${
-                  selectedButton === 0 ? "selected" : ""
+                  selectedSort === "top_sale" ? "selected" : ""
                 }`}
-                onClick={() => handleSortbyButtonClick(0)}
+                onClick={() => setSelectedSort("top_sale")}
               >
                 Top Sale
               </button>
               <button
                 className={`AllProducts__Sortby__Text__Options__Button ${
-                  selectedButton === 1 ? "selected" : ""
+                  selectedSort === "latest" ? "selected" : ""
                 }`}
-                onClick={() => handleSortbyButtonClick(1)}
+                onClick={() => setSelectedSort("latest")}
               >
                 Latest
               </button>
               <button
                 className={`AllProducts__Sortby__Text__Options__Button ${
-                  selectedButton === 2 ? "selected" : ""
+                  selectedSort === "rating" ? "selected" : ""
                 }`}
-                onClick={() => handleSortbyButtonClick(2)}
+                onClick={() => setSelectedSort("rating")}
               >
                 Rating
               </button>
