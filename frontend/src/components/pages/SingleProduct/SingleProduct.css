@@ -302,7 +302,7 @@
 }
 
 .Single__Select {
-  margin-top: 3px;
+  margin-top: 10px;
   border: 1px solid #909090;
   border-radius: 5px;
   padding: 0px 3px 0px 3px;
@@ -320,7 +320,7 @@
 
 .Single__Product__Description {
   font-size: 16px;
-  margin-top: 20px;
+  margin-top: 14px;
   display: flex;
   flex-direction: row;
 }

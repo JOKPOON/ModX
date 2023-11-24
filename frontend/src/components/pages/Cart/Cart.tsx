@@ -9,6 +9,10 @@ interface items {
   name: string;
   price: number;
   discount?: number;
+  option1?: string;
+  option2?: string;
+  selectedOption1?: string;
+  selectedOption2?: string;
 }
 
 interface Address {
@@ -38,6 +42,10 @@ const CartProducts: items[] = [
     name: "เข็มขัดผู้ชาย สำหรับนักศึกษาชาย",
     price: 999,
     discount: 0,
+    option1: "Size",
+    option2: "Color",
+    selectedOption1: "M",
+    selectedOption2: "Black",
   },
   {
     picture:
@@ -45,6 +53,10 @@ const CartProducts: items[] = [
     name: "เครื่องคิดเลข CASIO รุ่น MX-120B",
     price: 960,
     discount: 400,
+    option1: "Size",
+    option2: "Color",
+    selectedOption1: "M",
+    selectedOption2: "Black",
   },
   {
     picture:
@@ -52,6 +64,10 @@ const CartProducts: items[] = [
     name: "ปากกาเจลวันพีช One-piece Gel Pen M&G 0.5mm Blue ink ( 5 ด้าม/แพ็ค)",
     price: 99,
     discount: 40,
+    option1: "Size",
+    option2: "Color",
+    selectedOption1: "M",
+    selectedOption2: "Black",
   },
 ];
 
@@ -196,7 +212,21 @@ export const Cart = () => {
                   className="Cart__Left__Grid2"
                   style={{ backgroundImage: `url(${product.picture})` }}
                 ></div>
-                <div className="Cart__Left__Grid3">{product.name}</div>
+                <div className="Cart__Left__Grid3">
+                  <div>{product.name}</div>
+                  <div className="Cart__Sub">
+                    {product.option1 && (
+                      <div>
+                        {product.option1}: {product.selectedOption1}
+                      </div>
+                    )}
+                    {product.option2 && (
+                      <div>
+                        {product.option2}: {product.selectedOption2}
+                      </div>
+                    )}
+                  </div>
+                </div>
                 <div className="Cart__Left__Grid4">
                   <label htmlFor={`quantity-${index}`}></label>
                   <select
