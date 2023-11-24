@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"errors"
 	"net/http"
 	"os"
 	"strings"
@@ -49,9 +50,6 @@ func JwtAuthentication() gin.HandlerFunc {
 		})
 
 		if err != nil {
-			c.JSON(http.StatusForbidden, gin.H{
-				"error": "Malformed authentication token",
-			})
 			c.Abort()
 			return
 		}
@@ -68,21 +66,35 @@ func JwtAuthentication() gin.HandlerFunc {
 	}
 }
 
-func GetUserByToken(c *gin.Context) (entities.UsersClaims, error) {
+func GetUserByToken(c *gin.Context) (*entities.UsersClaims, error) {
 	tokenHeader := c.Request.Header.Get("Authorization")
+
+	if tokenHeader == "" {
+		return nil, errors.New("error, missing auth token")
+	}
+
 	splitted := strings.Split(tokenHeader, " ")
+	if len(splitted) != 2 {
+		return nil, errors.New("error, invalid/malformed auth token")
+	}
+
 	tokenPart := splitted[1]
+
 	tk := &entities.UsersClaims{}
+
+	if tokenPart == "" {
+		return nil, errors.New("error, missing auth token")
+	}
+
 	token, err := jwt.ParseWithClaims(tokenPart, tk, func(token *jwt.Token) (interface{}, error) {
 		return []byte(os.Getenv("JWT_SECRET")), nil
 	})
 
 	if token.Valid {
-		return *tk, nil
-	} else {
-		return entities.UsersClaims{}, err
+		return tk, nil
 	}
 
+	return nil, err
 }
 
 func RefreshToken(c *gin.Context) {

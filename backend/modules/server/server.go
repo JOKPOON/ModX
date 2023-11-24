@@ -27,7 +27,7 @@ func NewServer(cfg *configs.Configs, db *sqlx.DB) *Server {
 func (s *Server) Run() error {
 	s.App.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"GET", "POST"},
+		AllowMethods:     []string{"GET", "POST", "DELETE"},
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,
 	}))
