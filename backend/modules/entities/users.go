@@ -35,9 +35,9 @@ type UsersClaims struct {
 }
 
 type UsersRegisterReq struct {
-	Username string `json:"username" db:"username"`
-	Password string `json:"password" db:"password"`
-	Email    string `json:"email" db:"email"`
+	Username string `json:"username" db:"username" binding:"required"`
+	Password string `json:"password" db:"password" binding:"required"`
+	Email    string `json:"email" db:"email" binding:"required"`
 }
 
 type UsersChangePasswordReq struct {
@@ -48,12 +48,13 @@ type UsersChangePasswordReq struct {
 }
 
 type UsersRegisterRes struct {
-	Id       uint64 `json:"id" db:"id"`
-	Username string `json:"username" db:"username"`
+	Id          uint64 `json:"id" db:"id"`
+	Username    string `json:"username" db:"username"`
+	AccessToken string `json:"token"`
 }
 
 type UsersLoginRes struct {
-	AccessToken string `json:"access_token"`
+	AccessToken string `json:"token"`
 }
 
 type UsersChangePasswordRes struct {

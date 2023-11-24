@@ -38,12 +38,15 @@ func (r *UserRepo) Register(req *entities.UsersRegisterReq) (*entities.UsersRegi
 		return nil, errors.New("error, failed to query")
 	}
 
+	defer rows.Close()
+
 	for rows.Next() {
 		if err := rows.StructScan(user); err != nil {
 			fmt.Println(err.Error())
 			return nil, errors.New("error, failed to scan")
 		}
 	}
+
 	return user, nil
 }
 

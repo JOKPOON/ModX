@@ -84,3 +84,23 @@ func GetUserByToken(c *gin.Context) (entities.UsersClaims, error) {
 	}
 
 }
+
+func RefreshToken(c *gin.Context) {
+	tokenHeader := c.Request.Header.Get("Authorization")
+	splitted := strings.Split(tokenHeader, " ")
+	tokenPart := splitted[1]
+	tk := &entities.UsersClaims{}
+	token, err := jwt.ParseWithClaims(tokenPart, tk, func(token *jwt.Token) (interface{}, error) {
+		return []byte(os.Getenv("JWT_SECRET")), nil
+	})
+
+	if token.Valid {
+		c.JSON(http.StatusOK, gin.H{
+			"token": tk,
+		})
+	} else {
+		c.JSON(http.StatusForbidden, gin.H{
+			"error": err,
+		})
+	}
+}

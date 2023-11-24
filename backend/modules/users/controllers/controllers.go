@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/Bukharney/ModX/configs"
@@ -12,11 +13,13 @@ import (
 type UsersController struct {
 	Cfg          *configs.Configs
 	UsersUsecase entities.UsersUsecase
+	AuthUsecase  entities.AuthUsecase
 }
 
-func NewUsersControllers(r gin.IRoutes, usersUsecase entities.UsersUsecase) {
+func NewUsersControllers(r gin.IRoutes, usersUsecase entities.UsersUsecase, authUsecase entities.AuthUsecase) {
 	controllers := &UsersController{
 		UsersUsecase: usersUsecase,
+		AuthUsecase:  authUsecase,
 	}
 
 	r.POST("/register", controllers.Register)
@@ -34,6 +37,11 @@ func (u *UsersController) Register(c *gin.Context) {
 		return
 	}
 
+	user := &entities.UsersCredentials{
+		Username: req.Username,
+		Password: req.Password,
+	}
+
 	res, err := u.UsersUsecase.Register(req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -41,6 +49,17 @@ func (u *UsersController) Register(c *gin.Context) {
 		})
 		return
 	}
+
+	token, err := u.AuthUsecase.Login(u.Cfg, user)
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	res.AccessToken = token.AccessToken
 
 	c.JSON(http.StatusOK, res)
 }
