@@ -118,6 +118,7 @@ nav .Nav__Text {
 nav .icon-container :hover {
   color: #ff6e1f;
   transform: scale(1.01);
+  cursor: pointer;
 }
 
 @media screen and (min-width: 768px) {
