@@ -47,7 +47,7 @@ func (f *FileController) Upload(c *gin.Context) {
 		return
 	}
 
-	req.Claims = &role
+	req.Claims = role
 
 	res, err := f.FileUsecase.Upload(&req)
 	if err != nil {

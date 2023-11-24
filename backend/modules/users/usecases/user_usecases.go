@@ -57,7 +57,6 @@ func (a *UsersUsecases) ChangePassword(req *entities.UsersChangePasswordReq) (*e
 	}
 
 	return res, nil
-
 }
 
 func hashPassword(password string) (string, error) {
@@ -80,6 +79,60 @@ func (a *UsersUsecases) GetUserByUsername(username string) (*entities.UsersPassp
 
 func (a *UsersUsecases) CreateUserShipping(req *entities.UsersShippingReq) (*entities.UsersShippingRes, error) {
 	res, err := a.UsersRepo.CreateUserShipping(req)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (a *UsersUsecases) GetUserDetails(user entities.UsersClaims) (*entities.UsersDataRes, error) {
+	res, err := a.UsersRepo.GetUserByUsername(user.Username)
+	if err != nil {
+		return nil, err
+	}
+
+	return &entities.UsersDataRes{
+		Id:       res.Id,
+		Username: res.Username,
+		Email:    res.Email,
+	}, nil
+}
+
+func (a *UsersUsecases) GetShippingDetails(user entities.UsersClaims) (*entities.UsersShippingReq, error) {
+	res, err := a.UsersRepo.GetShippingDetails(user.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (a *UsersUsecases) UpdateShippingDetails(req *entities.UsersShippingReq) (*entities.UsersShippingRes, error) {
+	shipping, err := a.UsersRepo.GetShippingDetails(req.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	if shipping.UserId != req.UserId {
+		res, err := a.UsersRepo.CreateUserShipping(req)
+		if err != nil {
+			return nil, err
+		}
+
+		return res, nil
+	}
+
+	res, err := a.UsersRepo.UpdateShippingDetails(req)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (a *UsersUsecases) DeleteAccount(user entities.UsersClaims) (*entities.UsersShippingRes, error) {
+	res, err := a.UsersRepo.DeleteAccount(user.Id)
 	if err != nil {
 		return nil, err
 	}

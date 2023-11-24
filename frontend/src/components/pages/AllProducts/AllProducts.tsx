@@ -71,31 +71,8 @@ export const AllProducts = () => {
   const [ApplyButton, setApplyButton] = useState<boolean>(false);
   const [selectedSort, setSelectedSort] = useState<string>("");
 
-  const handleFethcString = () => {
-    let fetchString = "http://localhost:8080/v1/product/all?";
-    if (selectedCategories.length > 0) {
-      fetchString += "&category=" + selectedCategories.join(",");
-    }
-    if (minPrice !== "") {
-      fetchString += "&min_price=" + minPrice;
-    }
-    if (maxPrice !== "") {
-      fetchString += "&max_price=" + maxPrice;
-    }
-    if (selectedRating !== null) {
-      fetchString += "&rating=" + selectedRating;
-    }
-    if (sortType !== "ASC") {
-      fetchString += "&price_sort=" + sortType;
-    }
-    if (selectedSort !== "") {
-      fetchString += "&sort=" + selectedSort;
-    }
-    return fetchString;
-  };
-
   const getProductsData = async () => {
-    const response = await fetch(handleFethcString(), {
+    const response = await fetch(handleFetchString(), {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -115,8 +92,37 @@ export const AllProducts = () => {
 
   //Sort Button
   const handleSortToggle = () => {
-    setSortType((prevSortType) => (prevSortType === "ASC" ? "DESC" : "ASC"));
+    setSortType(sortType === "ASC" ? "DESC" : "ASC");
     console.log("Sort button clicked!\nSort type: ", sortType);
+  };
+
+  const handleFetchString = () => {
+    const queryParams = [];
+
+    if (selectedCategories.length > 0) {
+      queryParams.push(`category=${selectedCategories.join(",")}`);
+    }
+    if (minPrice !== "") {
+      queryParams.push(`min_price=${minPrice}`);
+    }
+    if (maxPrice !== "") {
+      queryParams.push(`max_price=${maxPrice}`);
+    }
+    if (selectedRating !== null) {
+      queryParams.push(`rating=${selectedRating}`);
+    }
+    if (sortType !== "ASC") {
+      queryParams.push(`price_sort=${sortType}`);
+    }
+    if (selectedSort !== "") {
+      queryParams.push(`sort=${selectedSort}`);
+    }
+
+    let fetchString = "http://localhost:8080/v1/product/all";
+    if (queryParams.length > 0) {
+      fetchString += "?" + queryParams.join("&");
+    }
+    return fetchString;
   };
 
   useEffect(() => {
@@ -273,7 +279,7 @@ export const AllProducts = () => {
               className="AllProducts__Sortby__Select__Button"
               onClick={handleSortToggle}
             >
-              Price: {sortType}
+              Price: {sortType === "ASC" ? "Low to High" : "High to Low"}
             </button>
           </div>
         </div>
