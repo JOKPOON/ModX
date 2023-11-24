@@ -119,8 +119,16 @@
 .Cart__Left__Grid3 {
   display: flex;
   justify-content: flex-start;
-  align-items: center;
   font-size: 16px;
+  flex-direction: column;
+  font-weight: 500;
+}
+
+.Cart__Sub{
+  margin-top: 0.75vh;
+  font-weight: 400;
+  color: #222222;
+  font-size: 90%;
 }
 
 .Cart__Left__Grid4 {
@@ -128,7 +136,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 16px;
+
   padding: 3px;
   border-radius: 10px;
   border: 1px solid #909090;
@@ -137,7 +145,8 @@
 .Cart__Left__Grid4 select {
   border-radius: 10px;
   outline: none;
-  border: none;
+  border: none;  
+  font-size: 16px;
   padding: 5px;
   cursor: pointer;
   color: #222222;  
@@ -276,6 +285,7 @@
   background: #222222;
 }
 
+
 @media (max-width: 1200px) {
 
     .Cart__Header{
@@ -319,16 +329,19 @@
     grid-template-columns: 1fr;
   }
 
+  .Cart__Left__Grid4 select,
+  .Cart__select__Togggle,
   .Cart__Edit__Address,
   .Cart__text__Right__Toppic,
   .Cart__text__Right__Content {
     font-size: 14px;
   }
 
+  .Cart__Delete__Button,
   .Cart__payment__Button,
   .Cart__text__Right__Toppic__Total,
   .Cart__text__Right__Content__Total {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .Cart__Left__Grid2 {
@@ -386,28 +399,33 @@
   .Cart__Edit__Address,
   .Cart__text__Right__Toppic,
   .Cart__text__Right__Content {
-    font-size: 12px;
+    font-size: 10px;
   }
 
   .Cart__payment__Button,
   .Cart__text__Right__Toppic__Total,
   .Cart__text__Right__Content__Total {
-    font-size: 14px;
+    font-size: 10px;
   }
 
   .Cart__Left__Grid2 {
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
     border-radius: 10px;
   }
 
   .Cart__Left__Grid3,
   .Cart__Left__Grid4,
   .Cart__Left__Grid5 {
-    font-size: 12px;
+    font-size: 10px;
   }
 
+  .Cart__select__Togggle,
   .Cart__Left__Button{
-    font-size: 12px;
+    font-size: 10px;
+}
+.Cart__Left__Grid4 select{
+    font-size: 10px;
+    padding: 3px;
 }
 }
