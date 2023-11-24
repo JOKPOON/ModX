@@ -1,15 +1,7 @@
 import "./App.css";
 import { Navbar } from "./components/Navbar";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import {
-  Home,
-  AllProducts,
-  SingleProduct,
-  Cart,
-  Login,
-  Comment,
-  Account,
-} from "./components/pages";
+import { Home, AllProducts, SingleProduct, Cart, Login, Comment, Account, Notification } from "./components/pages";
 
 function App() {
   return (
@@ -24,6 +16,7 @@ function App() {
           <Route path="/Login" element={<Login />} />
           <Route path="/Comment" element={<Comment />} />
           <Route path="/Account" element={<Account />} />
+          <Route path="/Notification" element={<Notification />} />
         </Routes>
       </Router>
     </div>
