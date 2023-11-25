@@ -1,34 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Account.css";
-import EyeIcon from "../assets/EyeIcon.svg";
 import { useNavigate } from "react-router-dom";
 
-interface Props {
+interface UserDetails {
   username: string;
-  password: string;
   email: string;
-  name?: string;
-  phoneNumber?: string;
-  address?: string;
-  country?: string;
-  city?: string;
-  state?: string;
-  postID?: number;
 }
 
-const userDatabase: Props[] = [
-  {
-    username: "User12345",
-    password: "Password12345",
-    email: "Test@gmail.com",
-    name: "asfasfas",
-    phoneNumber: "",
-    address: "",
-    country: "",
-    city: "",
-    state: "",
-  },
-];
+interface ShippingDetails {
+  name?: string;
+  tel?: string;
+  addr?: string;
+  province?: string;
+  district?: string;
+  sub_dist?: string;
+  zip?: number;
+}
 
 //Account Page Component
 export const Account = () => {
@@ -51,23 +38,103 @@ export const Account = () => {
   //Delete Account and navigate to Home Page
   const deleteAccount = () => {
     console.log("Delete Account");
-    navigate("/");
-  };
-
-  const [show, setShow] = useState(false);
-
-  const handleTogglePassword = () => {
-    setShow(!show);
+    handleDeleteAccount();
   };
 
   //Save Profile
   const handdleSaveProfile = () => {
     console.log(userData);
+    console.log(shippingData);
+    handleUpdateShipping();
     alert("Save Profile");
   };
 
   //User Data
-  const [userData, setUserData] = useState<Props>(userDatabase[0]);
+  const [userData, setUserData] = useState<UserDetails>();
+  const [shippingData, setShippingData] = useState<ShippingDetails>();
+
+  const handleGetUserData = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/Login";
+      return;
+    }
+    await fetch("http://localhost:8080/v1/users/details", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then(async (res) => {
+      if (res.ok) {
+        await res.json().then((data) => {
+          console.log(data);
+          setUserData(data);
+        });
+      }
+    });
+
+    await fetch("http://localhost:8080/v1/users/shipping", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then(async (res) => {
+      if (res.ok) {
+        await res.json().then((data) => {
+          console.log(data);
+          setShippingData(data);
+        });
+      }
+    });
+  };
+
+  const handleUpdateShipping = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/Login";
+      return;
+    }
+    await fetch("http://localhost:8080/v1/users/shipping", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(shippingData),
+    }).then(async (res) => {
+      if (res.ok) {
+        await res.json().then((data) => {
+          console.log(data);
+        });
+      }
+    });
+  };
+
+  const handleDeleteAccount = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/Login";
+      return;
+    }
+    await fetch("http://localhost:8080/v1/users/delete-account", {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then(async (res) => {
+      if (res.ok) {
+        await res.json().then((data) => {
+          console.log(data);
+          localStorage.removeItem("token");
+          window.location.href = "/";
+        });
+      }
+    });
+  };
+
+  useEffect(() => {
+    handleGetUserData();
+  }, []);
 
   /*
     In placeholder, if User Data is not null, show User Data
@@ -76,40 +143,28 @@ export const Account = () => {
 
   return (
     <div className="main">
-      <div className="Container">
+      <div className="Conta                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          iner">
         <button className="Back-Account" onClick={HandleBackButton}>
           {"<" + "Back"}
         </button>
         <div className="Head">Your Profile</div>
         <div className="Form-Container">
-          <div className="One-Form">
+          <div className="One-Form-Long">
             <h4>Username</h4>
             <input
               type="text"
               placeholder="Username"
-              value={userDatabase[0].username}
+              value={userData?.username}
               readOnly
             />
           </div>
-          <div className="One-Form Password">
-            <h4>Password</h4>
-            <input
-              type={show ? "text" : "password"}
-              placeholder="Password"
-              value={userDatabase[0].password}
-              readOnly
-            />
-          </div>
-          <button className="EyeIcon" onClick={handleTogglePassword}>
-            <img src={EyeIcon} alt="EyeIcon" className="EyeSVG" />
-          </button>
 
           <div className="One-Form-Long">
             <h4>Email</h4>
             <input
               type="email"
               placeholder="HarrypotterHogwarts@gmail.com"
-              value={userDatabase[0].email}
+              value={userData?.email}
               readOnly
             />
           </div>
@@ -118,9 +173,9 @@ export const Account = () => {
             <h4>Name</h4>
             <input
               type="text"
-              placeholder={userDatabase[0].name ? userDatabase[0].name : "Name"}
+              placeholder={shippingData?.name ? shippingData?.name : "Name"}
               onChange={(e) =>
-                setUserData({ ...userData, name: e.target.value })
+                setShippingData({ ...shippingData, name: e.target.value })
               }
             />
           </div>
@@ -129,13 +184,14 @@ export const Account = () => {
             <input
               type="tel"
               placeholder={
-                userDatabase[0].phoneNumber
-                  ? userDatabase[0].phoneNumber
-                  : "9876543210"
+                shippingData?.tel ? shippingData?.tel : "Phone Number"
               }
               maxLength={10}
               onChange={(e) =>
-                setUserData({ ...userData, phoneNumber: e.target.value })
+                setShippingData({
+                  ...shippingData,
+                  tel: e.target.value,
+                })
               }
             />
           </div>
@@ -144,11 +200,9 @@ export const Account = () => {
             <h4>Address</h4>
             <input
               type="text"
-              placeholder={
-                userDatabase[0].address ? userDatabase[0].address : "Address"
-              }
+              placeholder={shippingData?.addr ? shippingData?.addr : "Address"}
               onChange={(e) =>
-                setUserData({ ...userData, address: e.target.value })
+                setShippingData({ ...shippingData, addr: e.target.value })
               }
             />
           </div>
@@ -156,19 +210,10 @@ export const Account = () => {
             <input
               type="text"
               placeholder={
-                userDatabase[0].country ? userDatabase[0].country : "Country"
+                shippingData?.province ? shippingData?.province : "Country"
               }
               onChange={(e) =>
-                setUserData({ ...userData, country: e.target.value })
-              }
-            />
-          </div>
-          <div className="One-Form-Short">
-            <input
-              type="text"
-              placeholder={userDatabase[0].city ? userDatabase[0].city : "City"}
-              onChange={(e) =>
-                setUserData({ ...userData, city: e.target.value })
+                setShippingData({ ...shippingData, province: e.target.value })
               }
             />
           </div>
@@ -176,10 +221,21 @@ export const Account = () => {
             <input
               type="text"
               placeholder={
-                userDatabase[0].state ? userDatabase[0].state : "State"
+                shippingData?.district ? shippingData?.district : "City"
               }
               onChange={(e) =>
-                setUserData({ ...userData, state: e.target.value })
+                setShippingData({ ...shippingData, district: e.target.value })
+              }
+            />
+          </div>
+          <div className="One-Form-Short">
+            <input
+              type="text"
+              placeholder={
+                shippingData?.sub_dist ? shippingData?.sub_dist : "State"
+              }
+              onChange={(e) =>
+                setShippingData({ ...shippingData, sub_dist: e.target.value })
               }
             />
           </div>
@@ -187,12 +243,13 @@ export const Account = () => {
             <input
               type="number"
               placeholder={
-                userDatabase[0].postID
-                  ? userDatabase[0].postID.toString()
-                  : "123456"
+                shippingData?.zip ? shippingData?.zip.toString() : "Post ID"
               }
               onChange={(e) =>
-                setUserData({ ...userData, postID: Number(e.target.value) })
+                setShippingData({
+                  ...shippingData,
+                  zip: e.target.valueAsNumber,
+                })
               }
             />
           </div>

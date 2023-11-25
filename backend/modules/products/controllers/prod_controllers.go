@@ -83,6 +83,7 @@ func (p *ProductController) GetAllProduct(c *gin.Context) {
 	req.MinPrice = c.Query("min_price")
 	req.PriceSort = c.Query("price_sort")
 	req.Search = c.Query("search")
+	req.Sort = c.Query("sort")
 
 	if category != "" {
 		req.Category = strings.Split(category, ",")
@@ -180,7 +181,7 @@ func (p *ProductController) UploadProduct(c *gin.Context) (*entities.FileUploadR
 		return nil, err
 	}
 
-	freq.Claims = &role
+	freq.Claims = role
 
 	res, err := p.FileUsecase.Upload(&freq)
 	if err != nil {

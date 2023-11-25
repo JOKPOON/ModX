@@ -67,40 +67,12 @@ export const AllProducts = () => {
   const [maxPrice, setMaxPrice] = useState<string>(initialMaxPrice);
   const [showCategories, setShowCategories] = useState(true);
   const [sortType, setSortType] = useState("ASC");
-  const [selectedButton, setSelectedButton] = useState<number | null>(null);
   const [ProductsData, setProductsData] = useState<items[] | null>(null);
   const [ApplyButton, setApplyButton] = useState<boolean>(false);
-
-  const handleSortbyButtonClick = (buttonIndex: number) => {
-    setSelectedButton(
-      (prevIndex) => (prevIndex === buttonIndex ? null : buttonIndex)
-      /* if prevIndex === buttonIndex, then set selectedButton to null, 
-      else set selectedButton to buttonIndex */
-    );
-  };
-
-  const handleFethcString = () => {
-    let fetchString = "http://localhost:8080/v1/product/all?";
-    if (selectedCategories.length > 0) {
-      fetchString += "&category=" + selectedCategories.join(",");
-    }
-    if (minPrice !== "") {
-      fetchString += "&min_price=" + minPrice;
-    }
-    if (maxPrice !== "") {
-      fetchString += "&max_price=" + maxPrice;
-    }
-    if (selectedRating !== null) {
-      fetchString += "&rating=" + selectedRating;
-    }
-    if (sortType !== "ASC") {
-      fetchString += "&sortType=" + sortType;
-    }
-    return fetchString;
-  };
+  const [selectedSort, setSelectedSort] = useState<string>("");
 
   const getProductsData = async () => {
-    const response = await fetch(handleFethcString(), {
+    const response = await fetch(handleFetchString(), {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -116,18 +88,41 @@ export const AllProducts = () => {
 
   useEffect(() => {
     getProductsData();
-  }, [ApplyButton]);
-
-  useEffect(() => {
-    console.log("Selected button: ", selectedButton);
-  }, [selectedButton]);
+  }, [ApplyButton, sortType, selectedSort]);
 
   //Sort Button
   const handleSortToggle = () => {
-    setSortType((prevSortType) =>
-      prevSortType === "Low to High" ? "High to Low" : "Low to High"
-    );
+    setSortType(sortType === "ASC" ? "DESC" : "ASC");
     console.log("Sort button clicked!\nSort type: ", sortType);
+  };
+
+  const handleFetchString = () => {
+    const queryParams = [];
+
+    if (selectedCategories.length > 0) {
+      queryParams.push(`category=${selectedCategories.join(",")}`);
+    }
+    if (minPrice !== "") {
+      queryParams.push(`min_price=${minPrice}`);
+    }
+    if (maxPrice !== "") {
+      queryParams.push(`max_price=${maxPrice}`);
+    }
+    if (selectedRating !== null) {
+      queryParams.push(`rating=${selectedRating}`);
+    }
+    if (sortType !== "ASC") {
+      queryParams.push(`price_sort=${sortType}`);
+    }
+    if (selectedSort !== "") {
+      queryParams.push(`sort=${selectedSort}`);
+    }
+
+    let fetchString = "http://localhost:8080/v1/product/all";
+    if (queryParams.length > 0) {
+      fetchString += "?" + queryParams.join("&");
+    }
+    return fetchString;
   };
 
   useEffect(() => {
@@ -255,25 +250,25 @@ export const AllProducts = () => {
               <div className="AllProducts__Sortby__Text__Title">Sort By</div>
               <button
                 className={`AllProducts__Sortby__Text__Options__Button ${
-                  selectedButton === 0 ? "selected" : ""
+                  selectedSort === "top_sale" ? "selected" : ""
                 }`}
-                onClick={() => handleSortbyButtonClick(0)}
+                onClick={() => setSelectedSort("top_sale")}
               >
                 Top Sale
               </button>
               <button
                 className={`AllProducts__Sortby__Text__Options__Button ${
-                  selectedButton === 1 ? "selected" : ""
+                  selectedSort === "latest" ? "selected" : ""
                 }`}
-                onClick={() => handleSortbyButtonClick(1)}
+                onClick={() => setSelectedSort("latest")}
               >
                 Latest
               </button>
               <button
                 className={`AllProducts__Sortby__Text__Options__Button ${
-                  selectedButton === 2 ? "selected" : ""
+                  selectedSort === "rating" ? "selected" : ""
                 }`}
-                onClick={() => handleSortbyButtonClick(2)}
+                onClick={() => setSelectedSort("rating")}
               >
                 Rating
               </button>
@@ -284,7 +279,7 @@ export const AllProducts = () => {
               className="AllProducts__Sortby__Select__Button"
               onClick={handleSortToggle}
             >
-              Price: {sortType}
+              Price: {sortType === "ASC" ? "Low to High" : "High to Low"}
             </button>
           </div>
         </div>

@@ -42,13 +42,13 @@ func (p *ProductRepo) Create(req *entities.Product) (*entities.ProductCreateRes,
 	}
 
 	row, err := p.Db.Queryx(query,
-		req.Title,
+		strings.ToLower(req.Title),
 		req.Price,
 		req.Discount,
 		req.Desc,
 		strings.Join(req.Picture, ","),
 		option,
-		req.Category,
+		strings.ToLower(req.Category),
 		req.Rating,
 		req.Sold,
 		req.Stock,
@@ -143,8 +143,8 @@ func sqlQuery(req *entities.ProductQuery) (string, error) {
 		sqlQuery += " AND id = :id"
 	}
 	if req.Search != "" {
-		sqlQuery += " AND title LIKE :search"
-		req.Search = "%" + req.Search + "%"
+		sqlQuery += " AND (title LIKE :search OR category LIKE :search)"
+		req.Search = "%" + strings.ToLower(req.Search) + "%"
 	}
 	if req.Title != "" {
 		sqlQuery += " AND title = :title"
@@ -152,6 +152,7 @@ func sqlQuery(req *entities.ProductQuery) (string, error) {
 	if len(req.Category) > 0 {
 		sqlQuery += " AND category IN ("
 		for i, v := range req.Category {
+			v = strings.ToLower(v)
 			if i == 0 {
 				sqlQuery += "'" + v + "'"
 			} else {
@@ -175,10 +176,31 @@ func sqlQuery(req *entities.ProductQuery) (string, error) {
 		}
 		sqlQuery += " ORDER BY price " + req.PriceSort
 	}
+
+	if req.Sort != "" {
+		var sortBy string
+		switch req.Sort {
+		case "top_sale":
+			sortBy = "sold"
+		case "latest":
+			sortBy = "created_at"
+		case "rating":
+			sortBy = "rating"
+		default:
+			return "", fmt.Errorf("error, sort must be top_sale, latest, or rating")
+		}
+		if req.PriceSort != "" {
+			sqlQuery += ", " + sortBy + " DESC"
+		} else {
+			sqlQuery += " ORDER BY " + sortBy + " DESC"
+		}
+	}
+
 	if req.Limit != "" {
 		sqlQuery += " LIMIT :limit"
 	}
 
+	fmt.Println("Generated SQL Query:", sqlQuery)
 	return sqlQuery, nil
 }
 

@@ -6,6 +6,10 @@ type UsersUsecase interface {
 	Register(req *UsersRegisterReq) (*UsersRegisterRes, error)
 	CreateUserShipping(req *UsersShippingReq) (*UsersShippingRes, error)
 	ChangePassword(req *UsersChangePasswordReq) (*UsersChangePasswordRes, error)
+	GetUserDetails(user UsersClaims) (*UsersDataRes, error)
+	GetShippingDetails(user UsersClaims) (*UsersShippingReq, error)
+	UpdateShippingDetails(req *UsersShippingReq) (*UsersShippingRes, error)
+	DeleteAccount(user UsersClaims) (*UsersShippingRes, error)
 }
 
 type UsersRepository interface {
@@ -13,6 +17,9 @@ type UsersRepository interface {
 	GetUserByUsername(username string) (*UsersPassport, error)
 	ChangePassword(req *UsersChangePasswordReq) (*UsersChangePasswordRes, error)
 	CreateUserShipping(req *UsersShippingReq) (*UsersShippingRes, error)
+	GetShippingDetails(user_id int) (*UsersShippingReq, error)
+	UpdateShippingDetails(req *UsersShippingReq) (*UsersShippingRes, error)
+	DeleteAccount(user_id int) (*UsersShippingRes, error)
 }
 
 type UsersCredentials struct {
@@ -24,7 +31,14 @@ type UsersPassport struct {
 	Id       int    `json:"id" db:"id"`
 	Username string `json:"username" db:"username"`
 	Password string `json:"password" db:"password"`
+	Email    string `json:"email" db:"email"`
 	Roles    string `json:"roles" db:"roles"`
+}
+
+type UsersDataRes struct {
+	Id       int    `json:"id" db:"id"`
+	Username string `json:"username" db:"username"`
+	Email    string `json:"email" db:"email"`
 }
 
 type UsersClaims struct {
@@ -35,9 +49,9 @@ type UsersClaims struct {
 }
 
 type UsersRegisterReq struct {
-	Username string `json:"username" db:"username"`
-	Password string `json:"password" db:"password"`
-	Email    string `json:"email" db:"email"`
+	Username string `json:"username" db:"username" binding:"required"`
+	Password string `json:"password" db:"password" binding:"required"`
+	Email    string `json:"email" db:"email" binding:"required"`
 }
 
 type UsersChangePasswordReq struct {
@@ -48,12 +62,13 @@ type UsersChangePasswordReq struct {
 }
 
 type UsersRegisterRes struct {
-	Id       uint64 `json:"id" db:"id"`
-	Username string `json:"username" db:"username"`
+	Id          uint64 `json:"id" db:"id"`
+	Username    string `json:"username" db:"username"`
+	AccessToken string `json:"token"`
 }
 
 type UsersLoginRes struct {
-	AccessToken string `json:"access_token"`
+	AccessToken string `json:"token"`
 }
 
 type UsersChangePasswordRes struct {
@@ -64,11 +79,11 @@ type UsersShippingReq struct {
 	UserId   int    `json:"user_id" db:"user_id"`
 	Name     string `json:"name" db:"name" binding:"required"`
 	Tel      string `json:"tel" db:"tel" binding:"required"`
-	Addr     string `json:"addr" db:"addr" binding:"required"`
+	Addr     string `json:"addr" db:"address" binding:"required"`
+	SubDist  string `json:"sub_dist" db:"sub_dist" binding:"required"`
 	District string `json:"district" db:"district" binding:"required"`
 	Province string `json:"province" db:"province" binding:"required"`
 	Zip      string `json:"zip" db:"zip" binding:"required"`
-	IsDef    bool   `json:"is_def" db:"is_def" binding:"required"`
 }
 
 type UsersShippingRes struct {
