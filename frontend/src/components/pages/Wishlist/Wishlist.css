@@ -1,0 +1,392 @@
+.Header {
+    width: 100%;
+    height: 60px;
+    margin-top: 60px;
+    background-color: #171717;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    z-index: 1;
+    /* display: flex; */
+    transition: all 0.5s ease;
+  }
+  
+  .Title__Container {
+    width: 100%;
+    color: #ffffff;
+    transition: all 0.5s ease;
+    display: flex;
+    padding: 20px 0;
+  }
+  
+  .Title__Container .Title__BackIcon {
+    display: flex;
+    align-items: center;
+    padding-left: 15%;
+    /* padding-top: 2px; */
+  }
+  
+  .Title__Container .Title__BackIcon:hover {
+    cursor: pointer;
+    transform: scale(1.01);
+  }
+  
+  .Title__Container .Title__BackTitle {
+    display: flex;
+    align-items: center;
+    margin-left: 0px;
+    margin-bottom: 2px;
+  }
+  
+  .Wishlist__Title {
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+    font-size: 30px;
+    padding-bottom: 45px;
+  }
+  
+  .Wishlist__Item {
+    display: flex;
+    padding: 15px 440px;
+    transition: all 0.3s ease;
+  }
+  
+  .Item__Container {
+    display: block;
+    height: auto;
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid #171717;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+  }
+  
+  .Item__Top {
+    padding: 20px;
+    border-bottom: 1px solid #00000046;
+    display: grid;
+    grid-template-columns: 20% 45% 33%;
+    width: 100%;
+    height: 150px;
+    margin-right: auto;
+  }
+  
+  .Item__Picture {
+    height: 120px;
+    width: 100%;
+    border-radius: 20px;
+    align-content: center;
+  }
+  
+  .Item__Title {
+    display: flex;
+    justify-content: center;
+    font-size: 18px;
+    padding-left: 20%;
+  }
+  
+  .Price__Container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 18px;
+  }
+  
+  .Item__Price {
+    display: block;
+  }
+  
+  .Item__PriceTHB {
+    display: flex;
+    justify-content: flex-end;
+    font-weight: bolder;
+  }
+  
+  .Item__THB {
+    display: flex;
+    justify-content: flex-end;
+    font-weight: bolder;
+  }
+  
+  .Item__Bottom {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    gap: 10px;
+    padding: 10px 30px;
+    margin-right: 10px;
+  }
+  
+  .Item__Remover button {
+    width: 100%;
+    height: 54px;
+    border-radius: 12px;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    cursor: pointer;
+  }
+  
+  .Item__Remover :hover {
+    transform: scale(1.01);
+    box-shadow: 4px 3px 6px rgba(0, 0, 0, 0.125);
+    transition: all 0.2s ease;
+  }
+  
+  .Item__Viewer button {
+    width: 100%;
+    height: 54px;
+    border-radius: 12px;
+    background-color: #000000;
+    border: 1px solid #000000;
+    color: #ffffff;
+    cursor: pointer;
+  }
+  
+  .Item__Viewer :hover {
+    transform: scale(1.01);
+    box-shadow: 4px 3px 6px rgba(0, 0, 0, 0.125);
+    transition: all 0.2s ease;
+  }
+  
+  .dropdown-container {
+    position: relative;
+  }
+  
+  .dropdown-container .button {
+    display: flex;
+    cursor: pointer;
+  }
+  
+  .dropdown-container .dropdown {
+    width: 380px;
+    height: auto;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 5px 2px 15px rgba(0, 0, 0, 0.125);
+    margin: 15px auto 0;
+    padding: 0 15px;
+    position: absolute;
+    display: none;
+    margin-left: 0;
+    transform: none;
+    right: -30px;
+    transition: width 0.3s ease;
+  }
+  
+  .dropdown-container .dropdown .title {
+    font-weight: 600;
+    font-size: 18px;
+    display: flex;
+    position: relative;
+    border-bottom: 1px solid #00000046;
+    padding: 20px 0;
+    padding-left: 20px;
+  }
+  
+  .dropdown_item {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    padding-left: 9px;
+    border-bottom: 1px solid #00000046;
+  }
+  
+  .dropdown_item:hover {
+    cursor: pointer;
+    transform: scale(1.01);
+  }
+  
+  .dropdown_item_info {
+    display: flex;
+  }
+  
+  .dropdown_item:last-child {
+    border-bottom: 0px;
+  }
+  
+  .dropdown_item .dropdown_img {
+    margin-right: 15px;
+  }
+  
+  .dropdown_item .dropdown_img .dropdown_icon {
+    width: 40px;
+    height: 42px;
+  }
+  
+  .dropdown_item .dropdown_info_Wish p {
+    margin-bottom: 5px;
+  }
+  
+  .dropdown_item .dropdown_info_Wish p span {
+    color: #000000;
+    margin-right: 5px;
+  }
+  
+  .dropdown_item .dropdown_Time p {
+    color: #a9a9a9;
+  }
+  
+  .dropdown_item .Deleted_Wish {
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-end;
+    font-size: 26px;
+    padding-left: 22px;
+    padding-right: 10px;
+    color: rgba(255, 0, 0, 0.735);
+  }
+  
+  .dropdown_item .Deleted_Wish:hover {
+    cursor: pointer;
+    transform: scale(1.15);
+  }
+  
+  .dropdown_line{
+      border-bottom: 1px solid #00000046;
+  }
+  
+  .dropdown-container .dropdown::before {
+    content: "";
+    position: absolute;
+    top: -25px;
+    right: 11.9px;
+    transform: translateX(-50%);
+    border: 15px solid;
+    border-color: transparent transparent #ffffff transparent;
+  }
+  
+  .dropdown-container .dropdown {
+    display: block;
+    color: black;
+  }
+  
+  .dropdown-container .dropdown .show_all_container {
+    height: auto;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    background-color: #ffffff;
+    color: #000;
+  }
+  
+  .dropdown-container .dropdown .show_all_container :hover {
+    color: #ffffff;
+    background-color: #000;
+    transform: scale(1.01);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  }
+  
+  .dropdown-container .dropdown .show_all_container button {
+    color: #000;
+    background-color: #ffffff;
+    border-radius: 20px;
+    width: 300px;
+    height: 50px;
+    border: 2px solid black;
+    cursor: pointer;
+    padding: 15px;
+  }
+  
+  .dropdown_item .Deleted_Wish{
+      cursor: pointer;
+      display: flex;
+      justify-content: flex-end;
+      font-size: 26px;
+      padding-left: 22px;
+      padding-right: 10px;
+    }
+    
+    .dropdown_item .Deleted_Wish:hover{
+      cursor: pointer;
+      transform: scale(1.15);
+    }
+  
+  @media screen and (max-width: 1200px) {
+    .Wishlist__Item {
+      padding: 15px 300px;
+    }
+  }
+  
+  @media screen and (max-width: 900px) {
+    .Wishlist__Item {
+      padding: 15px 200px;
+      width: 100%;
+    }
+  
+    .Item__Top {
+      display: block;
+      height: auto;
+    }
+  
+    .Item__Picture {
+      margin: 0 auto;
+      display: flex;
+      height: 120px;
+      width: 80%;
+      justify-content: center;
+    }
+    .Item__Title {
+      padding-top: 30px;
+      padding-left: 0;
+    }
+  
+    .Price__Container {
+      font-size: 18px;
+      padding-top: 20px;
+    }
+  
+    .Item__Bottom {
+      display: block;
+    }
+  
+    .Item__Viewer {
+      padding-top: 10px;
+    }
+  }
+  
+  @media screen and (max-width: 768px) {
+    .Wishlist__Title {
+      font-size: 26px;
+    }
+  
+    .Wishlist__Item {
+      display: flex;
+      padding: 15px 0;
+      margin: 0 auto;
+      width: 350px;
+      justify-content: center;
+    }
+  
+    .Item__Picture {
+      margin: 0 auto;
+      height: 120px;
+      width: 200px;
+    }
+  
+    /* .Item__Title{
+          font-size: 14px;
+        }
+      
+        .Price__Container{
+          font-size: 14px;
+        } */
+  }
+  
+  @media screen and (max-width: 400px) {
+    .Wishlist__Title {
+      padding-bottom: 20px;
+    }
+  
+    .Wishlist__Item {
+      width: 280px;
+    }
+    .Item__Picture {
+      height: 120px;
+      width: 200px;
+    }
+    .Item__Title {
+      font-size: 14px;
+    }
+  
+    .Price__Container {
+      font-size: 14px;
+    }
+  }
+  
