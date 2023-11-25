@@ -9,7 +9,7 @@
     transition: all 0.5s ease;
   }
   
-  .Title__Container {
+  .WishTitle__Container {
     width: 100%;
     color: #ffffff;
     transition: all 0.5s ease;
@@ -17,19 +17,19 @@
     padding: 20px 0;
   }
   
-  .Title__Container .Title__BackIcon {
+  .WishTitle__Container .Title__BackIcon {
     display: flex;
     align-items: center;
     padding-left: 15%;
     /* padding-top: 2px; */
   }
   
-  .Title__Container .Title__BackIcon:hover {
+  .WishTitle__Container .Title__BackIcon:hover {
     cursor: pointer;
     transform: scale(1.01);
   }
   
-  .Title__Container .Title__BackTitle {
+  .WishTitle__Container .Title__BackTitle {
     display: flex;
     align-items: center;
     margin-left: 0px;

@@ -47,7 +47,7 @@ export const Wishlist = () => {
   return (
     <div className="Order__Container">
       <div className="Header">
-        <div className="Title__Container">
+        <div className="WishTitle__Container">
           <div className="Title__BackIcon" onClick={handleGoBack}>
             <i className="bx bx-chevron-left"></i>
             <div className="Title__BackTitle">Back</div>
