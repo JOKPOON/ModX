@@ -3,7 +3,7 @@ export * from './Account/Account';
 export * from './LoginAndRegister/Login';
 export * from './LoginAndRegister/Register';
 export * from './Cart/Cart';
-export * from './Wishlist';
+export * from './Wishlist/Wishlist';
 export * from './Notification/Notification';
 export * from './AllProducts/AllProducts';
 export * from './SingleProduct/SingleProduct';

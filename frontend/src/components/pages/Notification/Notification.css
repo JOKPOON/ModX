@@ -141,12 +141,11 @@
   background-color: #171717;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
   z-index: 1;
-  /* display: flex; */
   transition: all 0.5s ease;
 }
 
 .Title__Container{
-  padding: 20px 220px 20px 220px;
+  padding: 20px 250px 20px 250px;
   width: 100%;
   display: grid;
   grid-template-columns: 1.0fr 1.0fr 1.0fr 1.0fr 1.0fr;

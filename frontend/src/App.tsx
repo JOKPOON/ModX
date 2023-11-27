@@ -1,6 +1,7 @@
 import "./App.css";
 import { Navbar } from "./components/Navbar";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
 import {
   Home,
   AllProducts,
@@ -10,6 +11,7 @@ import {
   Comment,
   Account,
   Notification,
+  Wishlist,
 } from "./components/pages";
 
 function App() {
@@ -26,7 +28,8 @@ function App() {
           <Route path="/Comment" element={<Comment />} />
           <Route path="/Account" element={<Account />} />
           <Route path="/Notification" element={<Notification />} />
-          <Route path="/Login" element={<Login />} />
+          <Route path="/Login" element={<Login />} />          
+          <Route path="/Wishlist" element={<Wishlist />} />
         </Routes>
       </Router>
     </div>

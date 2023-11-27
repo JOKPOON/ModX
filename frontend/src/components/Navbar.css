@@ -115,7 +115,11 @@ nav .Nav__Text {
   display: none;
 }
 
-nav .icon-container :hover {
+nav .icon-container {
+  margin-left: 20px;
+}
+
+nav .icon-container:hover {
   color: #ff6e1f;
   transform: scale(1.01);
   cursor: pointer;
