@@ -3,11 +3,14 @@ import "./Navbar.css";
 import "boxicons/css/boxicons.min.css";
 import Logo from "./Pages/assets/Logo.svg";
 import { NotifyDropdown } from "./pages/Notification/NotifyDropdown";
+import { WishlistDropdown } from "./pages/Wishlist/WishlistDropdown";
 
 export const Navbar = () => {
   const [menuVisible, setMenuVisible] = useState(false);
 
   const [dropdownNotiActive, setDropdownNotiActive] = useState(false);
+
+  const [dropdownWishActive, setDropdownWishActive] = useState(false);
 
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
@@ -30,8 +33,14 @@ export const Navbar = () => {
   };
   
   const handledropdownNotiClick = () => {
-    setDropdownNotiActive(!dropdownNotiActive)
-  }
+    setDropdownNotiActive(!dropdownNotiActive);
+    setDropdownWishActive(false);
+  };
+
+  const handledropdownWishClick = () => {
+    setDropdownWishActive(!dropdownWishActive);
+    setDropdownNotiActive(false);
+  };
 
   return (
     <nav className={`nav ${menuVisible ? "active" : ""}`}>
@@ -82,10 +91,27 @@ export const Navbar = () => {
           </div>
         </li>
         <li>
-          <a href="/Wishlist" className="icon-container">
-            <i className="bx bx-heart icon"></i>
-            <p className="Nav__Text">Wishlist</p>
-          </a>
+        <div
+            className={`icon-wrapper ${
+              isMobile ? "mobile-mode" : "deskop-mode"
+            }`}
+          >
+            {isMobile ? (
+              <a href="/Wishlist" className="icon-container">
+                <i className="bx bx-heart icon"></i>
+                <p className="Nav__Text">Wishlist</p>
+              </a>
+            ) : (
+              <div className="dropdown-block" onClick={handledropdownWishClick}>
+                <div className="icon-container">
+                  <div className="button">
+                    <i className="bx bx-heart icon"></i>
+                  </div>
+                </div>
+                {dropdownWishActive && <WishlistDropdown />}
+              </div>
+            )}
+          </div>
         </li>
         <li>
           <a href="/cart" className="icon-container">

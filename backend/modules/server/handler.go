@@ -37,46 +37,36 @@ import (
 func (s *Server) MapHandlers() error {
 	v1 := s.App.Group("/v1")
 
-	// Users
 	usersGroup := v1.Group("/users")
-	usersRepo := _usersRepo.NewUsersRepo(s.DB)
-	usersUsecase := _usersUsecase.NewUsersUsecases(usersRepo)
-	_usersController.NewUsersControllers(usersGroup, usersUsecase)
-
-	// Auth
 	authGroup := v1.Group("/auth")
-	authRepo := _authRepo.NewAuthRepo(s.DB)
-	authUsecase := _authUsecase.NewAuthUsecases(authRepo, usersRepo)
-	_authController.NewAuthControllers(authGroup, s.Cfg, authUsecase)
-
-	// File
 	fileGroup := v1.Group("/file")
-	fileRepo := _fileRepo.NewFileRepo(s.DB)
-	fileUsecase := _fileUsecase.NewFileUsecase(usersRepo, fileRepo)
-	_fileController.NewFileControllers(fileGroup, s.Cfg, fileUsecase)
-
-	// Order
 	orderGroup := v1.Group("/order")
-	orderRepo := _orderRepo.NewOrderRepo(s.DB)
-	orderUsecase := _orderUsecase.NewOrderUsecases(orderRepo, usersRepo)
-	_orderController.NewOrderControllers(orderGroup, s.Cfg, usersUsecase, orderUsecase)
-
-	// Payment
 	paymentGroup := v1.Group("/payment")
-	paymentRepo := _paymentRepo.NewPaymentRepo(s.DB)
-	paymentUsecase := _paymentUsecase.NewPaymentUsecase(paymentRepo)
-	_paymentController.NewPaymentControllers(paymentGroup, s.Cfg, paymentUsecase)
-
-	// Product
 	productGroup := v1.Group("/product")
-	productRepo := _productRepo.NewProductRepo(s.DB)
-	productUsecase := _productUsecase.NewProductUsecases(productRepo, fileRepo)
-	_productController.NewProductControllers(productGroup, s.Cfg, usersUsecase, productUsecase, fileUsecase)
-
-	// Cart
 	cartGroup := v1.Group("/cart")
+
+	usersRepo := _usersRepo.NewUsersRepo(s.DB)
+	authRepo := _authRepo.NewAuthRepo(s.DB)
+	fileRepo := _fileRepo.NewFileRepo(s.DB)
+	orderRepo := _orderRepo.NewOrderRepo(s.DB)
+	paymentRepo := _paymentRepo.NewPaymentRepo(s.DB)
+	productRepo := _productRepo.NewProductRepo(s.DB)
 	cartRepo := _cartRepo.NewCartRepo(s.DB)
+
+	authUsecase := _authUsecase.NewAuthUsecases(authRepo, usersRepo)
+	usersUsecase := _usersUsecase.NewUsersUsecases(usersRepo)
+	fileUsecase := _fileUsecase.NewFileUsecase(usersRepo, fileRepo)
+	orderUsecase := _orderUsecase.NewOrderUsecases(orderRepo, usersRepo)
+	paymentUsecase := _paymentUsecase.NewPaymentUsecase(paymentRepo)
+	productUsecase := _productUsecase.NewProductUsecases(productRepo, fileRepo)
 	cartUsecase := _cartUsecase.NewCartUsecase(cartRepo)
+
+	_usersController.NewUsersControllers(usersGroup, usersUsecase, authUsecase)
+	_authController.NewAuthControllers(authGroup, s.Cfg, authUsecase)
+	_fileController.NewFileControllers(fileGroup, s.Cfg, fileUsecase)
+	_orderController.NewOrderControllers(orderGroup, s.Cfg, usersUsecase, orderUsecase)
+	_paymentController.NewPaymentControllers(paymentGroup, s.Cfg, paymentUsecase)
+	_productController.NewProductControllers(productGroup, s.Cfg, usersUsecase, productUsecase, fileUsecase)
 	_cartController.NewCartControllers(cartGroup, s.Cfg, usersUsecase, cartUsecase)
 
 	s.App.NoRoute(func(c *gin.Context) {

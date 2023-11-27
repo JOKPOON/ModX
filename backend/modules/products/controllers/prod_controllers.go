@@ -181,7 +181,7 @@ func (p *ProductController) UploadProduct(c *gin.Context) (*entities.FileUploadR
 		return nil, err
 	}
 
-	freq.Claims = &role
+	freq.Claims = role
 
 	res, err := p.FileUsecase.Upload(&freq)
 	if err != nil {
