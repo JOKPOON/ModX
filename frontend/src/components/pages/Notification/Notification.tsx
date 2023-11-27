@@ -47,7 +47,7 @@ export const Notification = () => {
   const navigate = useNavigate();
 
   const handleHistorygo = () => {
-    navigate("/History");
+    navigate("/Comment");
   };
 
   return (
