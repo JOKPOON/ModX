@@ -50,6 +50,9 @@ func JwtAuthentication() gin.HandlerFunc {
 		})
 
 		if err != nil {
+			c.JSON(http.StatusForbidden, gin.H{
+				"error": err.Error(),
+			})
 			c.Abort()
 			return
 		}
@@ -86,15 +89,11 @@ func GetUserByToken(c *gin.Context) (*entities.UsersClaims, error) {
 		return nil, errors.New("error, missing auth token")
 	}
 
-	token, err := jwt.ParseWithClaims(tokenPart, tk, func(token *jwt.Token) (interface{}, error) {
+	_, err := jwt.ParseWithClaims(tokenPart, tk, func(token *jwt.Token) (interface{}, error) {
 		return []byte(os.Getenv("JWT_SECRET")), nil
 	})
 
-	if token.Valid {
-		return tk, nil
-	}
-
-	return nil, err
+	return tk, err
 }
 
 func RefreshToken(c *gin.Context) {
