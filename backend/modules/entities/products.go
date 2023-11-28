@@ -28,7 +28,7 @@ type Product struct {
 	Rating   int                    `json:"rating" db:"rating"`
 	Sold     int                    `json:"sold" db:"sold"`
 	Stock    int                    `json:"stock" db:"stock"`
-	Reviews  []Review               `json:"review"`
+	Reviews  []ReviewRes            `json:"review"`
 	Created  string                 `json:"created" db:"created_at"`
 	Updated  string                 `json:"updated" db:"updated_at"`
 }

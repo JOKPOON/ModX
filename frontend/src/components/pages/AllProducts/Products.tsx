@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { formatPrice } from "../Helper/Calculator";
 
 interface items {
+  id: number;
   picture?: string;
   title: string;
   sold: number;
@@ -24,9 +25,7 @@ function Products({ product }: { product: items[] | null }) {
   console.log("ProductsData", ProductsData);
   // To change number of items per row when screen size is smaller
   if (ProductsData == null || ProductsData.length == 0) {
-    return (
-        <div className="Product__Not__Found">Product Not Found!</div>
-    );
+    return <div className="Product__Not__Found">Product Not Found!</div>;
   }
   const rows = Array.from(
     { length: Math.ceil(ProductsData.length / itemsPerRow) },
@@ -42,7 +41,7 @@ function Products({ product }: { product: items[] | null }) {
   ) => {
     const overallIndex = rowIndex * itemsPerRow + itemIndex; // to get the index of the item in the overall array
     console.log(`Selected item at index : ${overallIndex}:`, item);
-    navigate("/SingleProduct", { state: { selectedItems: [item] } });
+    navigate("/SingleProduct", { state: { item: item } });
   };
 
   const handleAddToWishlist = (

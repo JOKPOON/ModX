@@ -25,11 +25,12 @@ type Review struct {
 }
 
 type ReviewRes struct {
-	ID        int    `json:"id"`
-	ProductID int    `json:"product_id"`
-	UserID    int    `json:"user_id"`
+	Id        int    `json:"id"`
+	UserId    int    `json:"user_id" db:"user_id" `
+	Name      string `json:"name"`
 	Comment   string `json:"comment"`
 	Rating    int    `json:"rating"`
+	CreatedAt string `json:"created_at"`
 }
 
 type ReviewReq struct {

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import "./AllProducts.css";
 import Products from "./Products";
@@ -10,6 +11,7 @@ interface CategoryButtonProps {
 }
 
 interface items {
+  id: number;
   picture?: string;
   title: string;
   sold: number;
@@ -235,11 +237,7 @@ export const AllProducts = () => {
     setApplyButton(!ApplyButton);
   };
 
-  useEffect(() => {
-    return () => {
-      localStorage.clear();
-    };
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <div>

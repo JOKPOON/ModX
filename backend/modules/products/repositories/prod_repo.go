@@ -238,7 +238,6 @@ func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, erro
 	req.Rating = res.Rating
 	req.Sold = res.Sold
 	req.Stock = res.Stock
-	req.Created = res.Created
 	req.Updated = res.Updated
 	req.Picture = strings.Split(res.Picture, ",")
 	for i, v := range req.Picture {
@@ -246,7 +245,8 @@ func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, erro
 	}
 
 	query = `
-	SELECT * FROM reviews WHERE product_id = $1;
+	SELECT id, user_id, comment, rating, created_at 
+	FROM reviews WHERE product_id = $1;
 	`
 
 	row, err = p.Db.Queryx(query, req.Id)
@@ -254,12 +254,38 @@ func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, erro
 		return nil, err
 	}
 
-	var review entities.Review
+	var review entities.ReviewRes
 	for row.Next() {
-		err = row.StructScan(&review)
+		err := row.Scan(
+			&review.Id,
+			&review.UserId,
+			&review.Comment,
+			&review.Rating,
+			&review.CreatedAt,
+		)
 		if err != nil {
 			return nil, err
 		}
+
+		created_time := strings.Split(review.CreatedAt, "T")
+		review.CreatedAt = created_time[0]
+
+		query := `
+		SELECT username FROM users WHERE id = $1;
+		`
+
+		rows, err := p.Db.Queryx(query, review.UserId)
+		if err != nil {
+			return nil, err
+		}
+
+		for rows.Next() {
+			err = rows.Scan(&review.Name)
+			if err != nil {
+				return nil, err
+			}
+		}
+
 		req.Reviews = append(req.Reviews, review)
 	}
 
