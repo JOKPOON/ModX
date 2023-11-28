@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"encoding/json"
+	"strings"
 
 	"github.com/Bukharney/ModX/modules/entities"
 	"github.com/jmoiron/sqlx"
@@ -57,15 +58,36 @@ func (r *WishlistRepo) GetWishlistItems(req *entities.WhishlistGetReq) (*entitie
 
 func (r *WishlistRepo) AddWishlistItem(req *entities.WhishlistAddReq) (*entities.WhishlistAddRes, error) {
 	products := []entities.Whishlist{}
+
 	options_json, err := json.Marshal(req.Products.Options)
 	if err != nil {
 		return nil, err
 	}
 
 	query := `SELECT user_id, product_id, options FROM whishlist WHERE user_id = $1 AND product_id = $2 AND options = $3`
-	err = r.Db.Select(&products, query, req.UserId, req.Products.ProductId, options_json)
+	row, err := r.Db.Queryx(query, req.UserId, req.Products.ProductId, options_json)
 	if err != nil {
 		return nil, err
+	}
+
+	for row.Next() {
+		var product entities.Whishlist
+		var options_json string
+		err := row.Scan(
+			&product.UserId,
+			&product.ProductId,
+			&options_json,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		err = json.Unmarshal([]byte(options_json), &product.Options)
+		if err != nil {
+			return nil, err
+		}
+
+		products = append(products, product)
 	}
 
 	if len(products) > 0 {
@@ -129,4 +151,31 @@ func (r *WishlistRepo) GetProductOptions(productId int) (*entities.ProductOption
 	}
 
 	return options, nil
+}
+
+func (r *WishlistRepo) GetProductDetails(product_id int) (*entities.ProductGetByIdRes, error) {
+	query := `
+	SELECT
+		products.id,
+		products.title,
+		products.picture,
+		products.discount
+	FROM products
+	WHERE products.id = $1;
+	`
+
+	var res entities.ProductGetByIdRes
+	err := r.Db.QueryRowx(query, product_id).StructScan(&res)
+	if err != nil {
+		return nil, err
+	}
+
+	picture := strings.Split(res.Picture, ",")
+	for i, v := range picture {
+		picture[i] = "http://localhost:8080/static/products/" + v
+	}
+
+	res.Picture = picture[0]
+
+	return &res, nil
 }

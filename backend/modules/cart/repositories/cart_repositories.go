@@ -123,7 +123,8 @@ func (c *CartRepo) GetProductDetails(product_id int) (*entities.ProductGetByIdRe
 	SELECT
 		products.id,
 		products.title,
-		products.picture
+		products.picture,
+		products.discount
 	FROM products
 	WHERE products.id = $1;
 	`

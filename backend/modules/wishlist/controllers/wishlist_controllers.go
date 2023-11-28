@@ -32,9 +32,6 @@ func NewWishlistControllers(
 func (c *WishlistController) GetWhishlistItems(ctx *gin.Context) {
 	role, err := middlewares.GetUserByToken(ctx)
 	if err != nil {
-		ctx.JSON(400, gin.H{
-			"error": err.Error(),
-		})
 		return
 	}
 
@@ -62,22 +59,21 @@ func (c *WishlistController) AddWhishlistItem(ctx *gin.Context) {
 		return
 	}
 
-	req := &entities.WhishlistAddReq{
-		UserId: role.Id,
-	}
-
-	err = ctx.BindJSON(req)
+	var req entities.WhishlistAddReq
+	err = ctx.ShouldBind(&req.Products)
 	if err != nil {
 		ctx.JSON(400, gin.H{
-			"error": err.Error(),
+			"error bind": err.Error(),
 		})
 		return
 	}
 
-	res, err := c.WishlistUsecase.AddWishlistItem(req)
+	req.UserId = role.Id
+
+	res, err := c.WishlistUsecase.AddWishlistItem(&req)
 	if err != nil {
 		ctx.JSON(400, gin.H{
-			"error": err.Error(),
+			"error add": err.Error(),
 		})
 		return
 	}

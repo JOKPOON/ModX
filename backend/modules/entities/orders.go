@@ -102,7 +102,8 @@ type ItemGetByIdRes struct {
 }
 
 type ProductGetByIdRes struct {
-	Id      int    `json:"id"`
-	Title   string `json:"title"`
-	Picture string `json:"picture"`
+	Id       int    `json:"id"`
+	Title    string `json:"title"`
+	Picture  string `json:"picture"`
+	Discount int    `json:"discount"`
 }

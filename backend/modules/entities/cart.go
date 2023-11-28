@@ -26,6 +26,7 @@ type CartProduct struct {
 	Options      map[string]string `json:"options" binding:"required"`
 	Quantity     int               `json:"quantity" binding:"required"`
 	Price        int               `json:"price"`
+	Discount     int               `json:"discount"`
 	ProductTitle string            `json:"product_title"`
 	ProductImage string            `json:"product_image"`
 }

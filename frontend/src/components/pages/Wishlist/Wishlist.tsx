@@ -1,32 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Wishlist.css";
-import Clothes from "../assets/Clothes.svg";
 import { useNavigate } from "react-router-dom";
 
 interface items {
-  picture?: string;
-  title: string;
+  product_image?: string;
+  product_title: string;
   price: number;
 }
 
 export const Wishlist = () => {
-  const [wishlist, setWishlist] = useState<items[]>([
-    {
-      picture: "#00001",
-      title: "Female Uniform From KMUTT Fear of Natacha 2nd",
-      price: 99999999,
-    },
-    {
-      picture: "#00002",
-      title: "Female Uniform From KMUTT Fear of Natacha 2nd",
-      price: 99999999,
-    },
-    {
-      picture: "#00002",
-      title: "Female Uniform From KMUTT Fear of Natacha 2nd",
-      price: 99999999,
-    },
-  ]);
+  const [wishlist, setWishlist] = useState<items[]>([]);
 
   const removeFromWishlist = (index: number) => {
     const updatedWishlist = [...wishlist];
@@ -43,6 +26,37 @@ export const Wishlist = () => {
   const handleGoBack = () => {
     navigate(-1);
   };
+
+  const handleGetWishList = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/Login";
+      return;
+    }
+
+    await fetch("http://localhost:8080/v1/wishlist/all", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }).then(async (res) => {
+      if (res.ok) {
+        await res.json().then((data) => {
+          console.log(data);
+          setWishlist(data.products);
+        });
+      }
+
+      if (res.status === 403) {
+        window.location.href = "/Login";
+      }
+    });
+  };
+
+  useEffect(() => {
+    handleGetWishList();
+  }, []);
 
   return (
     <div className="Order__Container">
@@ -62,9 +76,9 @@ export const Wishlist = () => {
               <div className="Item__Container">
                 <div className="Item__Top">
                   <div className="Item__Picture">
-                    <img src={Clothes} className="Item__Picture" />
+                    <img src={items.product_image} className="Item__Picture" />
                   </div>
-                  <div className="Item__Title">{items.title}</div>
+                  <div className="Item__Title">{items.product_title}</div>
                   <div className="Price__Container">
                     <div className="Item__Price">
                       <div className="Item__PriceTHB">{items.price}</div>

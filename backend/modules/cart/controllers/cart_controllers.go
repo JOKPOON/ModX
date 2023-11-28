@@ -36,7 +36,6 @@ func (c *CartController) GetCartItems(ctx *gin.Context) {
 
 	role, err := middlewares.GetUserByToken(ctx)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error get users": err.Error()})
 		return
 	}
 

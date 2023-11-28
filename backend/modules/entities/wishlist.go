@@ -5,6 +5,7 @@ type WishlistRepository interface {
 	AddWishlistItem(req *WhishlistAddReq) (*WhishlistAddRes, error)
 	GetProductOptions(productId int) (*ProductOptions, error)
 	DeleteWishlistItem(req *WhishlistDeleteReq) (*WhishlistDeleteRes, error)
+	GetProductDetails(productId int) (*ProductGetByIdRes, error)
 }
 
 type WishlistUsecase interface {

@@ -1,37 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import "./Wishlist.css";
 import { useNavigate } from "react-router-dom";
-import Logo from "../assets/Logo.svg";
 
 interface items {
-  picture?: string;
-  title: string;
+  product_title?: string;
+  product_image?: string;
 }
-
-const Wishlist: items[] = [
-  {
-    picture: "#00001",
-    title: "Female Uniform From KMUTT Fear of Natacha 2nd",
-  },
-  {
-    picture: "#00001",
-    title: "Female Uniform From KMUTT Fear of Natacha 2nd",
-  },
-  {
-    picture: "#00001",
-    title: "Female Uniform From KMUTT Fear of Natacha 2nd",
-  },
-  {
-    picture: "#00001",
-    title: "Female Uniform From KMUTT Fear of Natacha 2nd",
-  },
-];
 
 export const WishlistDropdown = () => {
   const navigate = useNavigate();
 
   const [dropdownWishActive, setDropdownWishActive] = useState(false);
+  const [Wishlist, setWishlist] = useState<items[] | null>(null);
 
   const handledropdownWishlistgo = () => {
     navigate("/Wishlist");
@@ -44,6 +25,37 @@ export const WishlistDropdown = () => {
     setDropdownWishActive(!dropdownWishActive);
   };
 
+  const handleGetWishList = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/Login";
+      return;
+    }
+
+    await fetch("http://localhost:8080/v1/wishlist/all", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }).then(async (res) => {
+      if (res.ok) {
+        await res.json().then((data) => {
+          console.log(data);
+          setWishlist(data.products);
+        });
+      }
+
+      if (res.status === 403) {
+        window.location.href = "/Login";
+      }
+    });
+  };
+
+  useEffect(() => {
+    handleGetWishList();
+  }, []);
+
   return (
     <div className="dropdown-container">
       <div className="dropdown">
@@ -51,8 +63,8 @@ export const WishlistDropdown = () => {
           <span>Wishlist</span>
         </div>
         <div className="item_container">
-          {Wishlist.map((item, index) => (
-            <div className="dropdown_item_form">
+          <div className="dropdown_item_form">
+            {Wishlist?.map((item, index) => (
               <React.Fragment key={index}>
                 <div className="dropdown_line">
                   <div className="dropdown_item">
@@ -61,11 +73,14 @@ export const WishlistDropdown = () => {
                       onClick={handleProductgo}
                     >
                       <div className="dropdown_img">
-                        <img src={Logo} className="dropdown_icon" />
+                        <img
+                          src={item.product_image}
+                          className="dropdown_icon"
+                        />
                       </div>
                       <div className=".dropdown_info">
                         <p>
-                          <span>{item.title}</span>
+                          <span>{item.product_title}</span>
                         </p>
                       </div>
                     </div>
@@ -75,8 +90,8 @@ export const WishlistDropdown = () => {
                   </div>
                 </div>
               </React.Fragment>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
         <div className="show_all_container">
           <button onClick={handledropdownWishlistgo}>Show All Wishlists</button>

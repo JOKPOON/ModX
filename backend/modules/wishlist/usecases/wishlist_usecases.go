@@ -35,6 +35,14 @@ func (u *WishlistUsecases) GetWishlistItems(req *entities.WhishlistGetReq) (*ent
 		}
 
 		res.Products[i] = product
+
+		product_detail, err := u.WishlistRepo.GetProductDetails(product.ProductId)
+		if err != nil {
+			return nil, err
+		}
+
+		res.Products[i].ProductTitle = product_detail.Title
+		res.Products[i].ProductImage = product_detail.Picture
 	}
 
 	return res, nil

@@ -109,6 +109,41 @@ export const SingleProduct = () => {
     );
   };
 
+  const handleAddToWishlist = async () => {
+    const data = {
+      product_id: Product?.id,
+      quantity: selectedQuantity,
+      options: {
+        option_1: selectedOptionKey1,
+        option_2: selectedOptionKey2,
+      },
+    };
+
+    const token = localStorage.getItem("token");
+    if (token == null) {
+      window.location.href = "/Login";
+      return;
+    }
+
+    await fetch("http://localhost:8080/v1/wishlist/add", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }).then(
+      (res) => {
+        if (res.status === 403) {
+          window.location.href = "/Login";
+        }
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+  };
+
   const initialData = () => {
     if (Product !== null) {
       setSelectedOptionKey1(
@@ -225,17 +260,16 @@ export const SingleProduct = () => {
   };
 
   const HandleSingleItemToWishlist = () => {
-    console.log("Add to Wishlist Add by index of Item");
+    handleAddToWishlist();
   };
 
   const HandleSingleItemToCart = () => {
-    console.log("Add to Cart Add by index of Item");
     handleAddToCart();
   };
 
   const HandleSingleItemBuyNow = () => {
-    console.log("Buy Now");
-    console.log(selectedOptionKey1, selectedOptionKey2, selectedQuantity);
+    handleAddToCart();
+    navigate("/Cart");
   };
 
   return (

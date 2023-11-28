@@ -54,6 +54,7 @@ func (c *CartUsecases) GetCartItems(req *entities.CartGetReq) (*entities.CartGet
 
 		res.Products[i].ProductTitle = product_detail.Title
 		res.Products[i].ProductImage = product_detail.Picture
+		res.Products[i].Discount = product_detail.Discount
 	}
 
 	if err != nil {
