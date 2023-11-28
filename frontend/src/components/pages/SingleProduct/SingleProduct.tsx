@@ -106,6 +106,7 @@ export const SingleProduct = () => {
     });
   };
 
+
   const initialData = () => {
     if (Product !== null) {
       setSelectedOptionKey1(
@@ -171,6 +172,11 @@ export const SingleProduct = () => {
     );
   };
 
+  const [selectedOptionKey1, setSelectedOptionKey1] = useState<string | null>(null);
+  const [selectedSubOption1, setSelectedSubOption1] = useState<string | null>(null);
+  const [selectedOptionKey2, setSelectedOptionKey2] = useState<string | null>(null);
+  const [selectedSubOption2, setSelectedSubOption2] = useState<string | null>(null);
+
   const renderSelectOptions = () => {
     return (
       <>
@@ -220,6 +226,21 @@ export const SingleProduct = () => {
       </>
     );
   };
+
+  const defaultOption1 = Object.keys(Product.options ?? {})[0];
+  const defaultSubOption1 = Object.keys(
+    Product.options?.[defaultOption1] ?? {}
+  )[0];
+  const defaultOption2 = Object.keys(Product.options ?? {})[1];
+  const defaultSubOption2 = Object.keys(
+    Product.options?.[defaultOption2] ?? {}
+  )[0];
+  useEffect(() => {
+    setSelectedOptionKey1(defaultOption1);
+    setSelectedSubOption1(defaultSubOption1);
+    setSelectedOptionKey2(defaultOption2);
+    setSelectedSubOption2(defaultSubOption2);
+  }, []);
 
   const HandleSingleItemToWishlist = () => {
     console.log("Add to Wishlist Add by index of Item");
