@@ -41,9 +41,7 @@ const Order: items[] = [
   },
 ];
 
-
 export const Notification = () => {
-
   const navigate = useNavigate();
 
   const handleHistorygo = () => {
@@ -63,21 +61,29 @@ export const Notification = () => {
       </div>
       <div className="Order__Body" onClick={handleHistorygo}>
         {Order.map((item, index) => (
-          <div className="Order__Container">
+          <div className="Order__Container" key={index}>
             <React.Fragment key={index}>
               <div className="Order__Grid1">{item.orderID}</div>
               <div className="Order__Grid2">{item.quantity}</div>
               <div className="Order__Grid3">{item.price}THB</div>
               <div className="Order__Grid4">{item.date}</div>
               <div className="Order__Grid5">
-                <div className={`${item.status === 'Pending' ? 'Pending' : item.status === 'Complete' ? 'Complete' : 'Shipping'}`}>
-                  {item.status}</div>
+                <div
+                  className={`${
+                    item.status === "Pending"
+                      ? "Pending"
+                      : item.status === "Complete"
+                      ? "Complete"
+                      : "Shipping"
+                  }`}
+                >
+                  {item.status}
+                </div>
               </div>
             </React.Fragment>
           </div>
         ))}
       </div>
-
     </div>
   );
 };

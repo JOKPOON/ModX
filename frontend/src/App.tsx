@@ -13,8 +13,17 @@ import {
   Notification,
   Wishlist,
 } from "./components/pages";
+import { useScript } from "@uidotdev/usehooks";
 
 function App() {
+  const status = useScript(`https://cdn.omise.co/omise.js`, {
+    removeOnUnmount: false,
+  });
+
+  if (status === "error") {
+    return <div>Failed to load Omise.js</div>;
+  }
+
   return (
     <div className="App">
       <Router>
@@ -28,7 +37,7 @@ function App() {
           <Route path="/Comment" element={<Comment />} />
           <Route path="/Account" element={<Account />} />
           <Route path="/Notification" element={<Notification />} />
-          <Route path="/Login" element={<Login />} />          
+          <Route path="/Login" element={<Login />} />
           <Route path="/Wishlist" element={<Wishlist />} />
         </Routes>
       </Router>

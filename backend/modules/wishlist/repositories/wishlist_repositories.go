@@ -110,19 +110,14 @@ func (r *WishlistRepo) AddWishlistItem(req *entities.WhishlistAddReq) (*entities
 }
 
 func (r *WishlistRepo) DeleteWishlistItem(req *entities.WhishlistDeleteReq) (*entities.WhishlistDeleteRes, error) {
-	query := `DELETE FROM whishlist WHERE user_id = $1 AND product_id = $2 AND options = $3`
-
-	options_json, err := json.Marshal(req.Options)
-	if err != nil {
-		return nil, err
-	}
-	_, err = r.Db.Exec(query, req.UserId, req.ProductId, options_json)
+	query := `DELETE FROM whishlist WHERE user_id = $1 AND id = $2`
+	_, err := r.Db.Exec(query, req.UserId, req.Id)
 	if err != nil {
 		return nil, err
 	}
 
 	return &entities.WhishlistDeleteRes{
-		Id: req.ProductId,
+		Id: req.Id,
 	}, nil
 }
 

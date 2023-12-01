@@ -22,6 +22,7 @@ type Cart struct {
 }
 
 type CartProduct struct {
+	Id           int               `json:"id"`
 	ProductId    int               `json:"product_id" binding:"required"`
 	Options      map[string]string `json:"options" binding:"required"`
 	Quantity     int               `json:"quantity" binding:"required"`
@@ -50,8 +51,8 @@ type CartGetRes struct {
 }
 
 type CartDeleteReq struct {
-	UserId    int `json:"user_id"`
-	ProductId int `json:"product_id" binding:"required"`
+	UserId int   `json:"user_id"`
+	CartId []int `json:"cart_id"`
 }
 
 type CartDeleteRes struct {

@@ -46,9 +46,8 @@ type WhishlistGetRes struct {
 }
 
 type WhishlistDeleteReq struct {
-	UserId    int               `json:"user_id"`
-	ProductId int               `json:"product_id" binding:"required"`
-	Options   map[string]string `json:"options" binding:"required"`
+	UserId int `json:"user_id"`
+	Id     int `json:"id"`
 }
 
 type WhishlistDeleteRes struct {

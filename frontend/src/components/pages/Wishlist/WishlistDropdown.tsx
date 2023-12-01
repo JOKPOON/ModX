@@ -4,6 +4,8 @@ import "./Wishlist.css";
 import { useNavigate } from "react-router-dom";
 
 interface items {
+  id: number;
+  product_id?: number;
   product_title?: string;
   product_image?: string;
 }
@@ -20,9 +22,10 @@ export const WishlistDropdown = () => {
     // setMenuVisible(!menuVisible);
   };
 
-  const handleProductgo = () => {
-    navigate("/Product");
+  const handleProductgo = (item: items) => {
     setDropdownWishActive(!dropdownWishActive);
+    item.id = item.product_id ?? 0;
+    navigate("/SingleProduct", { state: { item: item } });
   };
 
   const handleGetWishList = async () => {
@@ -32,7 +35,7 @@ export const WishlistDropdown = () => {
       return;
     }
 
-    await fetch("http://localhost:8080/v1/wishlist/all", {
+    await fetch("http://localhost:8080/v1/wishlist/", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -70,7 +73,9 @@ export const WishlistDropdown = () => {
                   <div className="dropdown_item">
                     <div
                       className="dropdown_item_info"
-                      onClick={handleProductgo}
+                      onClick={() => {
+                        handleProductgo(item);
+                      }}
                     >
                       <div className="dropdown_img">
                         <img

@@ -57,7 +57,7 @@ export const NotifyDropdown = () => {
         </div>
         <div className="item_container">
           {Notification.map((item, index) => (
-            <div className="dropdown_item_form">
+            <div className="dropdown_item_form" key={index}>
               <React.Fragment key={index}>
                 <div className="dropdown_item">
                   <div className="dropdown_item_info" onClick={handleOrdergo}>

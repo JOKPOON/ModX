@@ -3,6 +3,8 @@ import "./Wishlist.css";
 import { useNavigate } from "react-router-dom";
 
 interface items {
+  id: number;
+  product_id?: number;
   product_image?: string;
   product_title: string;
   price: number;
@@ -12,15 +14,18 @@ export const Wishlist = () => {
   const [wishlist, setWishlist] = useState<items[]>([]);
 
   const removeFromWishlist = (index: number) => {
-    const updatedWishlist = [...wishlist];
-    updatedWishlist.splice(index, 1);
-    setWishlist(updatedWishlist);
+    handleDeleteWishList(index);
+
+    const newWishlist = [...wishlist];
+    newWishlist.splice(index, 1);
+    setWishlist(newWishlist);
   };
 
   const navigate = useNavigate();
 
-  const handleProductGo = () => {
-    navigate("/Product");
+  const handleProductGo = (item: items) => {
+    item.id = item.product_id ?? 0;
+    navigate("/SingleProduct", { state: { item: item } });
   };
 
   const handleGoBack = () => {
@@ -34,7 +39,7 @@ export const Wishlist = () => {
       return;
     }
 
-    await fetch("http://localhost:8080/v1/wishlist/all", {
+    await fetch("http://localhost:8080/v1/wishlist/", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -46,6 +51,30 @@ export const Wishlist = () => {
           console.log(data);
           setWishlist(data.products);
         });
+      }
+
+      if (res.status === 403) {
+        window.location.href = "/Login";
+      }
+    });
+  };
+
+  const handleDeleteWishList = async (id: number) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/Login";
+      return;
+    }
+
+    await fetch(`http://localhost:8080/v1/wishlist/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }).then(async (res) => {
+      if (res.ok) {
+        await handleGetWishList();
       }
 
       if (res.status === 403) {
@@ -90,13 +119,18 @@ export const Wishlist = () => {
                   <div className="Item__Remover">
                     <button
                       className="Remove"
-                      onClick={() => removeFromWishlist(index)}
+                      onClick={() => removeFromWishlist(items.id)}
                     >
                       Remove
                     </button>
                   </div>
                   <div className="Item__Viewer">
-                    <button className="View" onClick={handleProductGo}>
+                    <button
+                      className="View"
+                      onClick={() => {
+                        handleProductGo(items);
+                      }}
+                    >
                       Go to store
                     </button>
                   </div>

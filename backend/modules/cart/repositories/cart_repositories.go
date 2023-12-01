@@ -52,6 +52,7 @@ func (c *CartRepo) AddCartItem(req *entities.CartAddReq) (*entities.CartAddRes, 
 func (c *CartRepo) GetCartItems(req *entities.CartGetReq) (*entities.CartGetRes, error) {
 	query := `
 	SELECT
+		"carts"."id",
 		"carts"."product_id",
 		"carts"."options",
 		"carts"."quantity"
@@ -72,6 +73,7 @@ func (c *CartRepo) GetCartItems(req *entities.CartGetReq) (*entities.CartGetRes,
 		var options_json []byte
 
 		err = rows.Scan(
+			&product.Id,
 			&product.ProductId,
 			&options_json,
 			&product.Quantity,
@@ -148,15 +150,17 @@ func (c *CartRepo) GetProductDetails(product_id int) (*entities.ProductGetByIdRe
 func (c *CartRepo) DeleteCartItem(req *entities.CartDeleteReq) (*entities.CartDeleteRes, error) {
 	query := `
 	DELETE FROM "carts"
-	WHERE "carts"."user_id" = $1
-	AND "carts"."product_id" = $2
+	WHERE "carts"."id" = $1
+	AND "carts"."user_id" = $2
 	RETURNING "id";
 	`
 
 	var res entities.CartDeleteRes
-	err := c.Db.QueryRowx(query, req.UserId, req.ProductId).Scan(&res.Id)
-	if err != nil {
-		return nil, err
+	for _, v := range req.CartId {
+		err := c.Db.QueryRowx(query, v, req.UserId).Scan(&res.Id)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &res, nil

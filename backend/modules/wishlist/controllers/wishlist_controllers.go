@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"strconv"
+
 	"github.com/Bukharney/ModX/configs"
 	"github.com/Bukharney/ModX/modules/entities"
 	"github.com/Bukharney/ModX/pkg/middlewares"
@@ -24,9 +26,9 @@ func NewWishlistControllers(
 		UsersUsecase:    usersUsecase,
 	}
 
-	r.GET("/all", controllers.GetWhishlistItems, middlewares.JwtAuthentication())
-	r.POST("/add", controllers.AddWhishlistItem, middlewares.JwtAuthentication())
-	r.DELETE("/delete", controllers.DeleteWhishlistItem, middlewares.JwtAuthentication())
+	r.GET("/", controllers.GetWhishlistItems, middlewares.JwtAuthentication())
+	r.POST("/", controllers.AddWhishlistItem, middlewares.JwtAuthentication())
+	r.DELETE("/:id", controllers.DeleteWhishlistItem, middlewares.JwtAuthentication())
 }
 
 func (c *WishlistController) GetWhishlistItems(ctx *gin.Context) {
@@ -94,7 +96,8 @@ func (c *WishlistController) DeleteWhishlistItem(ctx *gin.Context) {
 		UserId: role.Id,
 	}
 
-	err = ctx.BindJSON(req)
+	id := ctx.Param("id")
+	req.Id, err = strconv.Atoi(id)
 	if err != nil {
 		ctx.JSON(400, gin.H{
 			"error": err.Error(),

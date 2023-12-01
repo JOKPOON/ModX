@@ -125,7 +125,7 @@ export const SingleProduct = () => {
       return;
     }
 
-    await fetch("http://localhost:8080/v1/wishlist/add", {
+    await fetch("http://localhost:8080/v1/wishlist/", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
