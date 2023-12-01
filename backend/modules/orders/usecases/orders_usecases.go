@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"errors"
+	"log"
 
 	"github.com/Bukharney/ModX/modules/entities"
 )
@@ -23,7 +24,9 @@ func (o *OrderUsecases) Create(req *entities.OrderCreateReq) (*entities.OrderCre
 	req.ShippingCost = 0
 	req.TotalCost = 0
 
+	log.Println(req.OrderProducts)
 	for _, product := range req.OrderProducts {
+		log.Println(product)
 		option_1 := product.Options["option_1"]
 		option_2 := product.Options["option_2"]
 
@@ -50,6 +53,7 @@ func (o *OrderUsecases) Create(req *entities.OrderCreateReq) (*entities.OrderCre
 		}
 
 		req.ItemCost += product.Price * product.Quantity
+		log.Println(req.ItemCost)
 	}
 
 	if req.ShippingType == "SPU" {
@@ -84,4 +88,13 @@ func (o *OrderUsecases) Update(req *entities.OrderUpdateReq) error {
 	}
 
 	return nil
+}
+
+func (o *OrderUsecases) GetAll(req *entities.OrderGetAllReq) (*[]entities.OrderGatAllRes, error) {
+	res, err := o.OrderRepo.GetAll(req)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }

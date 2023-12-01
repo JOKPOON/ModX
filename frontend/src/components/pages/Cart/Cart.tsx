@@ -20,6 +20,7 @@ interface items {
 }
 
 interface ShippingDetails {
+  id?: number;
   name?: string;
   tel?: string;
   addr?: string;
@@ -136,18 +137,30 @@ export const Cart = () => {
       });
   };
 
-  const handleToggleCart = (index: number) => {
+  const handleToggleCart = (id: number) => {
     setSelectedItemIndices((prevSelectedIndices) => {
-      // Check if the item is already selected
-      const isSelected = prevSelectedIndices.includes(index);
-
+      const isSelected = prevSelectedIndices.includes(id);
       if (isSelected) {
-        // Remove the item from the list
-        return prevSelectedIndices.filter((i) => i !== index);
+        return prevSelectedIndices.filter((i) => i !== id);
       } else {
-        // Add the item to the list
-        return [...prevSelectedIndices, index];
+        return [...prevSelectedIndices, id];
       }
+    });
+  };
+
+  const handleCreateOrder = async () => {
+    setOrderProducts([]);
+    selectedItemIndices.map((id) => {
+      const product = CartProducts?.find((p) => p.id === id);
+      const orderProduct = {
+        product_id: product?.product_id ?? 0,
+        quantity: product?.quantity ?? 0,
+        options: product?.options,
+      };
+      setOrderProducts((prevOrderProducts) => [
+        ...(prevOrderProducts ?? []),
+        orderProduct,
+      ]);
     });
   };
 
@@ -195,27 +208,6 @@ export const Cart = () => {
       navigate("/Login");
     }
 
-    const newCartProducts = CartProducts?.filter(
-      (_, index) => !selectedItemIndices.includes(index)
-    );
-
-    setCartProducts(newCartProducts ?? []);
-
-    CartProducts?.map((product) => {
-      if (!selectedItemIndices.includes(product.id)) {
-        return;
-      }
-      const newOrderProducts = {
-        product_id: product.product_id,
-        quantity: product.quantity,
-        options: product.options,
-      };
-      setOrderProducts((prevOrderProducts) => [
-        ...(prevOrderProducts ?? []),
-        newOrderProducts,
-      ]);
-    });
-
     const res = await fetch("http://localhost:8080/v1/order/create", {
       method: "POST",
       headers: {
@@ -239,6 +231,7 @@ export const Cart = () => {
 
   useEffect(() => {
     console.log("Selected items: ", selectedItemIndices);
+    handleCreateOrder();
   }, [selectedItemIndices]);
 
   useEffect(() => {

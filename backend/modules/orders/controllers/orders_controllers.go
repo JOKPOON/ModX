@@ -23,6 +23,7 @@ func NewOrderControllers(r gin.IRoutes, cfg *configs.Configs, userUsecase entiti
 
 	r.POST("/create", controllers.Create, middlewares.JwtAuthentication())
 	r.POST("/update", controllers.Update, middlewares.JwtAuthentication())
+	r.GET("/", controllers.GetAll, middlewares.JwtAuthentication())
 }
 
 func (o *OrderController) Create(c *gin.Context) {
@@ -53,7 +54,6 @@ func (o *OrderController) Create(c *gin.Context) {
 	}
 
 	c.JSON(200, res)
-
 }
 
 func (o *OrderController) Update(c *gin.Context) {
@@ -91,4 +91,28 @@ func (o *OrderController) Update(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "success",
 	})
+}
+
+func (o *OrderController) GetAll(c *gin.Context) {
+	var req entities.OrderGetAllReq
+
+	user, err := middlewares.GetUserByToken(c)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	req.UserId = user.Id
+
+	res, err := o.OrderUsecases.GetAll(&req)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(200, res)
 }
