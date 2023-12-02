@@ -18,6 +18,7 @@ func main() {
 		log.Fatal(errors.New("failed to get hostname"))
 	}
 
+	log.Println(host)
 	if host == "Jirapats-MacBook-Air.local" {
 		cfg.PostgreSQL.Host = "localhost"
 		cfg.PostgreSQL.Port = "5432"
