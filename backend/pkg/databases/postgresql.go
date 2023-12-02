@@ -123,6 +123,9 @@ func NewPostgreSQL(cfg *configs.Configs) (*sqlx.DB, error) {
 		return nil, err
 	}
 
+	log.Println("Connecting to PostgreSQL")
+
+	log.Println(connectionUrl)
 	db, err := sqlx.Connect("postgres", connectionUrl)
 	if err != nil {
 		return nil, errors.New("failed to connect to PostgreSQL")
