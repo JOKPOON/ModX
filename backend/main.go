@@ -7,15 +7,9 @@ import (
 	"github.com/Bukharney/ModX/configs"
 	"github.com/Bukharney/ModX/pkg/databases"
 	"github.com/Bukharney/ModX/server"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-
-	if err := godotenv.Load(".env"); err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
 	cfg := new(configs.Configs)
 
 	cfg.App.Host = "localhost"
