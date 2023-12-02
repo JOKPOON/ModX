@@ -19,7 +19,7 @@ func main() {
 	}
 
 	log.Println(host)
-	if host == "Jirapats-MacBook-Air.local" {
+	if host != "railway" {
 		cfg.PostgreSQL.Host = "localhost"
 		cfg.PostgreSQL.Port = "5432"
 		cfg.PostgreSQL.SSLMode = "disable"
