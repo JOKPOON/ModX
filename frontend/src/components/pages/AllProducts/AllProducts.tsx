@@ -57,6 +57,7 @@ export const AllProducts = () => {
   const initialMaxPrice = location.state?.maxPrice || "";
   const initialSelectedRating = location.state?.selectedRating || null;
   const initialSelectedCategories = location.state?.selectedCategories || [];
+  const search = localStorage.getItem("searchQuery");
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     initialSelectedCategories
@@ -90,7 +91,7 @@ export const AllProducts = () => {
 
   useEffect(() => {
     getProductsData();
-  }, [ApplyButton, sortType, selectedSort]);
+  }, [ApplyButton, sortType, selectedSort, search]);
 
   //Sort Button
   const handleSortToggle = () => {
@@ -118,6 +119,9 @@ export const AllProducts = () => {
     }
     if (selectedSort !== "") {
       queryParams.push(`sort=${selectedSort}`);
+    }
+    if (search !== null) {
+      queryParams.push(`search=${search}`);
     }
 
     let fetchString = "http://localhost:8080/v1/product/all";
