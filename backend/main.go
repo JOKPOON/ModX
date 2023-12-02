@@ -18,19 +18,18 @@ func main() {
 		log.Fatal(errors.New("failed to get hostname"))
 	}
 
-	if host == "Jirapats-MacBook-Air.local" {
+	log.Println(host)
+	if host != "railway" {
 		cfg.PostgreSQL.Host = "localhost"
 		cfg.PostgreSQL.Port = "5432"
 		cfg.PostgreSQL.SSLMode = "disable"
-		cfg.PostgreSQL.Protocol = "tcp"
 		cfg.PostgreSQL.Username = "postgres"
 		cfg.PostgreSQL.Password = "postgres"
 		cfg.PostgreSQL.Database = "ModX"
 	} else {
-		cfg.PostgreSQL.Host = os.Getenv("PG_HOST")
-		cfg.PostgreSQL.Port = os.Getenv("PG_PORT")
+		cfg.PostgreSQL.Host = os.Getenv("PGHOST")
+		cfg.PostgreSQL.Port = os.Getenv("PGPORT")
 		cfg.PostgreSQL.SSLMode = "disable"
-		cfg.PostgreSQL.Protocol = "tcp"
 		cfg.PostgreSQL.Username = os.Getenv("POSTGRES_USER")
 		cfg.PostgreSQL.Password = os.Getenv("POSTGRES_PASSWORD")
 		cfg.PostgreSQL.Database = os.Getenv("POSTGRES_DB")
@@ -38,7 +37,7 @@ func main() {
 
 	db, err := databases.NewPostgreSQL(cfg)
 	if err != nil {
-		log.Fatal(errors.New("failed to connect to PostgreSQL"))
+		log.Fatal(err)
 	}
 
 	srv := server.NewServer(cfg, db)

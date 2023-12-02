@@ -4,7 +4,6 @@ import (
 	"errors"
 
 	"github.com/Bukharney/ModX/configs"
-	"github.com/Bukharney/ModX/pkg/utils"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
@@ -42,12 +41,7 @@ func (s *Server) Run() error {
 		return errors.New("failed to run file server")
 	}
 
-	ginConectionUrl, err := utils.ConnectionUrlBuilder("gin", s.Cfg)
-	if err != nil {
-		return errors.New("failed to build gin connection url")
-	}
-
-	err = s.App.Run(ginConectionUrl)
+	err = s.App.Run()
 	if err != nil {
 		return errors.New("failed to run gin")
 	}
