@@ -22,9 +22,9 @@
   align-items: center;
   padding-left: 100px;
   margin-bottom: 10px;
-    font-size: 16px;
-    color: #909090;
-    margin-left: 8rem;
+  font-size: 16px;
+  color: #909090;
+  margin-left: 8rem;
 }
 
 .Cart__Header__Right {
@@ -35,8 +35,8 @@
   padding-right: 100px;
 }
 
-.Cart__Gap{
-    width: 1%;
+.Cart__Gap {
+  width: 1%;
 }
 
 .Cart__Body {
@@ -66,29 +66,29 @@
   border-radius: 10px;
 }
 
-.Cart__Left__Button{
-    padding: 20px 40px 20px 40px;
-    width: 100%;
-    height: auto;
-    align-items: center;
-    border: 1px solid #909090;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 500;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    outline: none;
-    background-color: #fefefe;
-    color: #909090;
+.Cart__Left__Button {
+  padding: 20px 40px 20px 40px;
+  width: 100%;
+  height: auto;
+  align-items: center;
+  border: 1px solid #909090;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  outline: none;
+  background-color: #fefefe;
+  color: #909090;
 }
 
-.Cart__Left__Button:hover{
-    background-color: #222222;
-    color: #fefefe;  
-    transform: scale(1.005);
-    transition: all 0.05s ease-in-out;
+.Cart__Left__Button:hover {
+  background-color: #222222;
+  color: #fefefe;
+  transform: scale(1.005);
+  transition: all 0.05s ease-in-out;
 }
 
 .Cart__Left__Container {
@@ -124,7 +124,7 @@
   font-weight: 500;
 }
 
-.Cart__Sub{
+.Cart__Sub {
   margin-top: 0.75vh;
   font-weight: 400;
   color: #222222;
@@ -145,11 +145,11 @@
 .Cart__Left__Grid4 select {
   border-radius: 10px;
   outline: none;
-  border: none;  
+  border: none;
   font-size: 16px;
   padding: 5px;
   cursor: pointer;
-  color: #222222;  
+  color: #222222;
 }
 
 .Cart__Left__Grid5 {
@@ -224,19 +224,19 @@
   background-color: #fefefe;
 }
 
-.Cart__Delete__Button:hover{
-    background-color:red;
-    color: #fefefe;  
-    border: none;
-    transform: scale(1.005);
-    transition: all 0.05s ease-in-out;
+.Cart__Delete__Button:hover {
+  background-color: red;
+  color: #fefefe;
+  border: none;
+  transform: scale(1.005);
+  transition: all 0.05s ease-in-out;
 }
 
-.Cart__Edit__Address:hover{
-    background-color: #222222;
-    color: #fefefe;  
-    transform: scale(1.005);
-    transition: all 0.05s ease-in-out;
+.Cart__Edit__Address:hover {
+  background-color: #222222;
+  color: #fefefe;
+  transform: scale(1.005);
+  transition: all 0.05s ease-in-out;
 }
 
 .Cart__payment__Button {
@@ -253,21 +253,35 @@
   outline: none;
 }
 
-.Cart__payment__Button:hover{
-    background: var(
+.Cart__payment__Button__Disabled {
+  width: 100%;
+  padding: 20px;
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #fefefe;
+  background-color: #909090;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  outline: none;
+}
+
+.Cart__payment__Button:hover {
+  background: var(
     --gradient-1,
     linear-gradient(120deg, #fa871f 13.4%, #ff6e1f 86.6%)
   );
-    color: #fefefe;  
-    transform: scale(1.005);
-    transition: all 0.05s ease-in-out;
+  color: #fefefe;
+  transform: scale(1.005);
+  transition: all 0.05s ease-in-out;
 }
 
 .Cart__select__Togggle {
   font-size: 16px;
   font-weight: 800;
   background-color: #fefefe;
-  color: #222222; 
+  color: #222222;
   border: 2px solid #222222;
   border-radius: 5px;
   display: flex;
@@ -285,20 +299,18 @@
   background: #222222;
 }
 
-
 @media (max-width: 1200px) {
+  .Cart__Header {
+    grid-template-columns: 1fr;
+  }
+  .Cart__Header__Left {
+    display: none;
+  }
 
-    .Cart__Header{
-        grid-template-columns: 1fr
-    }
-    .Cart__Header__Left{
-        display: none;
-    }
-
-    .Cart__Header__Right{
-        display: flex;
-        justify-content: flex-end;
-    }
+  .Cart__Header__Right {
+    display: flex;
+    justify-content: flex-end;
+  }
 
   .Cart__Header {
     height: 70px;
@@ -356,9 +368,9 @@
     font-size: 14px;
   }
 
-  .Cart__Left__Button{
+  .Cart__Left__Button {
     font-size: 14px;
-}
+  }
 }
 
 @media (max-width: 768px) {
@@ -368,7 +380,6 @@
 }
 
 @media (max-width: 600px) {
-
   .Cart__Left__Container {
     padding: 20px 15px 20px 15px;
     gap: 15px;
@@ -421,11 +432,11 @@
   }
 
   .Cart__select__Togggle,
-  .Cart__Left__Button{
+  .Cart__Left__Button {
     font-size: 10px;
-}
-.Cart__Left__Grid4 select{
+  }
+  .Cart__Left__Grid4 select {
     font-size: 10px;
     padding: 3px;
-}
+  }
 }

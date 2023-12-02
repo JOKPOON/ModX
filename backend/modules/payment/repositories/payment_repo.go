@@ -56,8 +56,8 @@ func (r *PaymentRepo) GetAmount(orderId int) (int, error) {
 }
 
 func (r *PaymentRepo) UpdatePaymentStatus(paymentStatus string, orderId int) error {
-	query := `UPDATE orders SET payment_status = $1 WHERE id = $2`
-	_, err := r.Db.Exec(query, paymentStatus, orderId)
+	query := `UPDATE orders SET payment_status = $1, status = $3 WHERE id = $2`
+	_, err := r.Db.Exec(query, paymentStatus, orderId, "pending")
 	if err != nil {
 		return err
 	}

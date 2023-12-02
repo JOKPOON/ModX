@@ -1,42 +1,50 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import "./Notification.css";
 import { useNavigate } from "react-router-dom";
 import Logo from "../assets/Logo.svg";
 
 interface items {
-  orderID: string;
+  id: number;
+  updated_at: string;
   status: string;
-  time: string;
 }
-
-const Notification: items[] = [
-  {
-    orderID: "#00001",
-    status: "Shipping",
-    time: "50 minutes ago",
-  },
-  {
-    orderID: "#00002",
-    status: "Pending",
-    time: "1 hour ago",
-  },
-  {
-    orderID: "#00003",
-    status: "Pending",
-    time: "2 hours ago",
-  },
-  {
-    orderID: "#00004",
-    status: "Complete",
-    time: "2 days ago",
-  },
-];
 
 export const NotifyDropdown = () => {
   const navigate = useNavigate();
-
   const [dropdownNotiActive, setDropdownNotiActive] = useState(false);
+  const [Notification, setOrder] = React.useState<items[]>([]);
+
+  const handleGetOrder = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/Login";
+      return;
+    }
+
+    await fetch("http://localhost:8080/v1/order/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }).then(async (res) => {
+      if (res.ok) {
+        await res.json().then((data) => {
+          console.log(data);
+          setOrder(data);
+        });
+      }
+
+      if (res.status === 403) {
+        window.location.href = "/Login";
+      }
+    });
+  };
+
+  useEffect(() => {
+    handleGetOrder();
+  }, []);
 
   const handledropdownNotigo = () => {
     navigate("/Notification");
@@ -49,6 +57,26 @@ export const NotifyDropdown = () => {
     setDropdownNotiActive(!dropdownNotiActive);
   };
 
+  const compaerTime = (time: string) => {
+    const date = new Date(time);
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+    const diffHours = Math.ceil(diff / (1000 * 3600));
+    const diffMins = Math.ceil(diff / (1000 * 60));
+    const diffSec = Math.ceil(diff / 1000);
+
+    if (diffDays > 0) {
+      return `${diffDays} วันที่แล้ว`;
+    } else if (diffHours > 0) {
+      return `${diffHours} ชั่วโมงที่แล้ว`;
+    } else if (diffMins > 0) {
+      return `${diffMins} นาทีที่แล้ว`;
+    } else if (diffSec > 0) {
+      return `${diffSec} วินาทีที่แล้ว`;
+    }
+  };
+
   return (
     <div className="dropdown-container">
       <div className="dropdown">
@@ -57,7 +85,7 @@ export const NotifyDropdown = () => {
         </div>
         <div className="item_container">
           {Notification.map((item, index) => (
-            <div className="dropdown_item_form">
+            <div className="dropdown_item_form" key={index}>
               <React.Fragment key={index}>
                 <div className="dropdown_item">
                   <div className="dropdown_item_info" onClick={handleOrdergo}>
@@ -66,7 +94,7 @@ export const NotifyDropdown = () => {
                     </div>
                     <div className="dropdown_info">
                       <p>
-                        <span>Order{item.orderID}</span>
+                        <span>Order{item.id}</span>
                         {`${
                           item.status === "Pending"
                             ? "อยู่ระหว่างขั้นตอนรอการดำเนินการจัดส่ง"
@@ -76,7 +104,7 @@ export const NotifyDropdown = () => {
                         }`}
                       </p>
                       <div className="dropdown_Time">
-                        <p>{item.time}</p>
+                        <p>{compaerTime(item.updated_at)}</p>
                       </div>
                     </div>
                   </div>

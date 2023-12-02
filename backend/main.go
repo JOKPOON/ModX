@@ -5,8 +5,8 @@ import (
 	"log"
 
 	"github.com/Bukharney/ModX/configs"
-	"github.com/Bukharney/ModX/modules/server"
 	"github.com/Bukharney/ModX/pkg/databases"
+	"github.com/Bukharney/ModX/server"
 	"github.com/joho/godotenv"
 )
 

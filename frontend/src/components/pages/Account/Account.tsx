@@ -71,6 +71,10 @@ export const Account = () => {
           setUserData(data);
         });
       }
+
+      if (res.status === 403) {
+        window.location.href = "/Login";
+      }
     });
 
     await fetch("http://localhost:8080/v1/users/shipping", {
@@ -84,6 +88,10 @@ export const Account = () => {
           console.log(data);
           setShippingData(data);
         });
+      }
+
+      if (res.status === 403) {
+        window.location.href = "/Login";
       }
     });
   };

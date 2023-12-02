@@ -1,50 +1,49 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./Notification.css";
 import { useNavigate } from "react-router-dom";
 
 interface items {
-  orderID: string;
+  id: number;
   quantity: number;
-  price: number;
-  date: string;
+  total: number;
+  updated_at: string;
   status: string;
 }
 
-const Order: items[] = [
-  {
-    orderID: "#00001",
-    quantity: 1,
-    price: 99999999,
-    date: "12/12/2023",
-    status: "Shipping",
-  },
-  {
-    orderID: "#00002",
-    quantity: 4,
-    price: 99999999,
-    date: "17/12/2023",
-    status: "Pending",
-  },
-  {
-    orderID: "#00003",
-    quantity: 2,
-    price: 99999999,
-    date: "17/12/2023",
-    status: "Pending",
-  },
-  {
-    orderID: "#00004",
-    quantity: 1,
-    price: 99999999,
-    date: "20/12/2023",
-    status: "Complete",
-  },
-];
-
-
 export const Notification = () => {
-
   const navigate = useNavigate();
+  const [Order, setOrder] = React.useState<items[]>([]);
+
+  const handleGetOrder = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/Login";
+      return;
+    }
+
+    await fetch("http://localhost:8080/v1/order/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }).then(async (res) => {
+      if (res.ok) {
+        await res.json().then((data) => {
+          console.log(data);
+          setOrder(data);
+        });
+      }
+
+      if (res.status === 403) {
+        window.location.href = "/Login";
+      }
+    });
+  };
+
+  useEffect(() => {
+    handleGetOrder();
+  }, []);
 
   const handleHistorygo = () => {
     navigate("/History");
@@ -63,21 +62,29 @@ export const Notification = () => {
       </div>
       <div className="Order__Body" onClick={handleHistorygo}>
         {Order.map((item, index) => (
-          <div className="Order__Container">
+          <div className="Order__Container" key={index}>
             <React.Fragment key={index}>
-              <div className="Order__Grid1">{item.orderID}</div>
+              <div className="Order__Grid1">{item.id}</div>
               <div className="Order__Grid2">{item.quantity}</div>
-              <div className="Order__Grid3">{item.price}THB</div>
-              <div className="Order__Grid4">{item.date}</div>
+              <div className="Order__Grid3">{item.total}THB</div>
+              <div className="Order__Grid4">{item.updated_at}</div>
               <div className="Order__Grid5">
-                <div className={`${item.status === 'Pending' ? 'Pending' : item.status === 'Complete' ? 'Complete' : 'Shipping'}`}>
-                  {item.status}</div>
+                <div
+                  className={`${
+                    item.status === "Pending"
+                      ? "Pending"
+                      : item.status === "Complete"
+                      ? "Complete"
+                      : "Shipping"
+                  }`}
+                >
+                  {item.status}
+                </div>
               </div>
             </React.Fragment>
           </div>
         ))}
       </div>
-
     </div>
   );
 };

@@ -70,9 +70,6 @@ func (u *UsersController) Register(c *gin.Context) {
 func (u *UsersController) ChangePassword(c *gin.Context) {
 	claims, err := middlewares.GetUserByToken(c)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
 		return
 	}
 
@@ -109,9 +106,6 @@ func (u *UsersController) Shipping(c *gin.Context) {
 	}
 	user, err := middlewares.GetUserByToken(c)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
 		return
 	}
 
@@ -131,9 +125,6 @@ func (u *UsersController) Shipping(c *gin.Context) {
 func (u *UsersController) GetUserDetails(c *gin.Context) {
 	user, err := middlewares.GetUserByToken(c)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
 		return
 	}
 
@@ -151,9 +142,6 @@ func (u *UsersController) GetUserDetails(c *gin.Context) {
 func (u *UsersController) GetShippingDetails(c *gin.Context) {
 	user, err := middlewares.GetUserByToken(c)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
 		return
 	}
 
@@ -179,9 +167,6 @@ func (u *UsersController) UpdateShippingDetails(c *gin.Context) {
 	}
 	user, err := middlewares.GetUserByToken(c)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
 		return
 	}
 
@@ -201,9 +186,6 @@ func (u *UsersController) UpdateShippingDetails(c *gin.Context) {
 func (u *UsersController) DeleteAccount(c *gin.Context) {
 	user, err := middlewares.GetUserByToken(c)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
 		return
 	}
 

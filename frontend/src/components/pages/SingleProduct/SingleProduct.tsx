@@ -97,15 +97,52 @@ export const SingleProduct = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    }).then(async (res) => {
-      if (res.status === 200) {
-        alert("Add to cart success");
-      } else {
-        alert("Add to cart failed");
+    }).then(
+      (res) => {
+        if (res.status === 403) {
+          window.location.href = "/Login";
+        }
+      },
+      (err) => {
+        console.log(err);
       }
-    });
+    );
   };
 
+  const handleAddToWishlist = async () => {
+    const data = {
+      product_id: Product?.id,
+      quantity: selectedQuantity,
+      options: {
+        option_1: selectedOptionKey1,
+        option_2: selectedOptionKey2,
+      },
+    };
+
+    const token = localStorage.getItem("token");
+    if (token == null) {
+      window.location.href = "/Login";
+      return;
+    }
+
+    await fetch("http://localhost:8080/v1/wishlist/", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }).then(
+      (res) => {
+        if (res.status === 403) {
+          window.location.href = "/Login";
+        }
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+  };
 
   const initialData = () => {
     if (Product !== null) {
@@ -172,11 +209,6 @@ export const SingleProduct = () => {
     );
   };
 
-  const [selectedOptionKey1, setSelectedOptionKey1] = useState<string | null>(null);
-  const [selectedSubOption1, setSelectedSubOption1] = useState<string | null>(null);
-  const [selectedOptionKey2, setSelectedOptionKey2] = useState<string | null>(null);
-  const [selectedSubOption2, setSelectedSubOption2] = useState<string | null>(null);
-
   const renderSelectOptions = () => {
     return (
       <>
@@ -227,33 +259,17 @@ export const SingleProduct = () => {
     );
   };
 
-  const defaultOption1 = Object.keys(Product.options ?? {})[0];
-  const defaultSubOption1 = Object.keys(
-    Product.options?.[defaultOption1] ?? {}
-  )[0];
-  const defaultOption2 = Object.keys(Product.options ?? {})[1];
-  const defaultSubOption2 = Object.keys(
-    Product.options?.[defaultOption2] ?? {}
-  )[0];
-  useEffect(() => {
-    setSelectedOptionKey1(defaultOption1);
-    setSelectedSubOption1(defaultSubOption1);
-    setSelectedOptionKey2(defaultOption2);
-    setSelectedSubOption2(defaultSubOption2);
-  }, []);
-
   const HandleSingleItemToWishlist = () => {
-    console.log("Add to Wishlist Add by index of Item");
+    handleAddToWishlist();
   };
 
   const HandleSingleItemToCart = () => {
-    console.log("Add to Cart Add by index of Item");
     handleAddToCart();
   };
 
   const HandleSingleItemBuyNow = () => {
-    console.log("Buy Now");
-    console.log(selectedOptionKey1, selectedOptionKey2, selectedQuantity);
+    handleAddToCart();
+    navigate("/Cart");
   };
 
   return (

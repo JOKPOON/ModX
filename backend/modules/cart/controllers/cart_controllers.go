@@ -36,7 +36,6 @@ func (c *CartController) GetCartItems(ctx *gin.Context) {
 
 	role, err := middlewares.GetUserByToken(ctx)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error get users": err.Error()})
 		return
 	}
 
@@ -55,13 +54,12 @@ func (c *CartController) AddCartItem(ctx *gin.Context) {
 	var req entities.CartAddReq
 	err := ctx.ShouldBind(&req.Products)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error bilding": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	user, err := middlewares.GetUserByToken(ctx)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error get users": err.Error()})
 		return
 	}
 
