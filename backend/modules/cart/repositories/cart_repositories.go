@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"encoding/json"
+	"log"
 	"strings"
 
 	"github.com/Bukharney/ModX/modules/entities"
@@ -66,11 +67,12 @@ func (c *CartRepo) GetCartItems(req *entities.CartGetReq) (*entities.CartGetRes,
 	}
 
 	var cart entities.CartGetRes
-	var options map[string]string
 
+	log.Println(cart)
 	for rows.Next() {
 		var product entities.CartProduct
-		var options_json []byte
+		var options_json string
+		var options map[string]string
 
 		err = rows.Scan(
 			&product.Id,
@@ -82,7 +84,8 @@ func (c *CartRepo) GetCartItems(req *entities.CartGetReq) (*entities.CartGetRes,
 			return nil, err
 		}
 
-		err = json.Unmarshal(options_json, &options)
+		log.Println(options_json)
+		err = json.Unmarshal([]byte(options_json), &options)
 		if err != nil {
 			return nil, err
 		}

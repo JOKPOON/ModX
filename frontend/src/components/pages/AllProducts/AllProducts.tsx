@@ -120,7 +120,7 @@ export const AllProducts = () => {
     if (selectedSort !== "") {
       queryParams.push(`sort=${selectedSort}`);
     }
-    if (search !== null) {
+    if (search != "") {
       queryParams.push(`search=${search}`);
     }
 

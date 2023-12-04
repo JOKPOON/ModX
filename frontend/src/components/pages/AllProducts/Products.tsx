@@ -44,15 +44,6 @@ function Products({ product }: { product: items[] | null }) {
     navigate("/SingleProduct", { state: { item: item } });
   };
 
-  const handleAddToWishlist = (
-    item: items,
-    rowIndex: number,
-    itemIndex: number
-  ) => {
-    const overallIndex = rowIndex * itemsPerRow + itemIndex; // to get the index of the item in the overall array
-    console.log(`Add item to wishlist at index : ${overallIndex}:`, item);
-  };
-
   return (
     <>
       <div className="AllProducts__Products__Container">
@@ -61,14 +52,6 @@ function Products({ product }: { product: items[] | null }) {
             <div className="AllProducts__Products__Items" key={rowIndex}>
               {row.map((item, itemIndex) => (
                 <div className="AllProducts__Products__Item" key={itemIndex}>
-                  <button
-                    className="AllProducts__Products__Item__Wishlist"
-                    onClick={() =>
-                      handleAddToWishlist(item, rowIndex, itemIndex)
-                    }
-                  >
-                    <i className="bx bx-heart"></i>
-                  </button>
                   <div
                     className="AllProducts__Products__Item__Picture"
                     style={{ backgroundImage: `url(${item.picture})` }}
