@@ -3,45 +3,14 @@ import "./SingleProduct.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { formatPrice } from "../Helper/Calculator";
 import { useEffect, useState } from "react";
-
-interface items {
-  id: number;
-  stock: number | undefined;
-  price: number | undefined;
-  picture?: string[];
-  title: string;
-  sold: number;
-  discount?: number;
-  rating?: number;
-  description?: string;
-  options?: {
-    option_1?: {
-      [option: string]: {
-        option_2?: {
-          [subOption: string]: {
-            price: number;
-            stock: number;
-          };
-        };
-      };
-    };
-    option_name?: {
-      [option: string]: string;
-    };
-  };
-  review?: {
-    name: string;
-    comment: string;
-    created_at?: string;
-    rating?: number;
-  }[];
-}
+import { singleProductItems } from "../../Interface/Interface";
+import { HandleGetProduct, HandleAddToCart } from "../../API/API";
 
 export const SingleProduct = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const item = location.state.item;
-  const [Product, setProduct] = useState<items | null>(null);
+  const [Product, setProduct] = useState<singleProductItems | null>(null);
   const [currentPic, setCurrentPic] = useState(0);
   const [visiblePics] = useState(3);
   const [selectedOptionKey1, setSelectedOptionKey1] = useState<string | null>(
@@ -56,57 +25,6 @@ export const SingleProduct = () => {
 
   const HandlegoBack = () => {
     navigate(-1); // Go back to the previous page
-  };
-
-  const handleGetProduct = async () => {
-    await fetch(`http://localhost:8080/v1/product/get/${item.id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then(async (res) => {
-      if (res.status === 200) {
-        const data = await res.json();
-        setProduct(data);
-      } else {
-        setProduct(null);
-      }
-    });
-  };
-
-  const handleAddToCart = async () => {
-    const data = {
-      product_id: Product?.id,
-      quantity: selectedQuantity,
-      options: {
-        option_1: selectedOptionKey1,
-        option_2: selectedOptionKey2,
-      },
-    };
-
-    const token = localStorage.getItem("token");
-    if (token == null) {
-      window.location.href = "/Login";
-      return;
-    }
-
-    await fetch("http://localhost:8080/v1/cart/add", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    }).then(
-      (res) => {
-        if (res.status === 403) {
-          window.location.href = "/Login";
-        }
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
   };
 
   const handleAddToWishlist = async () => {
@@ -178,7 +96,9 @@ export const SingleProduct = () => {
   };
 
   useEffect(() => {
-    handleGetProduct();
+    HandleGetProduct(item.id).then((data) => {
+      setProduct(data);
+    });
   }, []);
 
   useEffect(() => {
@@ -264,11 +184,17 @@ export const SingleProduct = () => {
   };
 
   const HandleSingleItemToCart = () => {
-    handleAddToCart();
+    HandleAddToCart(Product?.id, selectedQuantity, {
+      option_1: selectedOptionKey1 ?? "",
+      option_2: selectedOptionKey2 ?? "",
+    });
   };
 
   const HandleSingleItemBuyNow = () => {
-    handleAddToCart();
+    HandleAddToCart(Product?.id, selectedQuantity, {
+      option_1: selectedOptionKey1 ?? "",
+      option_2: selectedOptionKey2 ?? "",
+    });
     navigate("/Cart");
   };
 

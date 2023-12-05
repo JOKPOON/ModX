@@ -2,31 +2,14 @@ import "./Comment.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { formatPrice } from "../Helper/Calculator";
-
-interface items {
-  id: number;
-  item_id: number;
-  title: string;
-  total: number;
-  picture?: string;
-  product_id: number;
-  quantity?: number;
-  rating: number | null;
-  comment?: string;
-  is_reviewed?: boolean;
-  options: {
-    [option: string]: string;
-  };
-}
+import { HandleReviewClick, HandleGetOrder } from "../../API/API";
+import { reviewItems } from "../../Interface/Interface";
 
 export const Comment = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
   const order = location.state as { orderID: number };
-
-  const [orderProducts, setOrderProducts] = useState<items[]>([]);
-
+  const [orderProducts, setOrderProducts] = useState<reviewItems[]>([]);
   const HandlegoBack = () => {
     navigate(-1);
   };
@@ -72,67 +55,11 @@ export const Comment = () => {
     console.log(updatedProducts);
   };
 
-  const HandleReviewClick = (product_id: number) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      window.location.href = "/Login";
-      return;
-    }
-
-    const reviewData = orderProducts.filter((product) => {
-      return product.product_id === product_id;
-    });
-
-    console.log(reviewData);
-
-    fetch("http://localhost:8080/v1/product/review", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(reviewData[0]),
-    }).then(async (res) => {
-      if (res.ok) {
-        await res.json().then((data) => {
-          console.log(data);
-          alert("Review Success");
-        });
-      }
-
-      window.location.reload();
-    });
-  };
-
   useEffect(() => {
-    const handleGetOrder = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        window.location.href = "/Login";
-        return;
-      }
-
-      await fetch(`http://localhost:8080/v1/order/${order.orderID}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }).then(async (res) => {
-        if (res.ok) {
-          await res.json().then((data) => {
-            console.log(data);
-            setOrderProducts(data);
-          });
-        }
-
-        if (res.status === 403) {
-          window.location.href = "/Login";
-        }
-      });
-    };
-
-    handleGetOrder();
+    HandleGetOrder(order.orderID).then((data) => {
+      console.log(data);
+      setOrderProducts(data);
+    });
   }, [order]);
 
   return (
@@ -208,7 +135,7 @@ export const Comment = () => {
                         <button
                           className="Comment__Button"
                           onClick={() => {
-                            HandleReviewClick(product.product_id);
+                            HandleReviewClick(product.id, orderProducts);
                           }}
                         >
                           Review

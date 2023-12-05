@@ -1,51 +1,17 @@
 import React, { useEffect } from "react";
 import "./Notification.css";
 import { useNavigate } from "react-router-dom";
-
-interface items {
-  id: number;
-  quantity: number;
-  total: number;
-  updated_at: string;
-  status: string;
-  is_reviewed: boolean;
-}
+import { HandleGetOrderList } from "../../API/API";
+import { ordersItems } from "../../Interface/Interface";
 
 export const Notification = () => {
   const navigate = useNavigate();
-  const [Order, setOrder] = React.useState<items[] | null>(null);
-
-  const handleGetOrder = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      window.location.href = "/Login";
-      return;
-    }
-
-    await fetch("http://localhost:8080/v1/order/", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }).then(async (res) => {
-      if (res.ok) {
-        await res.json().then((data) => {
-          console.log(data);
-          setOrder(data);
-        });
-      } else {
-        setOrder(null);
-      }
-
-      if (res.status === 403) {
-        window.location.href = "/Login";
-      }
-    });
-  };
+  const [Order, setOrder] = React.useState<ordersItems[] | null>(null);
 
   useEffect(() => {
-    handleGetOrder();
+    HandleGetOrderList().then((res) => {
+      setOrder(res);
+    });
   }, []);
 
   const handleHistorygo = () => {};
