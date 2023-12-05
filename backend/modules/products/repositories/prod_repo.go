@@ -298,13 +298,14 @@ func (p *ProductRepo) AddReview(req *entities.Review) error {
 		"user_id",
 		"product_id",
 		"rating",
-		"comment"
+		"comment",
+		"order_product_id"
 	)
-	VALUES ($1, $2, $3, $4)
+	VALUES ($1, $2, $3, $4, $5)
 	RETURNING "id";
 	`
 
-	row, err := p.Db.Queryx(query, req.UserId, req.ProductId, req.Rating, req.Comment)
+	row, err := p.Db.Queryx(query, req.UserId, req.ProductId, req.Rating, req.Comment, req.ItemId)
 	if err != nil {
 		return err
 	}

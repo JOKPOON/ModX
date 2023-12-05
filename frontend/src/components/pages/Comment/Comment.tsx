@@ -14,6 +14,9 @@ interface items {
   rating: number | null;
   comment?: string;
   is_reviewed?: boolean;
+  options: {
+    [option: string]: string;
+  };
 }
 
 export const Comment = () => {
@@ -21,7 +24,6 @@ export const Comment = () => {
   const navigate = useNavigate();
 
   const order = location.state as { orderID: number };
-  const MockupOrderID = order ? order.orderID : 0;
 
   const [orderProducts, setOrderProducts] = useState<items[]>([]);
 
@@ -31,7 +33,7 @@ export const Comment = () => {
 
   const handleRatingClick = (rate: number, itemID: number) => {
     const updatedProducts = orderProducts.map((product) => {
-      if (product.product_id === itemID) {
+      if (product.id === itemID) {
         product.rating = rate;
       }
       return product;
@@ -41,7 +43,7 @@ export const Comment = () => {
 
   const RatingButton: React.FC<{
     rate: number;
-    onClick: () => void;
+    onClick: () => void | undefined;
     selectedRating: number | null;
   }> = ({ rate, onClick, selectedRating }) => {
     return (
@@ -58,13 +60,9 @@ export const Comment = () => {
     );
   };
 
-  const handleCommentChange = (
-    comment: string,
-    productId: number,
-    itemId: number
-  ) => {
+  const handleCommentChange = (comment: string, itemId: number) => {
     const updatedProducts = orderProducts.map((product) => {
-      if (product.product_id === productId) {
+      if (product.id === itemId) {
         product.comment = comment;
         product.item_id = itemId;
       }
@@ -100,13 +98,9 @@ export const Comment = () => {
           console.log(data);
           alert("Review Success");
         });
-
-        const newOrder = orderProducts.filter((product) => {
-          return product.product_id !== reviewData[0]?.product_id;
-        });
-
-        setOrderProducts(newOrder);
       }
+
+      window.location.reload();
     });
   };
 
@@ -146,9 +140,8 @@ export const Comment = () => {
       <div className="Comment__Container">
         <div className="Comment__Back">
           <button onClick={HandlegoBack}>&lt;Back</button>
-          <span style={{ color: "#fefefe" }}>orderID : {MockupOrderID}</span>
+          <span style={{ color: "#fefefe" }}>orderID : {order.orderID}</span>
         </div>
-
         <div className="Comment__Topic">
           <div className="Comment__Topic__Text">
             <div className="Comment__Grid"></div>
@@ -159,78 +152,125 @@ export const Comment = () => {
         </div>
         <div className="Comment__Container__Content">
           <div className="Comment__Box">
-            {orderProducts.map((product) =>
-              !product.is_reviewed ? (
-                <div className="Comment__Content" key={product.product_id}>
-                  <div className="Comment__Top">
-                    <div className="Commit__Picture__Container">
-                      <div
-                        className="Comment__Picture"
-                        style={{ backgroundImage: `url(${product.picture})` }}
-                      ></div>
+            {orderProducts?.map((product) => {
+              return (
+                <div key={product.id}>
+                  {!product.is_reviewed && (
+                    <div className="Comment__Content" key={product.id}>
+                      <div className="Comment__Top">
+                        <div className="Commit__Picture__Container">
+                          <div
+                            className="Comment__Picture"
+                            style={{
+                              backgroundImage: `url(${product.picture})`,
+                            }}
+                          ></div>
+                        </div>
+                        <div className="Comment__Name">
+                          <div className="Comment__Name">{product.title}</div>
+                          <div className="Comment__Sub">
+                            {product.options["option_1"]}
+                          </div>
+                          <div className="Comment__Sub">
+                            {product.options["option_2"]}
+                          </div>
+                        </div>
+                        <div className="Comment__Quantity">
+                          {product.quantity}
+                        </div>
+                        <div className="Comment__Price">
+                          {formatPrice(product.total)} THB
+                        </div>
+                      </div>
+                      <div className="Comment__Bottom">
+                        <div className="Comment__Rate">
+                          {Array.from({ length: 5 }, (_, index) => (
+                            <RatingButton
+                              key={index}
+                              rate={index + 1}
+                              onClick={() =>
+                                handleRatingClick(index + 1, product.id)
+                              }
+                              selectedRating={product.rating}
+                            />
+                          ))}
+                        </div>
+                        <div className="Comment__input">
+                          <input
+                            type="text"
+                            placeholder="Comment"
+                            value={product.comment}
+                            onChange={(e) =>
+                              handleCommentChange(e.target.value, product.id)
+                            }
+                          />
+                        </div>
+                        <button
+                          className="Comment__Button"
+                          onClick={() => {
+                            HandleReviewClick(product.product_id);
+                          }}
+                        >
+                          Review
+                        </button>
+                      </div>
                     </div>
-                    <div className="Comment__Name">{product.title}</div>
-                    <div className="Comment__Quantity">{product.quantity}</div>
-                    <div className="Comment__Price">
-                      {formatPrice(product.total)} THB
+                  )}
+                  {product.is_reviewed && (
+                    <div className="Comment__Content" key={product.id}>
+                      <div className="Comment__Top">
+                        <div className="Commit__Picture__Container">
+                          <div
+                            className="Comment__Picture"
+                            style={{
+                              backgroundImage: `url(${product.picture})`,
+                            }}
+                          ></div>
+                        </div>
+                        <div className="Comment__Name">
+                          <div className="Comment__Name">{product.title}</div>
+                          <div className="Comment__Sub">
+                            {product.options["option_1"]}
+                          </div>
+                          <div className="Comment__Sub">
+                            {product.options["option_2"]}
+                          </div>
+                        </div>
+                        <div className="Comment__Quantity">
+                          {product.quantity}
+                        </div>
+                        <div className="Comment__Price">
+                          {formatPrice(product.total)} THB
+                        </div>
+                      </div>
+                      <div className="Comment__Bottom">
+                        <div className="Comment__Rate">
+                          {Array.from({ length: 5 }, (_, index) => (
+                            <RatingButton
+                              key={index}
+                              rate={index + 1}
+                              onClick={() => undefined}
+                              selectedRating={product.rating}
+                            />
+                          ))}
+                        </div>
+                        <div className="Comment__input">
+                          <input
+                            type="text"
+                            placeholder="Comment"
+                            value={product.comment}
+                            disabled
+                          />
+                        </div>
+                        <button className="Comment__Button__Disabled">
+                          Reviewed
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  <div className="Comment__Bottom">
-                    <div className="Comment__Rate">
-                      <RatingButton
-                        rate={1}
-                        onClick={() => handleRatingClick(1, product.product_id)}
-                        selectedRating={product.rating}
-                      />
-                      <RatingButton
-                        rate={2}
-                        onClick={() => handleRatingClick(2, product.product_id)}
-                        selectedRating={product.rating}
-                      />
-                      <RatingButton
-                        rate={3}
-                        onClick={() => handleRatingClick(3, product.product_id)}
-                        selectedRating={product.rating}
-                      />
-                      <RatingButton
-                        rate={4}
-                        onClick={() => handleRatingClick(4, product.product_id)}
-                        selectedRating={product.rating}
-                      />
-                      <RatingButton
-                        rate={5}
-                        onClick={() => handleRatingClick(5, product.product_id)}
-                        selectedRating={product.rating}
-                      />
-                    </div>
-                    <div className="Comment__input">
-                      <input
-                        type="text"
-                        placeholder="Comment"
-                        value={product.comment}
-                        onChange={(e) =>
-                          handleCommentChange(
-                            e.target.value,
-                            product.product_id,
-                            product.id
-                          )
-                        }
-                      />
-                    </div>
-                    <button
-                      className="Comment__Button"
-                      onClick={() => {
-                        HandleReviewClick(product.product_id);
-                      }}
-                    >
-                      Review
-                    </button>
-                  </div>
+                  )}
                 </div>
-              ) : (
-                <div className="Comment__Top">Product is already review</div>
-              )
-            )}
+              );
+            })}
           </div>
         </div>
       </div>

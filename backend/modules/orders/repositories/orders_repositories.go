@@ -240,6 +240,7 @@ func (o *OrderRepo) Get(req *entities.OrderGetReq) (*[]entities.OrderGetRes, err
 		"order_products"."product_id",
 		"order_products"."quantity",
 		"order_products"."is_reviewed",
+		"order_products"."options",
 		"orders"."total_cost",
 		"products"."picture",
 		"products"."title"
@@ -257,11 +258,13 @@ func (o *OrderRepo) Get(req *entities.OrderGetReq) (*[]entities.OrderGetRes, err
 
 	for row.Next() {
 		var order entities.OrderGetRes
+		var options string
 		err := row.Scan(
 			&order.Id,
 			&order.ProductId,
 			&order.Quantity,
 			&order.IsReviewed,
+			&options,
 			&order.Total,
 			&order.ProductPicture,
 			&order.ProductTitle,
@@ -271,11 +274,49 @@ func (o *OrderRepo) Get(req *entities.OrderGetReq) (*[]entities.OrderGetRes, err
 			return nil, err
 		}
 
+		var options_json map[string]string
+		err = json.Unmarshal([]byte(options), &options_json)
+		if err != nil {
+			return nil, err
+		}
+
+		order.ProductOptions = options_json
 		order.Total = order.Total / 100
 		picture := strings.Split(order.ProductPicture, ",")
 		order.ProductPicture = "http://localhost:8080/static/products/" + picture[0]
 
 		res = append(res, order)
+	}
+
+	query = `
+	SELECT
+		"reviews"."rating",
+		"reviews"."comment"
+	FROM "reviews"
+	WHERE "reviews"."order_product_id" = $1;
+	`
+
+	for i, v := range res {
+		var review entities.ReviewRes
+		row, err := o.Db.Queryx(query, v.Id)
+		if err != nil {
+			return nil, err
+		}
+
+		for row.Next() {
+			err := row.Scan(
+				&review.Rating,
+				&review.Comment,
+			)
+
+			if err != nil {
+				return nil, err
+			}
+
+		}
+
+		res[i].ProductRating = review.Rating
+		res[i].ProductComment = review.Comment
 	}
 
 	return &res, nil

@@ -49,13 +49,16 @@ type OrderGetReq struct {
 }
 
 type OrderGetRes struct {
-	Id             int    `json:"id" db:"id"`
-	ProductId      int    `json:"product_id"`
-	Quantity       int    `json:"quantity"`
-	IsReviewed     bool   `json:"is_reviewed"`
-	Total          int    `json:"total"`
-	ProductPicture string `json:"picture"`
-	ProductTitle   string `json:"title"`
+	Id             int               `json:"id" db:"id"`
+	ProductId      int               `json:"product_id"`
+	Quantity       int               `json:"quantity"`
+	IsReviewed     bool              `json:"is_reviewed"`
+	Total          int               `json:"total"`
+	ProductPicture string            `json:"picture"`
+	ProductTitle   string            `json:"title"`
+	ProductOptions map[string]string `json:"options"`
+	ProductRating  int               `json:"rating"`
+	ProductComment string            `json:"comment"`
 }
 
 type OrderGetAllReq struct {
