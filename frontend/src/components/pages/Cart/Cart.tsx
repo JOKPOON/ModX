@@ -78,7 +78,7 @@ export const Cart = () => {
           .then((data) => {
             if (data.status === "success") {
               alert("Payment Success");
-              navigate("/Notification");
+              navigate("/History");
             }
             console.log(data);
           });
@@ -232,7 +232,7 @@ export const Cart = () => {
   useEffect(() => {
     console.log("Selected items: ", selectedItemIndices);
     handleCreateOrder();
-  }, [selectedItemIndices]);
+  }, [selectedItemIndices, CartProducts]);
 
   useEffect(() => {
     console.log("orderProducts: ", orderProducts);

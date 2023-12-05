@@ -8,11 +8,12 @@ interface items {
   total: number;
   updated_at: string;
   status: string;
+  is_reviewed: boolean;
 }
 
 export const Notification = () => {
   const navigate = useNavigate();
-  const [Order, setOrder] = React.useState<items[]>([]);
+  const [Order, setOrder] = React.useState<items[] | null>(null);
 
   const handleGetOrder = async () => {
     const token = localStorage.getItem("token");
@@ -33,6 +34,8 @@ export const Notification = () => {
           console.log(data);
           setOrder(data);
         });
+      } else {
+        setOrder(null);
       }
 
       if (res.status === 403) {
@@ -45,40 +48,53 @@ export const Notification = () => {
     handleGetOrder();
   }, []);
 
-  const handleHistorygo = () => {
-    navigate("/History");
-  };
+  const handleHistorygo = () => {};
 
   return (
     <div className="Track__Container">
       <div className="Track__Header">
         <div className="Title__Container">
-          <div className="Title__Grid1">Order ID</div>
-          <div className="Title__Grid2">Items</div>
-          <div className="Title__Grid3">Total Price</div>
-          <div className="Title__Grid4">Order Date</div>
-          <div className="Title__Grid5">Status</div>
+          <div className="Title__Grid">Order ID</div>
+          <div className="Title__Grid">Items</div>
+          <div className="Title__Grid">Total Price</div>
+          <div className="Title__Grid">Order Date</div>
+          <div className="Title__Grid">Status</div>
         </div>
       </div>
       <div className="Order__Body" onClick={handleHistorygo}>
-        {Order.map((item, index) => (
-          <div className="Order__Container" key={index}>
+        {Order?.map((item, index) => (
+          <div
+            className="Order__Container"
+            key={index}
+            onClick={() => {
+              if (item.status === "complete" && !item.is_reviewed) {
+                navigate("/Comment", { state: { orderID: item.id } });
+              } else {
+                navigate("/History", { state: { item: item } });
+              }
+            }}
+          >
             <React.Fragment key={index}>
-              <div className="Order__Grid1">{item.id}</div>
-              <div className="Order__Grid2">{item.quantity}</div>
-              <div className="Order__Grid3">{item.total}THB</div>
-              <div className="Order__Grid4">{item.updated_at}</div>
-              <div className="Order__Grid5">
+              <div className="Order__Grid">{item.id}</div>
+              <div className="Order__Grid">{item.quantity}</div>
+              <div className="Order__Grid">{item.total}THB</div>
+              <div className="Order__Grid">{item.updated_at}</div>
+
+              <div className="Order__Grid">
                 <div
                   className={`${
-                    item.status === "Pending"
+                    item.status === "pending"
                       ? "Pending"
-                      : item.status === "Complete"
+                      : item.status === "complete"
                       ? "Complete"
                       : "Shipping"
                   }`}
                 >
-                  {item.status}
+                  {item.status === "complete" && !item.is_reviewed ? (
+                    <div>review</div>
+                  ) : (
+                    <div>{item.status}</div>
+                  )}
                 </div>
               </div>
             </React.Fragment>

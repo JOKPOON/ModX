@@ -73,6 +73,7 @@ CREATE TABLE IF NOT EXISTS "order_products" (
 	"options" JSON NOT NULL,
 	"price" INT NOT NULL,
 	"quantity" INT NOT NULL,
+	"is_reviewed" BOOLEAN NOT NULL DEFAULT FALSE,
     CONSTRAINT "order_products_key" UNIQUE ("order_id", "product_id")
 );
 

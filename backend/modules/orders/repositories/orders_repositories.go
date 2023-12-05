@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/jmoiron/sqlx"
 
@@ -21,7 +22,7 @@ func NewOrderRepo(db *sqlx.DB) *OrderRepo {
 func (o *OrderRepo) CreateOrder(req *entities.OrderCreateReq) (*entities.OrderCreateRes, error) {
 	s_id, err := o.GetShippingId(req.UserId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to get shipping id: %w", err)
 	}
 
 	req.ShippingId = s_id
@@ -90,7 +91,7 @@ func (o *OrderRepo) Create(req *entities.OrderCreateReq) (*entities.OrderCreateR
 			v.Quantity,
 		)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to create order_prod: %w", err)
 		}
 	}
 
@@ -138,7 +139,7 @@ func (o *OrderRepo) GetProductOptions(product_id int) (*entities.ProductOptions,
 	return &entities.ProductOptions{Options: options_json}, nil
 }
 
-func (o *OrderRepo) GetAll(req *entities.OrderGetAllReq) (*[]entities.OrderGatAllRes, error) {
+func (o *OrderRepo) GetAll(req *entities.OrderGetAllReq) (*[]entities.OrderGetAllRes, error) {
 	query := `
 	SELECT
 		"orders"."id",
@@ -149,14 +150,14 @@ func (o *OrderRepo) GetAll(req *entities.OrderGetAllReq) (*[]entities.OrderGatAl
 	WHERE "orders"."user_id" = $1 AND "orders"."status" != $2;
 	`
 
-	var res []entities.OrderGatAllRes
+	var res []entities.OrderGetAllRes
 	row, err := o.Db.Queryx(query, req.UserId, "")
 	if err != nil {
 		return nil, err
 	}
 
 	for row.Next() {
-		var order entities.OrderGatAllRes
+		var order entities.OrderGetAllRes
 		err := row.Scan(
 			&order.Id,
 			&order.Total,
@@ -199,7 +200,7 @@ func (o *OrderRepo) GetAll(req *entities.OrderGetAllReq) (*[]entities.OrderGatAl
 
 		res[i].Quantity = quantity
 		res[i].UpdatedAt = v.UpdatedAt[:10]
-
+		res[i].Total = v.Total / 100
 	}
 
 	return &res, nil
@@ -207,7 +208,7 @@ func (o *OrderRepo) GetAll(req *entities.OrderGetAllReq) (*[]entities.OrderGatAl
 
 func (o *OrderRepo) GetShippingId(user_id int) (int, error) {
 	query := `
-	SELECT shipping_id FROM orders WHERE user_id = $1;
+	SELECT id FROM shippings WHERE user_id = $1;
 	`
 
 	var shipping_id int
@@ -217,4 +218,65 @@ func (o *OrderRepo) GetShippingId(user_id int) (int, error) {
 	}
 
 	return shipping_id, nil
+}
+
+func (o *OrderRepo) GetProductDiscount(product_id int) (int, error) {
+	query := `
+	SELECT discount FROM products WHERE id = $1;
+	`
+	var discount int
+	err := o.Db.QueryRowx(query, product_id).Scan(&discount)
+	if err != nil {
+		return 0, err
+	}
+
+	return discount, nil
+}
+
+func (o *OrderRepo) Get(req *entities.OrderGetReq) (*[]entities.OrderGetRes, error) {
+	query := `
+	SELECT
+		"order_products"."id",
+		"order_products"."product_id",
+		"order_products"."quantity",
+		"order_products"."is_reviewed",
+		"orders"."total_cost",
+		"products"."picture",
+		"products"."title"
+	FROM "order_products"
+	INNER JOIN "orders" ON "orders"."id" = "order_products"."order_id"
+	INNER JOIN "products" ON "products"."id" = "order_products"."product_id"
+	WHERE "order_products"."order_id" = $1 AND "orders"."user_id" = $2;
+	`
+
+	var res []entities.OrderGetRes
+	row, err := o.Db.Queryx(query, req.Id, req.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	for row.Next() {
+		var order entities.OrderGetRes
+		err := row.Scan(
+			&order.Id,
+			&order.ProductId,
+			&order.Quantity,
+			&order.IsReviewed,
+			&order.Total,
+			&order.ProductPicture,
+			&order.ProductTitle,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		order.Total = order.Total / 100
+		picture := strings.Split(order.ProductPicture, ",")
+		order.ProductPicture = "http://localhost:8080/static/products/" + picture[0]
+
+		res = append(res, order)
+	}
+
+	return &res, nil
 }

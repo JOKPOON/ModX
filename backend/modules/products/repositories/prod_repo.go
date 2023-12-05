@@ -316,6 +316,15 @@ func (p *ProductRepo) AddReview(req *entities.Review) error {
 		}
 	}
 
+	query = `
+	UPDATE order_products SET is_reviewed = true WHERE id = $1;
+	`
+
+	_, err = p.Db.Queryx(query, req.ItemId)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

@@ -265,7 +265,14 @@ export const Account = () => {
             <button className="Small-Button" onClick={openPopup}>
               Delete Account
             </button>
-            <button className="Small-Button">Order History</button>
+            <button
+              className="Small-Button"
+              onClick={() => {
+                navigate("/History");
+              }}
+            >
+              Order History
+            </button>
           </div>
           <button className="Save-Button" onClick={handdleSaveProfile}>
             Save Profile

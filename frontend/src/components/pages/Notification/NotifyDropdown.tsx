@@ -13,7 +13,7 @@ interface items {
 export const NotifyDropdown = () => {
   const navigate = useNavigate();
   const [dropdownNotiActive, setDropdownNotiActive] = useState(false);
-  const [Notification, setOrder] = React.useState<items[]>([]);
+  const [Notification, setOrder] = React.useState<items[] | null>(null);
 
   const handleGetOrder = async () => {
     const token = localStorage.getItem("token");
@@ -34,6 +34,8 @@ export const NotifyDropdown = () => {
           console.log(data);
           setOrder(data);
         });
+      } else {
+        setOrder(null);
       }
 
       if (res.status === 403) {
@@ -47,7 +49,7 @@ export const NotifyDropdown = () => {
   }, []);
 
   const handledropdownNotigo = () => {
-    navigate("/Notification");
+    navigate("/History");
     setDropdownNotiActive(!dropdownNotiActive);
     // setMenuVisible(!menuVisible);
   };
@@ -84,7 +86,7 @@ export const NotifyDropdown = () => {
           <span>Notification</span>
         </div>
         <div className="item_container">
-          {Notification.map((item, index) => (
+          {Notification?.map((item, index) => (
             <div className="dropdown_item_form" key={index}>
               <React.Fragment key={index}>
                 <div className="dropdown_item">
