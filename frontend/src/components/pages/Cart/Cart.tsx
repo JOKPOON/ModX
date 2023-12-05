@@ -94,8 +94,11 @@ export const Cart = () => {
                   CartProducts ?? [],
                   selectedItemIndices
                 );
-
-                setCartProducts(res);
+                if (res === "can't find token") {
+                  navigate("/Login");
+                } else {
+                  setCartProducts(res);
+                }
                 setSelectedItemIndices([]);
               }}
             >

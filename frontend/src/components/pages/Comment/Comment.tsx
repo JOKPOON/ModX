@@ -57,10 +57,13 @@ export const Comment = () => {
 
   useEffect(() => {
     HandleGetOrder(order.orderID).then((data) => {
-      console.log(data);
-      setOrderProducts(data);
+      if (data === "can't find token") {
+        navigate("/Login");
+      } else {
+        setOrderProducts(data);
+      }
     });
-  }, [order]);
+  }, [order, navigate]);
 
   return (
     <div>

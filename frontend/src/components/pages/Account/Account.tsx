@@ -48,10 +48,14 @@ export const Account = () => {
 
   useEffect(() => {
     HandleGetUserData().then((res) => {
-      setUserData(res.userData);
-      setShippingData(res.shippingData);
+      if (res === "can't find token") {
+        navigate("/Login");
+      } else {
+        setUserData(res.userData);
+        setShippingData(res.shippingData);
+      }
     });
-  }, []);
+  }, [navigate]);
 
   /*
     In placeholder, if User Data is not null, show User Data

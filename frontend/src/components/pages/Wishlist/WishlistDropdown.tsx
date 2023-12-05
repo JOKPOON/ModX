@@ -4,6 +4,7 @@ import "./Wishlist.css";
 import { useNavigate } from "react-router-dom";
 import { wishlistItems } from "../../Interface/Interface";
 import { HandleGetWishList } from "../../API/API";
+
 export const WishlistDropdown = () => {
   const navigate = useNavigate();
 
@@ -42,6 +43,7 @@ export const WishlistDropdown = () => {
                   <div className="dropdown_line">
                     <div className="dropdown_item">
                       <div
+                        key={index}
                         className="dropdown_item_info"
                         onClick={() => {
                           handleProductgo(item);

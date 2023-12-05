@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {
   reviewItems,
   ordersItems,
@@ -7,7 +8,8 @@ import {
   cartItems,
 } from "../Interface/Interface";
 
-const URL = "https://modx-production.up.railway.app/";
+const URL = "http://localhost:8080/";
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
 const createFetchString = (
@@ -53,8 +55,7 @@ const createFetchString = (
 const checkToken = () => {
   const token = localStorage.getItem("token");
   if (!token) {
-    window.location.href = "/Login";
-    return;
+    return "can't find token";
   }
   return token;
 };
@@ -95,6 +96,9 @@ export const HandleReviewClick = async (
   order_products: reviewItems[]
 ) => {
   const token = checkToken();
+  if (!token) {
+    return "can't find token";
+  }
 
   const reviewData = order_products.filter((product) => product.id === id);
 
@@ -117,6 +121,10 @@ export const HandleReviewClick = async (
 
 export const HandleGetOrder = async (order_id: number) => {
   const token = checkToken();
+  if (!token) {
+    return "can't find token";
+  }
+
   let orderProducts: reviewItems[] = [];
 
   await fetch(URL + `v1/order/${order_id}`, {
@@ -132,10 +140,6 @@ export const HandleGetOrder = async (order_id: number) => {
         orderProducts = data;
       });
     }
-
-    if (res.status === 403) {
-      window.location.href = "/Login";
-    }
   });
 
   return orderProducts;
@@ -143,6 +147,10 @@ export const HandleGetOrder = async (order_id: number) => {
 
 export const HandleGetOrderList = async () => {
   const token = checkToken();
+  if (!token) {
+    return "can't find token";
+  }
+
   let orderList: ordersItems[] = [];
 
   await fetch(URL + "v1/order/", {
@@ -160,10 +168,7 @@ export const HandleGetOrderList = async () => {
     } else {
       orderList = [];
     }
-
-    if (res.status === 403) {
-      window.location.href = "/Login";
-    }
+    console.log(res.status);
   });
 
   return orderList;
@@ -171,6 +176,10 @@ export const HandleGetOrderList = async () => {
 
 export const HandleGetUserData = async () => {
   const token = checkToken();
+  if (!token) {
+    return "can't find token";
+  }
+
   const userData = await fetch(URL + "v1/users/details", {
     method: "GET",
     headers: {
@@ -212,6 +221,10 @@ export const HandleGetUserData = async () => {
 
 export const HandleUpdateShipping = async (shippingData: shippingDetails) => {
   const token = checkToken();
+  if (!token) {
+    return "can't find token";
+  }
+
   await fetch(URL + "v1/users/shipping", {
     method: "POST",
     headers: {
@@ -230,6 +243,10 @@ export const HandleUpdateShipping = async (shippingData: shippingDetails) => {
 
 export const HandleDeleteAccount = async () => {
   const token = checkToken();
+  if (!token) {
+    return "can't find token";
+  }
+
   await fetch(URL + "v1/users/delete-account", {
     method: "DELETE",
     headers: {
@@ -252,6 +269,9 @@ export const HandleCheckout = async (
   OmiseCard: any
 ) => {
   const token = checkToken();
+  if (!token) {
+    return "can't find token";
+  }
   const res = await fetch(URL + "v1/order/create", {
     method: "POST",
     headers: {
@@ -312,6 +332,9 @@ export const OmiseHandler = async (
 
 export const HandleGetShippingAddress = async () => {
   const token = checkToken();
+  if (!token) {
+    return "can't find token";
+  }
   const shippingData = await fetch(URL + "v1/users/shipping", {
     method: "GET",
     headers: {
@@ -333,6 +356,10 @@ export const HandleGetShippingAddress = async () => {
 
 export const HandleGetCartProducts = async () => {
   const token = checkToken();
+  if (!token) {
+    return "can't find token";
+  }
+
   const cartData = await fetch(URL + "v1/cart/all", {
     method: "GET",
     headers: {
@@ -357,6 +384,9 @@ export const HandleDeleteCart = async (
   selectedItemIndices: number[]
 ) => {
   const token = checkToken();
+  if (!token) {
+    return "can't find token";
+  }
   const newCartProducts = CartProducts.filter(
     (product) => !selectedItemIndices.includes(product.id)
   );
@@ -477,6 +507,9 @@ export const HandleAddToCart = async (
   };
 
   const token = checkToken();
+  if (!token) {
+    return "can't find token";
+  }
 
   await fetch(URL + "v1/cart/add", {
     method: "POST",
@@ -499,6 +532,9 @@ export const HandleAddToCart = async (
 
 export const HandleGetWishList = async () => {
   const token = checkToken();
+  if (!token) {
+    return "can't find token";
+  }
 
   const res = await fetch(URL + "v1/wishlist/", {
     method: "GET",
@@ -509,7 +545,7 @@ export const HandleGetWishList = async () => {
   }).then(async (res) => {
     if (res.ok) {
       const data = await res.json();
-      return data;
+      return data.products;
     }
 
     if (res.status === 403) {
@@ -522,6 +558,9 @@ export const HandleGetWishList = async () => {
 
 export const HandleDeleteWishList = async (id: number) => {
   const token = checkToken();
+  if (!token) {
+    return "can't find token";
+  }
 
   const res = await fetch(URL + `v1/wishlist/${id}`, {
     method: "DELETE",

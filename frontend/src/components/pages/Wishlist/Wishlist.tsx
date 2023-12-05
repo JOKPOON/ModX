@@ -47,7 +47,7 @@ export const Wishlist = () => {
         <div className="Wishlist__Title">WISHLIST</div>
         {wishlist.length &&
           wishlist.map((items, index) => (
-            <div className="Wishlist__Item">
+            <div className="Wishlist__Item" key={index}>
               <React.Fragment key={index}>
                 <div className="Item__Container">
                   <div className="Item__Top">

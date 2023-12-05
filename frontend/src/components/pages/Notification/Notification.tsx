@@ -10,9 +10,13 @@ export const Notification = () => {
 
   useEffect(() => {
     HandleGetOrderList().then((res) => {
-      setOrder(res);
+      if (res === "can't find token") {
+        navigate("/Login");
+      } else {
+        setOrder(res);
+      }
     });
-  }, []);
+  }, [navigate]);
 
   const handleHistorygo = () => {};
 
