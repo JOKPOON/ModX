@@ -20,12 +20,14 @@ func main() {
 
 	log.Println(host)
 	if host != "railway" {
+		cfg.URL = "http://localhost:8080/"
 		cfg.PostgreSQL.Host = "localhost"
 		cfg.PostgreSQL.Port = "5432"
 		cfg.PostgreSQL.Username = "postgres"
 		cfg.PostgreSQL.Password = "postgres"
 		cfg.PostgreSQL.Database = "ModX"
 	} else {
+		cfg.URL = os.Getenv("URL")
 		cfg.PostgreSQL.Host = os.Getenv("PGHOST")
 		cfg.PostgreSQL.Port = os.Getenv("PGPORT")
 		cfg.PostgreSQL.Username = os.Getenv("POSTGRES_USER")

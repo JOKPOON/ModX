@@ -3,6 +3,7 @@ package configs
 type Configs struct {
 	PostgreSQL PostgreSQL
 	App        Gin
+	URL        string
 }
 
 type Gin struct {

@@ -5,16 +5,18 @@ import (
 	"log"
 	"strings"
 
+	"github.com/Bukharney/ModX/configs"
 	"github.com/Bukharney/ModX/modules/entities"
 	"github.com/jmoiron/sqlx"
 )
 
 type CartRepo struct {
-	Db *sqlx.DB
+	Cfg *configs.Configs
+	Db  *sqlx.DB
 }
 
-func NewCartRepo(db *sqlx.DB) entities.CartRepository {
-	return &CartRepo{Db: db}
+func NewCartRepo(db *sqlx.DB, cfg *configs.Configs) entities.CartRepository {
+	return &CartRepo{Db: db, Cfg: cfg}
 }
 
 func (c *CartRepo) AddCartItem(req *entities.CartAddReq) (*entities.CartAddRes, error) {
@@ -142,7 +144,7 @@ func (c *CartRepo) GetProductDetails(product_id int) (*entities.ProductGetByIdRe
 
 	picture := strings.Split(res.Picture, ",")
 	for i, v := range picture {
-		picture[i] = "http://localhost:8080/static/products/" + v
+		picture[i] = c.Cfg.URL + "static/products/" + v
 	}
 
 	res.Picture = picture[0]

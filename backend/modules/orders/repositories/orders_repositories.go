@@ -8,15 +8,17 @@ import (
 
 	"github.com/jmoiron/sqlx"
 
+	"github.com/Bukharney/ModX/configs"
 	"github.com/Bukharney/ModX/modules/entities"
 )
 
 type OrderRepo struct {
-	Db *sqlx.DB
+	Cfg *configs.Configs
+	Db  *sqlx.DB
 }
 
-func NewOrderRepo(db *sqlx.DB) *OrderRepo {
-	return &OrderRepo{Db: db}
+func NewOrderRepo(db *sqlx.DB, cfg *configs.Configs) *OrderRepo {
+	return &OrderRepo{Db: db, Cfg: cfg}
 }
 
 func (o *OrderRepo) CreateOrder(req *entities.OrderCreateReq) (*entities.OrderCreateRes, error) {
@@ -283,7 +285,7 @@ func (o *OrderRepo) Get(req *entities.OrderGetReq) (*[]entities.OrderGetRes, err
 		order.ProductOptions = options_json
 		order.Total = order.Total / 100
 		picture := strings.Split(order.ProductPicture, ",")
-		order.ProductPicture = "http://localhost:8080/static/products/" + picture[0]
+		order.ProductPicture = o.Cfg.URL + "static/products/" + picture[0]
 
 		res = append(res, order)
 	}
