@@ -36,7 +36,7 @@ function App() {
           <Route path="/Login" element={<Login />} />
           <Route path="/Comment" element={<Comment />} />
           <Route path="/Account" element={<Account />} />
-          <Route path="/Notification" element={<Notification />} />
+          <Route path="/History" element={<Notification />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/Wishlist" element={<Wishlist />} />
         </Routes>

@@ -12,13 +12,12 @@ func ConnectionUrlBuilder(s string, cfg *configs.Configs) (string, error) {
 
 	switch s {
 	case "postgres":
-		connectionUrl = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+		connectionUrl = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 			cfg.PostgreSQL.Host,
 			cfg.PostgreSQL.Port,
 			cfg.PostgreSQL.Username,
 			cfg.PostgreSQL.Password,
 			cfg.PostgreSQL.Database,
-			cfg.PostgreSQL.SSLMode,
 		)
 	case "gin":
 		connectionUrl = fmt.Sprintf("%s:%s",

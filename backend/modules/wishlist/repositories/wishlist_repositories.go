@@ -4,16 +4,18 @@ import (
 	"encoding/json"
 	"strings"
 
+	"github.com/Bukharney/ModX/configs"
 	"github.com/Bukharney/ModX/modules/entities"
 	"github.com/jmoiron/sqlx"
 )
 
 type WishlistRepo struct {
-	Db *sqlx.DB
+	Cfg *configs.Configs
+	Db  *sqlx.DB
 }
 
-func NewWishlistRepo(db *sqlx.DB) entities.WishlistRepository {
-	return &WishlistRepo{Db: db}
+func NewWishlistRepo(db *sqlx.DB, cfg *configs.Configs) entities.WishlistRepository {
+	return &WishlistRepo{Db: db, Cfg: cfg}
 }
 
 func (r *WishlistRepo) GetWishlistItems(req *entities.WhishlistGetReq) (*entities.WhishlistGetRes, error) {
@@ -167,7 +169,7 @@ func (r *WishlistRepo) GetProductDetails(product_id int) (*entities.ProductGetBy
 
 	picture := strings.Split(res.Picture, ",")
 	for i, v := range picture {
-		picture[i] = "http://localhost:8080/static/products/" + v
+		picture[i] = r.Cfg.URL + "static/products/" + v
 	}
 
 	res.Picture = picture[0]

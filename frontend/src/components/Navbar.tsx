@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./Navbar.css";
 import "boxicons/css/boxicons.min.css";
-import Logo from "./Pages/assets/Logo.svg";
+import Logo from "./pages/assets/Logo.svg";
 import { NotifyDropdown } from "./pages/Notification/NotifyDropdown";
 import { WishlistDropdown } from "./pages/Wishlist/WishlistDropdown";
 import { useNavigate } from "react-router-dom";

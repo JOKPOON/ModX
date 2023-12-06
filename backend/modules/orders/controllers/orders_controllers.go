@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"strconv"
+
 	"github.com/Bukharney/ModX/configs"
 	"github.com/Bukharney/ModX/pkg/middlewares"
 	"github.com/gin-gonic/gin"
@@ -24,6 +26,7 @@ func NewOrderControllers(r gin.IRoutes, cfg *configs.Configs, userUsecase entiti
 	r.POST("/create", controllers.Create, middlewares.JwtAuthentication())
 	r.POST("/update", controllers.Update, middlewares.JwtAuthentication())
 	r.GET("/", controllers.GetAll, middlewares.JwtAuthentication())
+	r.GET("/:id", controllers.Get, middlewares.JwtAuthentication())
 }
 
 func (o *OrderController) Create(c *gin.Context) {
@@ -37,9 +40,6 @@ func (o *OrderController) Create(c *gin.Context) {
 
 	user, err := middlewares.GetUserByToken(c)
 	if err != nil {
-		c.JSON(400, gin.H{
-			"message": err.Error(),
-		})
 		return
 	}
 
@@ -67,9 +67,6 @@ func (o *OrderController) Update(c *gin.Context) {
 
 	user, err := middlewares.GetUserByToken(c)
 	if err != nil {
-		c.JSON(400, gin.H{
-			"message": err.Error(),
-		})
 		return
 	}
 
@@ -98,15 +95,42 @@ func (o *OrderController) GetAll(c *gin.Context) {
 
 	user, err := middlewares.GetUserByToken(c)
 	if err != nil {
-		c.JSON(400, gin.H{
-			"message": err.Error(),
-		})
 		return
 	}
 
 	req.UserId = user.Id
 
 	res, err := o.OrderUsecases.GetAll(&req)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(200, res)
+}
+
+func (o *OrderController) Get(c *gin.Context) {
+	var req entities.OrderGetReq
+
+	user, err := middlewares.GetUserByToken(c)
+	if err != nil {
+		return
+	}
+
+	req.UserId = user.Id
+
+	id := c.Param("id")
+	req.Id, err = strconv.Atoi(id)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	res, err := o.OrderUsecases.Get(&req)
 	if err != nil {
 		c.JSON(400, gin.H{
 			"message": err.Error(),

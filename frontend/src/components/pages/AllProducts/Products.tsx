@@ -1,17 +1,9 @@
 import "./Products.css";
 import { useNavigate } from "react-router-dom";
 import { formatPrice } from "../Helper/Calculator";
+import { productItems } from "../../Interface/Interface";
 
-interface items {
-  id: number;
-  picture?: string;
-  title: string;
-  sold: number;
-  price: number;
-  discount?: number;
-}
-
-function Products({ product }: { product: items[] | null }) {
+function Products({ product }: { product: productItems[] | null }) {
   const ProductsData = product;
   const navigate = useNavigate();
 
@@ -35,22 +27,13 @@ function Products({ product }: { product: items[] | null }) {
 
   // To handle when user click on add to cart button
   const handleAddToCartClick = (
-    item: items,
+    item: productItems,
     rowIndex: number,
     itemIndex: number
   ) => {
     const overallIndex = rowIndex * itemsPerRow + itemIndex; // to get the index of the item in the overall array
     console.log(`Selected item at index : ${overallIndex}:`, item);
     navigate("/SingleProduct", { state: { item: item } });
-  };
-
-  const handleAddToWishlist = (
-    item: items,
-    rowIndex: number,
-    itemIndex: number
-  ) => {
-    const overallIndex = rowIndex * itemsPerRow + itemIndex; // to get the index of the item in the overall array
-    console.log(`Add item to wishlist at index : ${overallIndex}:`, item);
   };
 
   return (
@@ -61,14 +44,6 @@ function Products({ product }: { product: items[] | null }) {
             <div className="AllProducts__Products__Items" key={rowIndex}>
               {row.map((item, itemIndex) => (
                 <div className="AllProducts__Products__Item" key={itemIndex}>
-                  <button
-                    className="AllProducts__Products__Item__Wishlist"
-                    onClick={() =>
-                      handleAddToWishlist(item, rowIndex, itemIndex)
-                    }
-                  >
-                    <i className="bx bx-heart"></i>
-                  </button>
                   <div
                     className="AllProducts__Products__Item__Picture"
                     style={{ backgroundImage: `url(${item.picture})` }}

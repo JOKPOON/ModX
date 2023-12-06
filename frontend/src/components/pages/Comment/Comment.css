@@ -71,7 +71,7 @@
   justify-content: center;
 }
 
-.Comment__Box{
+.Comment__Box {
   width: 70vw;
   height: 100%;
   margin-bottom: 5vh;
@@ -92,7 +92,7 @@
   grid-template-columns: 0.5fr 1fr 0.25fr 0.5fr;
   gap: 3%;
   border-bottom: 1px solid #909090;
-  padding:20px;
+  padding: 20px;
 }
 
 .Comment__Bottom {
@@ -138,11 +138,24 @@
   outline: none;
 }
 
+.Comment__Button__Disabled {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #909090;
+  color: #fefefe;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
 .Comment__Button:hover {
   transform: translateY(-2px);
 }
 
-.Commit__Picture__Container{
+.Commit__Picture__Container {
   width: 100%;
   height: 100%;
   display: flex;
@@ -163,10 +176,15 @@
 }
 
 .Comment__Name {
-  display: flex;
   align-items: center;
   text-align: start;
   color: #222222;
+}
+
+.Comment__Sub {
+  padding-top: 5px;
+  font-size: 14px;
+  color: #909090;
 }
 
 .Comment__Grid:nth-child(2) {
@@ -182,7 +200,7 @@
   text-align: center;
 }
 
-.Comment__Price{
+.Comment__Price {
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -196,7 +214,7 @@
   justify-content: center;
 }
 
-.Comment__Rate{
+.Comment__Rate {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -207,12 +225,11 @@
 .Comment__Button,
 .Comment__input,
 .Comment__Rate,
-.Comment__Bottom{
+.Comment__Bottom {
   font-size: 16px;
 }
 
 @media (max-width: 1200px) {
-
   .Comment__Back button,
   .Comment__input input,
   .Comment__Rate,
@@ -233,7 +250,6 @@
   .Comment__Bottom {
     padding: 17px;
   }
-  
 }
 
 @media (max-width: 768px) {
@@ -281,7 +297,7 @@
   }
 
   .Comment__Topic__Text,
-  .Comment__Box{
+  .Comment__Box {
     width: 80vw;
   }
 }

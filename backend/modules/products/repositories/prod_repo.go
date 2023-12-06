@@ -6,16 +6,18 @@ import (
 	"os"
 	"strings"
 
+	"github.com/Bukharney/ModX/configs"
 	"github.com/Bukharney/ModX/modules/entities"
 	"github.com/jmoiron/sqlx"
 )
 
 type ProductRepo struct {
-	Db *sqlx.DB
+	Cfg *configs.Configs
+	Db  *sqlx.DB
 }
 
-func NewProductRepo(db *sqlx.DB) entities.ProductRepository {
-	return &ProductRepo{Db: db}
+func NewProductRepo(db *sqlx.DB, cfg *configs.Configs) entities.ProductRepository {
+	return &ProductRepo{Db: db, Cfg: cfg}
 }
 
 func (p *ProductRepo) Create(req *entities.Product) (*entities.ProductCreateRes, error) {
@@ -98,7 +100,7 @@ func (p *ProductRepo) GetAll(req *entities.ProductQuery) (*entities.AllProductRe
 
 		data := strings.Split(res.Picture, ",")
 		for i, v := range data {
-			data[i] = fmt.Sprintf("http://localhost:8080/static/products/%s", v)
+			data[i] = fmt.Sprintf(p.Cfg.URL+"static/products/%s", v)
 		}
 
 		res.Picture = data[0]
@@ -241,7 +243,7 @@ func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, erro
 	req.Updated = res.Updated
 	req.Picture = strings.Split(res.Picture, ",")
 	for i, v := range req.Picture {
-		req.Picture[i] = fmt.Sprintf("http://localhost:8080/static/products/%s", v)
+		req.Picture[i] = fmt.Sprintf(p.Cfg.URL+"static/products/%s", v)
 	}
 
 	query = `
@@ -298,13 +300,14 @@ func (p *ProductRepo) AddReview(req *entities.Review) error {
 		"user_id",
 		"product_id",
 		"rating",
-		"comment"
+		"comment",
+		"order_product_id"
 	)
-	VALUES ($1, $2, $3, $4)
+	VALUES ($1, $2, $3, $4, $5)
 	RETURNING "id";
 	`
 
-	row, err := p.Db.Queryx(query, req.UserId, req.ProductId, req.Rating, req.Comment)
+	row, err := p.Db.Queryx(query, req.UserId, req.ProductId, req.Rating, req.Comment, req.ItemId)
 	if err != nil {
 		return err
 	}
@@ -314,6 +317,15 @@ func (p *ProductRepo) AddReview(req *entities.Review) error {
 		if err != nil {
 			return err
 		}
+	}
+
+	query = `
+	UPDATE order_products SET is_reviewed = true WHERE id = $1;
+	`
+
+	_, err = p.Db.Queryx(query, req.ItemId)
+	if err != nil {
+		return err
 	}
 
 	return nil

@@ -25,7 +25,7 @@ func (o *OrderUsecases) Create(req *entities.OrderCreateReq) (*entities.OrderCre
 	req.TotalCost = 0
 
 	log.Println(req.OrderProducts)
-	for _, product := range req.OrderProducts {
+	for i, product := range req.OrderProducts {
 		log.Println(product)
 		option_1 := product.Options["option_1"]
 		option_2 := product.Options["option_2"]
@@ -52,16 +52,15 @@ func (o *OrderUsecases) Create(req *entities.OrderCreateReq) (*entities.OrderCre
 			}
 		}
 
-		req.ItemCost += product.Price * product.Quantity
-		log.Println(req.ItemCost)
-	}
+		dis, err := o.OrderRepo.GetProductDiscount(product.ProductId)
+		if err != nil {
+			return nil, err
+		}
 
-	if req.ShippingType == "SPU" {
-		req.ShippingCost = 0
-	} else if req.ShippingType == "EMS" {
-		req.ShippingCost = 3000
-	} else {
-		req.ShippingCost = 5000
+		log.Println(dis, product.Price, product.Quantity)
+		req.OrderProducts[i].Price = (product.Price - dis) * product.Quantity
+		req.ItemCost += req.OrderProducts[i].Price * 100
+		req.ShippingCost += 10 * product.Quantity * 100
 	}
 
 	req.TotalCost = req.ItemCost + req.ShippingCost
@@ -90,8 +89,17 @@ func (o *OrderUsecases) Update(req *entities.OrderUpdateReq) error {
 	return nil
 }
 
-func (o *OrderUsecases) GetAll(req *entities.OrderGetAllReq) (*[]entities.OrderGatAllRes, error) {
+func (o *OrderUsecases) GetAll(req *entities.OrderGetAllReq) (*[]entities.OrderGetAllRes, error) {
 	res, err := o.OrderRepo.GetAll(req)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (o *OrderUsecases) Get(req *entities.OrderGetReq) (*[]entities.OrderGetRes, error) {
+	res, err := o.OrderRepo.Get(req)
 	if err != nil {
 		return nil, err
 	}

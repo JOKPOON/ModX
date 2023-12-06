@@ -3,51 +3,26 @@ import { useState } from "react";
 import "./Notification.css";
 import { useNavigate } from "react-router-dom";
 import Logo from "../assets/Logo.svg";
-
-interface items {
-  id: number;
-  updated_at: string;
-  status: string;
-}
+import { HandleGetOrderList } from "../../API/API";
+import { ordersItems } from "../../Interface/Interface";
 
 export const NotifyDropdown = () => {
   const navigate = useNavigate();
   const [dropdownNotiActive, setDropdownNotiActive] = useState(false);
-  const [Notification, setOrder] = React.useState<items[]>([]);
-
-  const handleGetOrder = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      window.location.href = "/Login";
-      return;
-    }
-
-    await fetch("http://localhost:8080/v1/order/", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }).then(async (res) => {
-      if (res.ok) {
-        await res.json().then((data) => {
-          console.log(data);
-          setOrder(data);
-        });
-      }
-
-      if (res.status === 403) {
-        window.location.href = "/Login";
-      }
-    });
-  };
+  const [Notification, setOrder] = React.useState<ordersItems[] | null>(null);
 
   useEffect(() => {
-    handleGetOrder();
-  }, []);
+    HandleGetOrderList().then((res) => {
+      if (res === "can't find token") {
+        navigate("/Login");
+      } else {
+        setOrder(res);
+      }
+    });
+  }, [navigate]);
 
   const handledropdownNotigo = () => {
-    navigate("/Notification");
+    navigate("/History");
     setDropdownNotiActive(!dropdownNotiActive);
     // setMenuVisible(!menuVisible);
   };
@@ -84,7 +59,7 @@ export const NotifyDropdown = () => {
           <span>Notification</span>
         </div>
         <div className="item_container">
-          {Notification.map((item, index) => (
+          {Notification?.map((item, index) => (
             <div className="dropdown_item_form" key={index}>
               <React.Fragment key={index}>
                 <div className="dropdown_item">
