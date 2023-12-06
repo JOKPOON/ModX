@@ -19,7 +19,8 @@ const createFetchString = (
   selectedRating: number | null,
   sortType: string,
   selectedSort: string,
-  search: string
+  search: string,
+  limit: string
 ) => {
   const queryParams = [];
 
@@ -41,8 +42,11 @@ const createFetchString = (
   if (selectedSort !== "") {
     queryParams.push(`sort=${selectedSort}`);
   }
-  if (search != "") {
+  if (search !== "") {
     queryParams.push(`search=${search}`);
+  }
+  if (limit !== "") {
+    queryParams.push(`limit=${limit}`);
   }
 
   let fetchString = URL + "v1/product/all";
@@ -67,7 +71,8 @@ export const GetProductsData = async (
   selectedRating: number | null,
   sortType: string,
   selectedSort: string,
-  search: string
+  search: string,
+  limit: string
 ) => {
   const response = await fetch(
     createFetchString(
@@ -77,7 +82,8 @@ export const GetProductsData = async (
       selectedRating,
       sortType,
       selectedSort,
-      search
+      search,
+      limit
     ),
     {
       method: "GET",
@@ -581,4 +587,26 @@ export const HandleDeleteWishList = async (id: number) => {
   });
 
   return res;
+};
+
+export const HandleAddToWishlist = async (orderProducts: orderProducts) => {
+  const token = checkToken();
+  if (!token) {
+    return "can't find token";
+  }
+
+  await fetch(URL + "v1/wishlist/", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(orderProducts),
+  }).then(async (res) => {
+    if (res.ok) {
+      await res.json().then((data) => {
+        console.log(data);
+      });
+    }
+  });
 };

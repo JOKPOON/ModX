@@ -4,7 +4,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { formatPrice } from "../Helper/Calculator";
 import { useEffect, useState } from "react";
 import { singleProductItems } from "../../Interface/Interface";
-import { HandleGetProduct, HandleAddToCart } from "../../API/API";
+import {
+  HandleGetProduct,
+  HandleAddToCart,
+  HandleAddToWishlist,
+} from "../../API/API";
 
 export const SingleProduct = () => {
   const navigate = useNavigate();
@@ -25,41 +29,6 @@ export const SingleProduct = () => {
 
   const HandlegoBack = () => {
     navigate(-1); // Go back to the previous page
-  };
-
-  const handleAddToWishlist = async () => {
-    const data = {
-      product_id: Product?.id,
-      quantity: selectedQuantity,
-      options: {
-        option_1: selectedOptionKey1,
-        option_2: selectedOptionKey2,
-      },
-    };
-
-    const token = localStorage.getItem("token");
-    if (token == null) {
-      window.location.href = "/Login";
-      return;
-    }
-
-    await fetch("http://localhost:8080/v1/wishlist/", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    }).then(
-      (res) => {
-        if (res.status === 403) {
-          window.location.href = "/Login";
-        }
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
   };
 
   const initialData = () => {
@@ -180,7 +149,14 @@ export const SingleProduct = () => {
   };
 
   const HandleSingleItemToWishlist = () => {
-    handleAddToWishlist();
+    HandleAddToWishlist({
+      product_id: Product?.id ?? 0,
+      quantity: selectedQuantity,
+      options: {
+        option_1: selectedOptionKey1 ?? "",
+        option_2: selectedOptionKey2 ?? "",
+      },
+    });
   };
 
   const HandleSingleItemToCart = () => {

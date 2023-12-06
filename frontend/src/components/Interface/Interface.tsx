@@ -68,7 +68,7 @@ export interface shippingDetails {
   province?: string;
   district?: string;
   sub_dist?: string;
-  zip?: number;
+  zip?: string;
 }
 
 export interface productItems {

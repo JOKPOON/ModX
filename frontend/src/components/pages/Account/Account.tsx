@@ -64,7 +64,7 @@ export const Account = () => {
 
   return (
     <div className="main">
-      <div className="Conta                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          iner">
+      <div className="Container">
         <button className="Back-Account" onClick={HandleBackButton}>
           {"<" + "Back"}
         </button>
@@ -169,7 +169,7 @@ export const Account = () => {
               onChange={(e) =>
                 setShippingData({
                   ...shippingData,
-                  zip: e.target.valueAsNumber,
+                  zip: e.target.valueAsNumber.toString(),
                 })
               }
             />
