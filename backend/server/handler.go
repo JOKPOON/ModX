@@ -61,7 +61,7 @@ func (s *Server) MapHandlers() error {
 
 	authUsecase := _authUsecase.NewAuthUsecases(authRepo, usersRepo)
 	usersUsecase := _usersUsecase.NewUsersUsecases(usersRepo)
-	fileUsecase := _fileUsecase.NewFileUsecase(usersRepo, fileRepo)
+	fileUsecase := _fileUsecase.NewFileUsecase(usersRepo, fileRepo, s.Cfg, s.Storage)
 	orderUsecase := _orderUsecase.NewOrderUsecases(orderRepo, usersRepo)
 	paymentUsecase := _paymentUsecase.NewPaymentUsecase(paymentRepo)
 	productUsecase := _productUsecase.NewProductUsecases(productRepo, fileRepo)

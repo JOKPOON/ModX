@@ -43,25 +43,27 @@ const MAX_UPLOAD_SIZE = 1024 * 1024 * 100
 
 func (p *ProductController) Create(c *gin.Context) {
 	var req entities.Product
-	req.Title = c.PostForm("title")
-	req.Desc = c.PostForm("desc")
-	req.Category = c.PostForm("category")
-	optionsStr := c.PostForm("options")
+	var data entities.ProductData
+	product_data := c.PostForm("product_data")
 
-	upload_res, err := p.UploadProduct(c)
+	log.Println(product_data)
+	err := json.Unmarshal([]byte(product_data), &data)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error data": err.Error()})
+		return
+	}
+
+	req.Title = data.Title
+	req.Desc = data.Desc
+	req.Options = data.Options
+	req.Category = data.Category
+
+	upload_res, err := p.UploadProductPicture(c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	req.Picture = upload_res.FilePaths
-
-	var options entities.ProductOptions
-	err = json.Unmarshal([]byte(optionsStr), &options)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	req.Options = options.Options
 
 	res, err := p.ProductUsecase.Create(&req)
 	if err != nil {
@@ -162,12 +164,18 @@ func (p *ProductController) DeleteProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, err)
 }
 
-func (p *ProductController) UploadProduct(c *gin.Context) (*entities.FileUploadRes, error) {
+func (p *ProductController) UploadProductPicture(c *gin.Context) (*entities.FileUploadRes, error) {
 	var freq entities.FileUploadReq
 	err := c.ShouldBind(&freq.File)
 	if err != nil {
 		return nil, err
 	}
+
+	role, err := middlewares.GetUserByToken(c)
+	if err != nil {
+		return nil, err
+	}
+	freq.Claims = role
 
 	if err := c.Request.ParseMultipartForm(MAX_UPLOAD_SIZE); err != nil {
 		return nil, err
@@ -175,13 +183,6 @@ func (p *ProductController) UploadProduct(c *gin.Context) (*entities.FileUploadR
 
 	files := c.Request.MultipartForm.File["file"]
 	freq.File = files
-
-	role, err := middlewares.GetUserByToken(c)
-	if err != nil {
-		return nil, err
-	}
-
-	freq.Claims = role
 
 	res, err := p.FileUsecase.Upload(&freq)
 	if err != nil {

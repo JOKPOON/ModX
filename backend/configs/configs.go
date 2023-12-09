@@ -1,6 +1,7 @@
 package configs
 
 type Configs struct {
+	GCS        GCS
 	PostgreSQL PostgreSQL
 	App        Gin
 	URL        string
@@ -19,4 +20,9 @@ type PostgreSQL struct {
 	Password string
 	Database string
 	SSLMode  string
+}
+
+type GCS struct {
+	BucketName string
+	ProjectID  string
 }

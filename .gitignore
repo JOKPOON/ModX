@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 
 .env
+application_default_credentials.json

@@ -285,7 +285,7 @@ func (o *OrderRepo) Get(req *entities.OrderGetReq) (*[]entities.OrderGetRes, err
 		order.ProductOptions = options_json
 		order.Total = order.Total / 100
 		picture := strings.Split(order.ProductPicture, ",")
-		order.ProductPicture = o.Cfg.URL + "static/products/" + picture[0]
+		order.ProductPicture = o.Cfg.URL + picture[0]
 
 		res = append(res, order)
 	}
