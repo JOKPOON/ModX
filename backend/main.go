@@ -21,7 +21,7 @@ func main() {
 	log.Println(host)
 	if host != "railway" {
 		cfg.URL = "https://storage.googleapis.com/modx-product-image/"
-		cfg.PostgreSQL.Host = "localhost"
+		cfg.PostgreSQL.Host = "host.docker.internal"
 		cfg.PostgreSQL.Port = "5432"
 		cfg.PostgreSQL.Username = "postgres"
 		cfg.PostgreSQL.Password = "postgres"
