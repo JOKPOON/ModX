@@ -7,16 +7,18 @@ export interface singleProductItems {
   sold: number;
   discount?: number;
   rating?: number;
-  description?: string;
+  desc?: string;
   options?: {
     option_1?: {
       [option: string]: {
         option_2?: {
-          [subOption: string]: {
-            price: number;
+          [option: string]: {
             stock: number;
+            price: number;
           };
         };
+        stock: number;
+        price: number;
       };
     };
     option_name?: {

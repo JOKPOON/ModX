@@ -50,16 +50,31 @@ export const SingleProduct = () => {
   };
 
   const handleSelectOption = () => {
-    if (selectedOptionKey1 && selectedOptionKey2) {
+    if (selectedOptionKey1 !== null && selectedOptionKey2 !== null) {
       setSelectedPrice(
-        Product?.options?.option_1?.[selectedOptionKey1]?.option_2?.[
-          selectedOptionKey2
-        ]?.price ?? 0
+        Product?.options?.option_1?.[selectedOptionKey1 ?? 0]?.option_2?.[
+          selectedOptionKey2 ?? 0
+        ]?.price ??
+          Product?.price ??
+          0
       );
       setSelectedStock(
-        Product?.options?.option_1?.[selectedOptionKey1]?.option_2?.[
-          selectedOptionKey2
-        ]?.stock ?? 0
+        Product?.options?.option_1?.[selectedOptionKey1 ?? 0]?.option_2?.[
+          selectedOptionKey2 ?? 0
+        ]?.stock ??
+          Product?.stock ??
+          0
+      );
+    } else {
+      setSelectedPrice(
+        Product?.options?.option_1?.[selectedOptionKey1 ?? 0].price ??
+          Product?.price ??
+          0
+      );
+      setSelectedStock(
+        Product?.options?.option_1?.[selectedOptionKey1 ?? 0].stock ??
+          Product?.stock ??
+          0
       );
     }
   };
@@ -122,26 +137,30 @@ export const SingleProduct = () => {
                 )}
               </select>
             </span>
-            <span style={{ color: "#222222" }}>
-              {Product?.options?.option_name?.["option_2"]}
-              &nbsp;&nbsp;
-            </span>
-            <span className="Single__Select">
-              <select
-                onChange={(e) => {
-                  setSelectedOptionKey2(e.target.value);
-                }}
-              >
-                {Object.keys(
-                  Product?.options?.option_1?.[selectedOptionKey1 ?? 0]
-                    ?.option_2 ?? {}
-                ).map((subOptionKey, subOptionIndex) => (
-                  <option key={subOptionIndex} value={subOptionKey}>
-                    {subOptionKey}
-                  </option>
-                ))}
-              </select>
-            </span>
+            {selectedOptionKey2 !== null && (
+              <>
+                <span style={{ color: "#222222" }}>
+                  {Product?.options?.option_name?.["option_2"]}
+                  &nbsp;&nbsp;
+                </span>
+                <span className="Single__Select">
+                  <select
+                    onChange={(e) => {
+                      setSelectedOptionKey2(e.target.value);
+                    }}
+                  >
+                    {Object.keys(
+                      Product?.options?.option_1?.[selectedOptionKey1 ?? 0]
+                        ?.option_2 ?? {}
+                    ).map((subOptionKey, subOptionIndex) => (
+                      <option key={subOptionIndex} value={subOptionKey}>
+                        {subOptionKey}
+                      </option>
+                    ))}
+                  </select>
+                </span>
+              </>
+            )}
           </>
         )}
       </>
@@ -297,18 +316,33 @@ export const SingleProduct = () => {
               </div>
               <div className="Single__Product__Quantity">
                 <span style={{ color: "#222222" }}>Quantity&nbsp;&nbsp;</span>
-                <span className="Single__Select">
-                  <select
-                    onChange={(e) => {
-                      setSelectedQuantity(Number(e.target.value));
+                <span className="Single__Quantity">
+                  <button
+                    className="Single__Quantity__Button"
+                    onClick={() => {
+                      if (selectedQuantity > 1) {
+                        setSelectedQuantity(selectedQuantity - 1);
+                      }
                     }}
                   >
-                    {Array.from({ length: selectedStock ?? 0 }, (_, i) => (
-                      <option key={i} value={i + 1}>
-                        {i + 1}
-                      </option>
-                    ))}
-                  </select>
+                    -
+                  </button>
+                  <span className="Single__Quantity__Value">
+                    {selectedQuantity}
+                  </span>
+                  <button
+                    className="Single__Quantity__Button"
+                    onClick={() => {
+                      if (
+                        selectedStock !== null &&
+                        selectedQuantity < selectedStock
+                      ) {
+                        setSelectedQuantity(selectedQuantity + 1);
+                      }
+                    }}
+                  >
+                    +
+                  </button>
                 </span>
                 <span style={{ color: "#656464" }}>
                   &nbsp;&nbsp;{selectedStock} Pieces Available{" "}
@@ -316,7 +350,7 @@ export const SingleProduct = () => {
               </div>
               <div className="Single__Product__Description">
                 <div style={{ color: "#222222" }}>Description&nbsp;&nbsp;</div>
-                <div style={{ color: "#656464" }}>{Product.description}</div>
+                <div style={{ color: "#656464" }}>{Product.desc}</div>
               </div>
             </div>
             <div className="Single__Product__Button">

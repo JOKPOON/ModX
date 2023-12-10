@@ -8,7 +8,7 @@ import {
   cartItems,
 } from "../Interface/Interface";
 
-const URL = "https://modx-production.up.railway.app/";
+const URL = "http://localhost:8080/";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
