@@ -114,6 +114,26 @@ func (o *OrderRepo) Update(req *entities.OrderUpdateReq) error {
 		return err
 	}
 
+	query = `
+	UPDATE "products"
+	SET "sold" = "products"."sold" + COALESCE(subquery."total_quantity", 0)
+	FROM (
+		SELECT 
+			"order_products"."product_id",
+			SUM("order_products"."quantity") AS "total_quantity"
+		FROM "order_products"
+		INNER JOIN "orders" ON "orders"."id" = "order_products"."order_id"
+		WHERE "orders"."status" = 'complete'
+		GROUP BY "order_products"."product_id"
+	) AS subquery
+	WHERE "products"."id" = subquery."product_id";
+	`
+
+	_, err = o.Db.Exec(query)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

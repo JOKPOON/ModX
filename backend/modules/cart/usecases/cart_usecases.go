@@ -38,9 +38,13 @@ func (c *CartUsecases) GetCartItems(req *entities.CartGetReq) (*entities.CartGet
 
 		for s, v := range option.Options["option_1"].(map[string]interface{}) {
 			if s == option_1 {
-				for s2, v2 := range v.(map[string]interface{})["option_2"].(map[string]interface{}) {
-					if s2 == option_2 {
-						res.Products[i].Price = int(v2.(map[string]interface{})["price"].(float64))
+				if v.(map[string]interface{})["option_2"] == nil {
+					res.Products[i].Price = int(v.(map[string]interface{})["price"].(float64))
+				} else {
+					for s2, v2 := range v.(map[string]interface{})["option_2"].(map[string]interface{}) {
+						if s2 == option_2 {
+							res.Products[i].Price = int(v2.(map[string]interface{})["price"].(float64))
+						}
 					}
 				}
 			}

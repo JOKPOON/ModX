@@ -269,7 +269,7 @@ export const SingleProduct = () => {
                     <div className="Single__Product__Review__Content__Right">
                       <div className="Single__Product__Review__Content__Date">
                         <div style={{ color: "#656464", fontWeight: "400" }}>
-                          Rating : {item.rating}
+                          Rating : {item.rating ? item.rating / 10 : 0}
                         </div>
                         {item.created_at}
                       </div>
@@ -286,7 +286,7 @@ export const SingleProduct = () => {
               <div className="Single__Product__Name">{Product.title}</div>
               <div className="Single__Product__RateNSold">
                 <span style={{ color: "#222222" }}>Rating&nbsp;&nbsp;</span>
-                {Product.rating}
+                {(Product.rating ?? 0) / 10}
                 &nbsp;&nbsp;&nbsp;
                 <span style={{ color: "#222222" }}>Sold&nbsp;&nbsp;</span>
                 {formatPrice(Product.sold)}

@@ -41,12 +41,17 @@ func (o *OrderUsecases) Create(req *entities.OrderCreateReq) (*entities.OrderCre
 
 		for s, v := range option.Options["option_1"].(map[string]interface{}) {
 			if s == option_1 {
-				for s2, v2 := range v.(map[string]interface{})["option_2"].(map[string]interface{}) {
-					if s2 == option_2 {
-						product.Price = int(v2.(map[string]interface{})["price"].(float64))
-						if int(v2.(map[string]interface{})["stock"].(float64)) < product.Quantity {
-							return nil, errors.New("stock not enough")
+				if v.(map[string]interface{})["option_2"] == nil {
+					product.Price = int(v.(map[string]interface{})["price"].(float64))
+				} else {
+					for s2, v2 := range v.(map[string]interface{})["option_2"].(map[string]interface{}) {
+						if s2 == option_2 {
+							product.Price = int(v2.(map[string]interface{})["price"].(float64))
+							if int(v2.(map[string]interface{})["stock"].(float64)) < product.Quantity {
+								return nil, errors.New("stock not enough")
+							}
 						}
+
 					}
 				}
 			}
