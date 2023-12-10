@@ -1,3 +1,20 @@
+.Single__Quantity__Button {
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+  color: #222222;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+.Single__Quantity__Button:hover {
+  background-color: #dddddd;
+}
+
+.Single__Quantity__Value {
+  margin: 0 10px;
+  font-weight: bold;
+}
+
 .Single__Product__Container {
   margin-top: 60px;
   width: 100%;

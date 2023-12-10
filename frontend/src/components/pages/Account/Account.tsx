@@ -169,7 +169,7 @@ export const Account = () => {
               onChange={(e) =>
                 setShippingData({
                   ...shippingData,
-                  zip: e.target.valueAsNumber,
+                  zip: e.target.valueAsNumber.toString(),
                 })
               }
             />

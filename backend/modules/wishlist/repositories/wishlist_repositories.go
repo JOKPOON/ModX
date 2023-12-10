@@ -169,7 +169,7 @@ func (r *WishlistRepo) GetProductDetails(product_id int) (*entities.ProductGetBy
 
 	picture := strings.Split(res.Picture, ",")
 	for i, v := range picture {
-		picture[i] = r.Cfg.URL + "static/products/" + v
+		picture[i] = r.Cfg.URL + v
 	}
 
 	res.Picture = picture[0]
