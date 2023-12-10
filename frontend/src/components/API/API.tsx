@@ -8,7 +8,7 @@ import {
   cartItems,
 } from "../Interface/Interface";
 
-const URL = "http://localhost:8080/";
+const URL = "https://modx-production.up.railway.app/";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
@@ -36,7 +36,7 @@ const createFetchString = (
   if (selectedRating !== null) {
     queryParams.push(`rating=${selectedRating}`);
   }
-  if (sortType !== "ASC") {
+  if (sortType !== "") {
     queryParams.push(`price_sort=${sortType}`);
   }
   if (selectedSort !== "") {

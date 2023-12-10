@@ -52,7 +52,6 @@ func (p *ProductUsecases) Create(req *entities.Product) (*entities.ProductCreate
 
 	req.Price = int(minPrice)
 	req.Stock = int(totalStock)
-	req.Discount = 0
 
 	res, err := p.ProductRepo.Create(req)
 	if err != nil {
