@@ -169,6 +169,7 @@ export const SingleProduct = () => {
 
   const HandleSingleItemToWishlist = () => {
     HandleAddToWishlist({
+      id: 0,
       product_id: Product?.id ?? 0,
       quantity: selectedQuantity,
       options: {
