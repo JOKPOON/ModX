@@ -11,6 +11,7 @@ export const Login = () => {
   const [isSignUp, setIsSignUp] = useState(false);
 
   const handleToggle = () => {
+
     setIsSignUp(!isSignUp);
   };
 

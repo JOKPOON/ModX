@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import {
   reviewItems,
   ordersItems,
@@ -8,7 +7,7 @@ import {
   cartItems,
 } from "../Interface/Interface";
 
-const URL = "http://localhost:8080/";
+const URL = "https://modx-production.up.railway.app/";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
@@ -121,6 +120,8 @@ export const HandleReviewClick = async (
         console.log(data);
         alert("Review Success");
       });
+    } else {
+      alert("fill all fields");
     }
   });
 };
@@ -301,39 +302,43 @@ export const OmiseHandler = async (
   OmiseCard: any
 ) => {
   console.log("order_id", order_id);
-  OmiseCard.configure({
-    publicKey: "pkey_test_5xh7smyrjtw4ythtq7n",
-    currency: "thb",
-    frameLabel: "ModX",
-    submitLabel: "PAY NOW",
-    buttonLabel: "Pay with Omise",
+  if (!order_id) {
+    alert("Enter your address first! idiot");
+  } else {
+    OmiseCard.configure({
+      publicKey: "pkey_test_5xh7smyrjtw4ythtq7n",
+      currency: "thb",
+      frameLabel: "ModX",
+      submitLabel: "PAY NOW",
+      buttonLabel: "Pay with Omise",
 
-    defaultPaymentMethod: "credit_card",
-    otherPaymentMethods: [],
-  });
+      defaultPaymentMethod: "credit_card",
+      otherPaymentMethods: [],
+    });
 
-  await OmiseCard.open({
-    amount: total * 100,
-    submitFormTarget: "#checkout-form",
-    onCreateTokenSuccess: async (nonce: string) => {
-      await fetch(URL + "v1/payment/charge", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          token: nonce,
-          order_id: order_id,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.status === "success") {
-            alert("Payment Success");
-          }
-          console.log(data);
-        });
-    },
-    onFormClosed: () => {},
-  });
+    await OmiseCard.open({
+      amount: total * 100,
+      submitFormTarget: "#checkout-form",
+      onCreateTokenSuccess: async (nonce: string) => {
+        await fetch(URL + "v1/payment/charge", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token: nonce,
+            order_id: order_id,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "success") {
+              alert("Payment Success");
+            }
+            console.log(data);
+          });
+      },
+      onFormClosed: () => {},
+    });
+  }
 };
 
 export const HandleGetShippingAddress = async () => {
@@ -440,8 +445,9 @@ export const HandleLogin = async (username: string, password: string) => {
         console.log(data);
       });
       window.location.href = "/AllProducts";
+    } else {
+      alert("Username or Password is incorrect");
     }
-    throw new Error("Username or password is incorrect");
   });
 };
 
@@ -453,6 +459,11 @@ export const HandleResgister = async (
 ) => {
   if (!username || !password || !confirmPassword || !email) {
     alert("All fields are required");
+    return;
+  }
+
+  if (email.indexOf("@") === -1 || email.indexOf(".") === -1) {
+    alert("Email is invalid");
     return;
   }
 
@@ -475,8 +486,9 @@ export const HandleResgister = async (
         console.log(data);
       });
       window.location.href = "/AllProducts";
+    } else {
+      alert("Duplicate Username or Email");
     }
-    throw new Error("Username already exists");
   });
 };
 

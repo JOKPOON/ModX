@@ -128,8 +128,22 @@ button:hover {
   align-items: center;
   cursor: pointer;
 }
+
 .EyeSVG {
   width: 60%;
+}
+
+.Logout-Button {
+  border: 1px solid var(--blk);
+  border-radius: 8px;
+  width: 98%;
+  height: 40px;
+  background-color: var(--wht);
+  font-weight: 500;
+  color: var(--blk);
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.4s ease-in-out;
 }
 
 .Row {

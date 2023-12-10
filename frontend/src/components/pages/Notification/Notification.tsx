@@ -18,7 +18,13 @@ export const Notification = () => {
     });
   }, [navigate]);
 
-  const handleHistorygo = () => {};
+  const noIteminHistory = () => {
+    return (
+      <div className="NoItem">
+        <div className="NoItem__Text">No Item in History</div>
+      </div>
+    );
+  }
 
   return (
     <div className="Track__Container">
@@ -31,7 +37,8 @@ export const Notification = () => {
           <div className="Title__Grid">Status</div>
         </div>
       </div>
-      <div className="Order__Body" onClick={handleHistorygo}>
+      <div className="Order__Body" >
+        {Order?.length === 0 ? noIteminHistory() : null}
         {Order?.map((item, index) => (
           <div
             className="Order__Container"

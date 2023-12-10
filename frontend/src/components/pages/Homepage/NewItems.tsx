@@ -30,9 +30,8 @@ const NewItems = () => {
   const showNextButton =
     newItemsData.length > ITEMS_PER_PAGE && !isLastItemVisible;
 
-  const handleSelectItemFromNewItem = (item: productItems) => {
-    console.log("Selected item ID :", item.id);
-    navigate("/SingleProduct");
+  const handleSelectItemFromNewItem = () => {
+    navigate("/AllProducts");
   };
 
   useEffect(() => {
@@ -97,7 +96,7 @@ const NewItems = () => {
                   <div className="Home__NewItem__Arrow__Box">
                     <button
                       className="Home__NewItem__Arrow"
-                      onClick={() => handleSelectItemFromNewItem(item)}
+                      onClick={() => handleSelectItemFromNewItem()}
                     >
                       <i className="bx bx-right-arrow-alt"></i>
                     </button>
