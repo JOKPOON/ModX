@@ -21,17 +21,8 @@ func (u *WishlistUsecases) GetWishlistItems(req *entities.WhishlistGetReq) (*ent
 	}
 
 	for i, product := range res.Products {
-		options, err := u.WishlistRepo.GetProductOptions(product.ProductId)
 		if err != nil {
 			return nil, err
-		}
-
-		if option1, ok := options.Options["option_1"].(map[string]interface{}); ok {
-			if option2, ok := option1[product.Options["option_1"]].(map[string]interface{})["option_2"].(map[string]interface{}); ok {
-				if price, ok := option2[product.Options["option_2"]].(map[string]interface{})["price"].(float64); ok {
-					product.Price = int(price)
-				}
-			}
 		}
 
 		res.Products[i] = product
@@ -43,7 +34,6 @@ func (u *WishlistUsecases) GetWishlistItems(req *entities.WhishlistGetReq) (*ent
 
 		res.Products[i].ProductTitle = product_detail.Title
 		res.Products[i].ProductImage = product_detail.Picture
-
 	}
 
 	return res, nil
