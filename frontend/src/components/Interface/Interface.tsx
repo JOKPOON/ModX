@@ -91,6 +91,7 @@ export interface wishlistItems {
 }
 
 export interface orderProducts {
+  id: number;
   product_id: number;
   quantity: number;
   options?: {

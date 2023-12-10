@@ -293,6 +293,20 @@ export const HandleCheckout = async (
     return await res.json();
   });
 
+  await fetch(URL + "v1/cart/delete", {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      cart_id: orderProducts.map((product) => product.id),
+    }),
+  }).then(async (res) => {
+    console.log(res);
+    return await res.json();
+  });
+
   await OmiseHandler(res.order_id, total, OmiseCard);
 };
 

@@ -45,6 +45,7 @@ export const Cart = () => {
         product_id: product?.product_id ?? 0,
         quantity: product?.quantity ?? 0,
         options: product?.options,
+        id: product?.id ?? 0,
       };
       setOrderProducts((prevOrderProducts) => [
         ...(prevOrderProducts ?? []),
