@@ -20,14 +20,14 @@ func main() {
 
 	log.Println(host)
 	if host != "railway" {
-		cfg.URL = "http://localhost:8080/"
+		cfg.URL = "https://storage.googleapis.com/modx-product-image/"
 		cfg.PostgreSQL.Host = "localhost"
 		cfg.PostgreSQL.Port = "5432"
 		cfg.PostgreSQL.Username = "postgres"
 		cfg.PostgreSQL.Password = "postgres"
 		cfg.PostgreSQL.Database = "ModX"
 	} else {
-		cfg.URL = os.Getenv("URL")
+		cfg.URL = "https://storage.googleapis.com/modx-product-image/"
 		cfg.PostgreSQL.Host = os.Getenv("PGHOST")
 		cfg.PostgreSQL.Port = os.Getenv("PGPORT")
 		cfg.PostgreSQL.Username = os.Getenv("POSTGRES_USER")
@@ -40,7 +40,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	srv := server.NewServer(cfg, db)
+	storage, err := databases.NewGoolgeCloudStorage(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	srv := server.NewServer(db, cfg, storage)
 
 	if err := srv.Run(); err != nil {
 		log.Fatal(err)

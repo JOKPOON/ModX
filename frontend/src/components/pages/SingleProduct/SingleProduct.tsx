@@ -4,7 +4,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { formatPrice } from "../Helper/Calculator";
 import { useEffect, useState } from "react";
 import { singleProductItems } from "../../Interface/Interface";
-import { HandleGetProduct, HandleAddToCart } from "../../API/API";
+import {
+  HandleGetProduct,
+  HandleAddToCart,
+  HandleAddToWishlist,
+} from "../../API/API";
 
 export const SingleProduct = () => {
   const navigate = useNavigate();
@@ -27,41 +31,6 @@ export const SingleProduct = () => {
     navigate(-1); // Go back to the previous page
   };
 
-  const handleAddToWishlist = async () => {
-    const data = {
-      product_id: Product?.id,
-      quantity: selectedQuantity,
-      options: {
-        option_1: selectedOptionKey1,
-        option_2: selectedOptionKey2,
-      },
-    };
-
-    const token = localStorage.getItem("token");
-    if (token == null) {
-      window.location.href = "/Login";
-      return;
-    }
-
-    await fetch("http://localhost:8080/v1/wishlist/", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    }).then(
-      (res) => {
-        if (res.status === 403) {
-          window.location.href = "/Login";
-        }
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
-  };
-
   const initialData = () => {
     if (Product !== null) {
       setSelectedOptionKey1(
@@ -81,16 +50,31 @@ export const SingleProduct = () => {
   };
 
   const handleSelectOption = () => {
-    if (selectedOptionKey1 && selectedOptionKey2) {
+    if (selectedOptionKey1 !== null && selectedOptionKey2 !== null) {
       setSelectedPrice(
-        Product?.options?.option_1?.[selectedOptionKey1]?.option_2?.[
-          selectedOptionKey2
-        ]?.price ?? 0
+        Product?.options?.option_1?.[selectedOptionKey1 ?? 0]?.option_2?.[
+          selectedOptionKey2 ?? 0
+        ]?.price ??
+          Product?.price ??
+          0
       );
       setSelectedStock(
-        Product?.options?.option_1?.[selectedOptionKey1]?.option_2?.[
-          selectedOptionKey2
-        ]?.stock ?? 0
+        Product?.options?.option_1?.[selectedOptionKey1 ?? 0]?.option_2?.[
+          selectedOptionKey2 ?? 0
+        ]?.stock ??
+          Product?.stock ??
+          0
+      );
+    } else {
+      setSelectedPrice(
+        Product?.options?.option_1?.[selectedOptionKey1 ?? 0].price ??
+          Product?.price ??
+          0
+      );
+      setSelectedStock(
+        Product?.options?.option_1?.[selectedOptionKey1 ?? 0].stock ??
+          Product?.stock ??
+          0
       );
     }
   };
@@ -153,26 +137,30 @@ export const SingleProduct = () => {
                 )}
               </select>
             </span>
-            <span style={{ color: "#222222" }}>
-              {Product?.options?.option_name?.["option_2"]}
-              &nbsp;&nbsp;
-            </span>
-            <span className="Single__Select">
-              <select
-                onChange={(e) => {
-                  setSelectedOptionKey2(e.target.value);
-                }}
-              >
-                {Object.keys(
-                  Product?.options?.option_1?.[selectedOptionKey1 ?? 0]
-                    ?.option_2 ?? {}
-                ).map((subOptionKey, subOptionIndex) => (
-                  <option key={subOptionIndex} value={subOptionKey}>
-                    {subOptionKey}
-                  </option>
-                ))}
-              </select>
-            </span>
+            {selectedOptionKey2 !== null && (
+              <>
+                <span style={{ color: "#222222" }}>
+                  {Product?.options?.option_name?.["option_2"]}
+                  &nbsp;&nbsp;
+                </span>
+                <span className="Single__Select">
+                  <select
+                    onChange={(e) => {
+                      setSelectedOptionKey2(e.target.value);
+                    }}
+                  >
+                    {Object.keys(
+                      Product?.options?.option_1?.[selectedOptionKey1 ?? 0]
+                        ?.option_2 ?? {}
+                    ).map((subOptionKey, subOptionIndex) => (
+                      <option key={subOptionIndex} value={subOptionKey}>
+                        {subOptionKey}
+                      </option>
+                    ))}
+                  </select>
+                </span>
+              </>
+            )}
           </>
         )}
       </>
@@ -180,7 +168,14 @@ export const SingleProduct = () => {
   };
 
   const HandleSingleItemToWishlist = () => {
-    handleAddToWishlist();
+    HandleAddToWishlist({
+      product_id: Product?.id ?? 0,
+      quantity: selectedQuantity,
+      options: {
+        option_1: selectedOptionKey1 ?? "",
+        option_2: selectedOptionKey2 ?? "",
+      },
+    });
   };
 
   const HandleSingleItemToCart = () => {
@@ -274,7 +269,7 @@ export const SingleProduct = () => {
                     <div className="Single__Product__Review__Content__Right">
                       <div className="Single__Product__Review__Content__Date">
                         <div style={{ color: "#656464", fontWeight: "400" }}>
-                          Rating : {item.rating}
+                          Rating : {item.rating ? item.rating / 10 : 0}
                         </div>
                         {item.created_at}
                       </div>
@@ -291,7 +286,7 @@ export const SingleProduct = () => {
               <div className="Single__Product__Name">{Product.title}</div>
               <div className="Single__Product__RateNSold">
                 <span style={{ color: "#222222" }}>Rating&nbsp;&nbsp;</span>
-                {Product.rating}
+                {(Product.rating ?? 0) / 10}
                 &nbsp;&nbsp;&nbsp;
                 <span style={{ color: "#222222" }}>Sold&nbsp;&nbsp;</span>
                 {formatPrice(Product.sold)}
@@ -321,18 +316,33 @@ export const SingleProduct = () => {
               </div>
               <div className="Single__Product__Quantity">
                 <span style={{ color: "#222222" }}>Quantity&nbsp;&nbsp;</span>
-                <span className="Single__Select">
-                  <select
-                    onChange={(e) => {
-                      setSelectedQuantity(Number(e.target.value));
+                <span className="Single__Quantity">
+                  <button
+                    className="Single__Quantity__Button"
+                    onClick={() => {
+                      if (selectedQuantity > 1) {
+                        setSelectedQuantity(selectedQuantity - 1);
+                      }
                     }}
                   >
-                    {Array.from({ length: selectedStock ?? 0 }, (_, i) => (
-                      <option key={i} value={i + 1}>
-                        {i + 1}
-                      </option>
-                    ))}
-                  </select>
+                    -
+                  </button>
+                  <span className="Single__Quantity__Value">
+                    {selectedQuantity}
+                  </span>
+                  <button
+                    className="Single__Quantity__Button"
+                    onClick={() => {
+                      if (
+                        selectedStock !== null &&
+                        selectedQuantity < selectedStock
+                      ) {
+                        setSelectedQuantity(selectedQuantity + 1);
+                      }
+                    }}
+                  >
+                    +
+                  </button>
                 </span>
                 <span style={{ color: "#656464" }}>
                   &nbsp;&nbsp;{selectedStock} Pieces Available{" "}
@@ -340,7 +350,7 @@ export const SingleProduct = () => {
               </div>
               <div className="Single__Product__Description">
                 <div style={{ color: "#222222" }}>Description&nbsp;&nbsp;</div>
-                <div style={{ color: "#656464" }}>{Product.description}</div>
+                <div style={{ color: "#656464" }}>{Product.desc}</div>
               </div>
             </div>
             <div className="Single__Product__Button">

@@ -18,7 +18,7 @@ export const Home = () => {
   };
 
   const [currentBackground, setCurrentBackground] = useState(0);
-  const Categories = ["Education", "Clothes", "Electronics", "Accessories"];
+  const Categories = ["education", "clothes", "electronics", "accessories"];
 
   const handleCategoryClick = (text: string) => {
     console.log("Selected Category : ", text);
@@ -41,7 +41,7 @@ export const Home = () => {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [backgrounds.length]);
 
   return (
     <div>
@@ -140,10 +140,12 @@ export const Home = () => {
           </div>
         </div>
         <div className="Home__ContactUs">
-        <div className="ContactUs">
-          <div className="ContactUs__header" onClick={handleContactUsClick}><i className='bx bx-chat'></i></div>
+          <div className="ContactUs">
+            <div className="ContactUs__header" onClick={handleContactUsClick}>
+              <i className="bx bx-chat"></i>
+            </div>
+          </div>
         </div>
-      </div>
       </div>
     </div>
   );

@@ -37,37 +37,36 @@ export const WishlistDropdown = () => {
         </div>
         <div className="item_container">
           <div className="dropdown_item_form">
-            {Wishlist.length &&
-              Wishlist?.map((item, index) => (
-                <React.Fragment key={index}>
-                  <div className="dropdown_line">
-                    <div className="dropdown_item">
-                      <div
-                        key={index}
-                        className="dropdown_item_info"
-                        onClick={() => {
-                          handleProductgo(item);
-                        }}
-                      >
-                        <div className="dropdown_img">
-                          <img
-                            src={item.product_image}
-                            className="dropdown_icon"
-                          />
-                        </div>
-                        <div className=".dropdown_info">
-                          <p>
-                            <span>{item.product_title}</span>
-                          </p>
-                        </div>
+            {Wishlist?.map((item, index) => (
+              <React.Fragment key={index}>
+                <div className="dropdown_line">
+                  <div className="dropdown_item">
+                    <div
+                      key={index}
+                      className="dropdown_item_info"
+                      onClick={() => {
+                        handleProductgo(item);
+                      }}
+                    >
+                      <div className="dropdown_img">
+                        <img
+                          src={item.product_image}
+                          className="dropdown_icon"
+                        />
                       </div>
-                      <div className="Deleted_Wish">
-                        <i className="bx bxs-heart"></i>
+                      <div className=".dropdown_info">
+                        <p>
+                          <span>{item.product_title}</span>
+                        </p>
                       </div>
                     </div>
+                    <div className="Deleted_Wish">
+                      <i className="bx bxs-heart"></i>
+                    </div>
                   </div>
-                </React.Fragment>
-              ))}
+                </div>
+              </React.Fragment>
+            ))}
           </div>
         </div>
         <div className="show_all_container">

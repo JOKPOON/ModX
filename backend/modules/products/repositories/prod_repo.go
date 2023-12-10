@@ -100,7 +100,7 @@ func (p *ProductRepo) GetAll(req *entities.ProductQuery) (*entities.AllProductRe
 
 		data := strings.Split(res.Picture, ",")
 		for i, v := range data {
-			data[i] = fmt.Sprintf(p.Cfg.URL+"static/products/%s", v)
+			data[i] = fmt.Sprintf(p.Cfg.URL + v)
 		}
 
 		res.Picture = data[0]
@@ -243,7 +243,7 @@ func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, erro
 	req.Updated = res.Updated
 	req.Picture = strings.Split(res.Picture, ",")
 	for i, v := range req.Picture {
-		req.Picture[i] = fmt.Sprintf(p.Cfg.URL+"static/products/%s", v)
+		req.Picture[i] = fmt.Sprintf(p.Cfg.URL + v)
 	}
 
 	query = `
@@ -307,7 +307,7 @@ func (p *ProductRepo) AddReview(req *entities.Review) error {
 	RETURNING "id";
 	`
 
-	row, err := p.Db.Queryx(query, req.UserId, req.ProductId, req.Rating, req.Comment, req.ItemId)
+	row, err := p.Db.Queryx(query, req.UserId, req.ProductId, req.Rating*10, req.Comment, req.ItemId)
 	if err != nil {
 		return err
 	}
@@ -324,6 +324,23 @@ func (p *ProductRepo) AddReview(req *entities.Review) error {
 	`
 
 	_, err = p.Db.Queryx(query, req.ItemId)
+	if err != nil {
+		return err
+	}
+
+	query = `
+	UPDATE "products"
+	SET "rating" = COALESCE(subquery."average_rating", 0)
+	FROM (
+		SELECT 
+			"reviews"."product_id",
+			AVG("reviews"."rating") AS "average_rating"
+		FROM "reviews"
+		GROUP BY "reviews"."product_id"
+	) AS subquery
+	WHERE "products"."id" = subquery."product_id";`
+
+	_, err = p.Db.Queryx(query)
 	if err != nil {
 		return err
 	}

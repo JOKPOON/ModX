@@ -67,7 +67,10 @@ export const AllProducts = () => {
   const [ApplyButton, setApplyButton] = useState<boolean>(false);
   const [selectedSort, setSelectedSort] = useState<string>("");
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
+    setLoading(true);
     GetProductsData(
       selectedCategories,
       minPrice,
@@ -75,9 +78,11 @@ export const AllProducts = () => {
       selectedRating,
       sortType,
       selectedSort,
-      search || ""
+      search || "",
+      ""
     ).then((data) => {
       setProductsData(data);
+      setLoading(false);
     });
   }, [ApplyButton, sortType, selectedSort, search]);
 
@@ -316,7 +321,13 @@ export const AllProducts = () => {
             </button>
           </div>
           <div className="AllProducts__Products">
-            <Products product={ProductsData} />
+            {!loading ? (
+              <Products product={ProductsData} />
+            ) : (
+              <div className="loader-container">
+                <div className="spinner"></div>
+              </div>
+            )}
           </div>
         </div>
       </div>

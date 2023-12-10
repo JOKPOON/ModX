@@ -33,6 +33,14 @@ type Product struct {
 	Updated  string                 `json:"updated" db:"updated_at"`
 }
 
+type ProductData struct {
+	Id       int                    `json:"id" db:"id"`
+	Title    string                 `json:"title" db:"title"`
+	Desc     string                 `json:"desc" db:"description"`
+	Category string                 `json:"category" db:"category"`
+	Options  map[string]interface{} `json:"options" db:"options"`
+}
+
 type ProductRes struct {
 	Id       int    `json:"id" db:"id"`
 	Title    string `json:"title" db:"title"`
