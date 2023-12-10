@@ -64,7 +64,7 @@ export const Account = () => {
 
   return (
     <div className="main">
-      <div className="Conta                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          iner">
+      <div className="Container">
         <button className="Back-Account" onClick={HandleBackButton}>
           {"<" + "Back"}
         </button>
@@ -84,7 +84,7 @@ export const Account = () => {
             <h4>Email</h4>
             <input
               type="email"
-              placeholder="HarrypotterHogwarts@gmail.com"
+              placeholder="example@gmail.com"
               value={userData?.email}
               readOnly
             />
