@@ -29,7 +29,7 @@ To run TradeKub locally on your machine, follow these steps:
 
 2. Install the dependencies:
    ```
-   cd tradekub
+   cd modx
    pnpm install
    ```
 
