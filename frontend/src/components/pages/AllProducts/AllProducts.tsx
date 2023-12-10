@@ -62,7 +62,7 @@ export const AllProducts = () => {
   const [minPrice, setMinPrice] = useState<string>(initialMinPrice);
   const [maxPrice, setMaxPrice] = useState<string>(initialMaxPrice);
   const [showCategories, setShowCategories] = useState(true);
-  const [sortType, setSortType] = useState("ASC");
+  const [sortType, setSortType] = useState("");
   const [ProductsData, setProductsData] = useState<productItems[] | null>(null);
   const [ApplyButton, setApplyButton] = useState<boolean>(false);
   const [selectedSort, setSelectedSort] = useState<string>("");

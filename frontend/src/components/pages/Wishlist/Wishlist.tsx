@@ -30,6 +30,7 @@ export const Wishlist = () => {
   useEffect(() => {
     HandleGetWishList().then((res) => {
       setWishlist(res);
+      console.log(res);
     });
   }, []);
 

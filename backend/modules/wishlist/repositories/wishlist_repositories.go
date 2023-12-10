@@ -20,7 +20,20 @@ func NewWishlistRepo(db *sqlx.DB, cfg *configs.Configs) entities.WishlistReposit
 
 func (r *WishlistRepo) GetWishlistItems(req *entities.WhishlistGetReq) (*entities.WhishlistGetRes, error) {
 	products := []entities.Whishlist{}
-	query := `SELECT id, user_id, product_id, quantity, options, created_at, updated_at FROM whishlist WHERE user_id = $1`
+	query := `
+	SELECT 
+		whishlist.id,
+		whishlist.user_id,
+		whishlist.product_id,
+		whishlist.quantity,
+		whishlist.options,
+		whishlist.created_at,
+		whishlist.updated_at,
+		products.price
+	FROM whishlist
+	INNER JOIN products ON products.id = whishlist.product_id
+	WHERE whishlist.user_id = $1
+	`
 	row, err := r.Db.Queryx(query, req.UserId)
 	if err != nil {
 		return nil, err
@@ -37,6 +50,7 @@ func (r *WishlistRepo) GetWishlistItems(req *entities.WhishlistGetReq) (*entitie
 			&options_json,
 			&product.CreatedAt,
 			&product.UpdatedAt,
+			&product.Price,
 		)
 		if err != nil {
 			return nil, err

@@ -35,7 +35,7 @@ const createFetchString = (
   if (selectedRating !== null) {
     queryParams.push(`rating=${selectedRating}`);
   }
-  if (sortType !== "ASC") {
+  if (sortType !== "") {
     queryParams.push(`price_sort=${sortType}`);
   }
   if (selectedSort !== "") {

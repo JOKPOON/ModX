@@ -38,6 +38,7 @@ type ProductData struct {
 	Title    string                 `json:"title" db:"title"`
 	Desc     string                 `json:"desc" db:"description"`
 	Category string                 `json:"category" db:"category"`
+	Discount int                    `json:"discount" db:"discount"`
 	Options  map[string]interface{} `json:"options" db:"options"`
 }
 
