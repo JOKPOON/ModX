@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import {
   reviewItems,
   ordersItems,
@@ -8,7 +7,7 @@ import {
   cartItems,
 } from "../Interface/Interface";
 
-const URL = "http://localhost:8080/";
+const URL = "https://modx-production.up.railway.app/";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
@@ -440,8 +439,9 @@ export const HandleLogin = async (username: string, password: string) => {
         console.log(data);
       });
       window.location.href = "/AllProducts";
+    } else {
+      alert("Username or Password is incorrect");
     }
-    throw new Error("Username or password is incorrect");
   });
 };
 
@@ -453,6 +453,11 @@ export const HandleResgister = async (
 ) => {
   if (!username || !password || !confirmPassword || !email) {
     alert("All fields are required");
+    return;
+  }
+
+  if (email.indexOf("@") === -1 || email.indexOf(".") === -1) {
+    alert("Email is invalid");
     return;
   }
 
@@ -476,7 +481,9 @@ export const HandleResgister = async (
       });
       window.location.href = "/AllProducts";
     }
-    throw new Error("Username already exists");
+    else {
+      alert("Duplicate Username or Email");
+    }
   });
 };
 
