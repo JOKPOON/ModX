@@ -4,21 +4,31 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/jmoiron/sqlx"
 
+	"github.com/Bukharney/ModX/configs"
 	"github.com/Bukharney/ModX/modules/entities"
 )
 
 type OrderRepo struct {
-	Db *sqlx.DB
+	Cfg *configs.Configs
+	Db  *sqlx.DB
 }
 
-func NewOrderRepo(db *sqlx.DB) *OrderRepo {
-	return &OrderRepo{Db: db}
+func NewOrderRepo(db *sqlx.DB, cfg *configs.Configs) *OrderRepo {
+	return &OrderRepo{Db: db, Cfg: cfg}
 }
 
 func (o *OrderRepo) CreateOrder(req *entities.OrderCreateReq) (*entities.OrderCreateRes, error) {
+	s_id, err := o.GetShippingId(req.UserId)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get shipping id: %w", err)
+	}
+
+	req.ShippingId = s_id
+
 	query := `
 	INSERT INTO "orders"(
 		"user_id",
@@ -36,7 +46,7 @@ func (o *OrderRepo) CreateOrder(req *entities.OrderCreateReq) (*entities.OrderCr
 	`
 
 	var res entities.OrderCreateRes
-	err := o.Db.QueryRowx(
+	err = o.Db.QueryRowx(
 		query,
 		req.UserId,
 		req.ShippingId,
@@ -48,6 +58,7 @@ func (o *OrderRepo) CreateOrder(req *entities.OrderCreateReq) (*entities.OrderCr
 		req.PaymentStatus,
 		req.Status,
 	).Scan(&res.OrderId)
+
 	if err != nil {
 		return nil, fmt.Errorf("failed to create order: %w", err)
 	}
@@ -82,7 +93,7 @@ func (o *OrderRepo) Create(req *entities.OrderCreateReq) (*entities.OrderCreateR
 			v.Quantity,
 		)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to create order_prod: %w", err)
 		}
 	}
 
@@ -104,108 +115,6 @@ func (o *OrderRepo) Update(req *entities.OrderUpdateReq) error {
 	}
 
 	return nil
-}
-
-func (o *OrderRepo) GetOrderById(id int64) (*entities.OrderGetByIdRes, error) {
-	query := `
-	SELECT 
-		"orders"."id",
-		"orders"."payment_status",
-		"orders"."status",
-	FROM "orders"
-	WHERE "orders"."id" = $1;		
-	`
-
-	order := new(entities.OrderGetByIdRes)
-	err := o.Db.QueryRowx(query, id).StructScan(order)
-	if err != nil {
-		return nil, err
-	}
-
-	query = `
-	SELECT
-		"order_items"."id",
-		"order_items"."order_id",
-		"order_items"."product_id"
-	FROM "order_items"
-	WHERE "order_items"."order_id" = $1;
-	`
-
-	type OrderItems struct {
-		Id        int64 `db:"id"`
-		OrderId   int64 `db:"order_id"`
-		ProductId int64 `db:"product_id"`
-	}
-
-	order_product := []entities.OrderItemGetByIdRes{}
-	orderItems := []OrderItems{}
-	err = o.Db.Select(&orderItems, query, order.Id)
-	if err != nil {
-		return nil, err
-	}
-
-	query = `
-	SELECT
-		"products"."id",
-		"products"."title"
-		"products"."picture"
-	FROM "products"
-	WHERE "products"."id" = $1;
-	`
-
-	products := entities.ProductGetByIdRes{}
-	for _, v := range orderItems {
-		err = o.Db.QueryRowx(query, v.ProductId).StructScan(&products)
-		if err != nil {
-			return nil, err
-		}
-
-		query1 := `
-		SELECT
-			"items"."order_product_id",
-			"items"."quantity",
-			"items"."price",
-			"items"."color",
-			"items"."size",
-			"items"."model"
-		FROM "items"
-		WHERE "items"."order_product_id" = $1;
-		`
-
-		items := []entities.ItemGetByIdRes{}
-		err = o.Db.Select(&items, query1, v.Id)
-		if err != nil {
-			return nil, err
-		}
-
-		order_product = append(order_product, entities.OrderItemGetByIdRes{
-			Product: products,
-			Item:    items,
-		})
-	}
-
-	order.OrderItems = order_product
-
-	query = `
-	SELECT
-		"shippings"."id",
-		"shippings"."user_id",
-		"shippings"."name",
-		"shippings"."address",
-		"shippings"."city",
-		"shippings"."province",
-		"shippings"."postal_code",
-		"shippings"."phone"
-	FROM "shippings"
-	WHERE "shippings"."id" = $1;
-	`
-
-	err = o.Db.QueryRowx(query, order.Shipping.Id).StructScan(order.Shipping)
-	if err != nil {
-		return nil, err
-	}
-
-	return order, nil
 }
 
 func (o *OrderRepo) GetProductOptions(product_id int) (*entities.ProductOptions, error) {
@@ -230,4 +139,187 @@ func (o *OrderRepo) GetProductOptions(product_id int) (*entities.ProductOptions,
 	}
 
 	return &entities.ProductOptions{Options: options_json}, nil
+}
+
+func (o *OrderRepo) GetAll(req *entities.OrderGetAllReq) (*[]entities.OrderGetAllRes, error) {
+	query := `
+	SELECT
+		"orders"."id",
+		"orders"."total_cost",
+		"orders"."updated_at",
+		"orders"."status"
+	FROM "orders"
+	WHERE "orders"."user_id" = $1 AND "orders"."status" != $2;
+	`
+
+	var res []entities.OrderGetAllRes
+	row, err := o.Db.Queryx(query, req.UserId, "")
+	if err != nil {
+		return nil, err
+	}
+
+	for row.Next() {
+		var order entities.OrderGetAllRes
+		err := row.Scan(
+			&order.Id,
+			&order.Total,
+			&order.UpdatedAt,
+			&order.Status,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, order)
+	}
+
+	for i, v := range res {
+		query := `
+		SELECT
+			"order_products"."quantity"
+		FROM "order_products"
+		WHERE "order_products"."order_id" = $1;
+		`
+
+		var quantity int
+		row, err := o.Db.Queryx(query, v.Id)
+		if err != nil {
+			return nil, err
+		}
+
+		for row.Next() {
+			err := row.Scan(
+				&quantity,
+			)
+
+			if err != nil {
+				return nil, err
+			}
+
+			res[i].Quantity += quantity
+		}
+
+		res[i].Quantity = quantity
+		res[i].UpdatedAt = v.UpdatedAt[:10]
+		res[i].Total = v.Total / 100
+	}
+
+	return &res, nil
+}
+
+func (o *OrderRepo) GetShippingId(user_id int) (int, error) {
+	query := `
+	SELECT id FROM shippings WHERE user_id = $1;
+	`
+
+	var shipping_id int
+	err := o.Db.QueryRowx(query, user_id).Scan(&shipping_id)
+	if err != nil {
+		return 0, err
+	}
+
+	return shipping_id, nil
+}
+
+func (o *OrderRepo) GetProductDiscount(product_id int) (int, error) {
+	query := `
+	SELECT discount FROM products WHERE id = $1;
+	`
+	var discount int
+	err := o.Db.QueryRowx(query, product_id).Scan(&discount)
+	if err != nil {
+		return 0, err
+	}
+
+	return discount, nil
+}
+
+func (o *OrderRepo) Get(req *entities.OrderGetReq) (*[]entities.OrderGetRes, error) {
+	query := `
+	SELECT
+		"order_products"."id",
+		"order_products"."product_id",
+		"order_products"."quantity",
+		"order_products"."is_reviewed",
+		"order_products"."options",
+		"orders"."total_cost",
+		"products"."picture",
+		"products"."title"
+	FROM "order_products"
+	INNER JOIN "orders" ON "orders"."id" = "order_products"."order_id"
+	INNER JOIN "products" ON "products"."id" = "order_products"."product_id"
+	WHERE "order_products"."order_id" = $1 AND "orders"."user_id" = $2;
+	`
+
+	var res []entities.OrderGetRes
+	row, err := o.Db.Queryx(query, req.Id, req.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	for row.Next() {
+		var order entities.OrderGetRes
+		var options string
+		err := row.Scan(
+			&order.Id,
+			&order.ProductId,
+			&order.Quantity,
+			&order.IsReviewed,
+			&options,
+			&order.Total,
+			&order.ProductPicture,
+			&order.ProductTitle,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		var options_json map[string]string
+		err = json.Unmarshal([]byte(options), &options_json)
+		if err != nil {
+			return nil, err
+		}
+
+		order.ProductOptions = options_json
+		order.Total = order.Total / 100
+		picture := strings.Split(order.ProductPicture, ",")
+		order.ProductPicture = o.Cfg.URL + "static/products/" + picture[0]
+
+		res = append(res, order)
+	}
+
+	query = `
+	SELECT
+		"reviews"."rating",
+		"reviews"."comment"
+	FROM "reviews"
+	WHERE "reviews"."order_product_id" = $1;
+	`
+
+	for i, v := range res {
+		var review entities.ReviewRes
+		row, err := o.Db.Queryx(query, v.Id)
+		if err != nil {
+			return nil, err
+		}
+
+		for row.Next() {
+			err := row.Scan(
+				&review.Rating,
+				&review.Comment,
+			)
+
+			if err != nil {
+				return nil, err
+			}
+
+		}
+
+		res[i].ProductRating = review.Rating
+		res[i].ProductComment = review.Comment
+	}
+
+	return &res, nil
 }

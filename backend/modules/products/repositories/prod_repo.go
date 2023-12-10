@@ -6,16 +6,18 @@ import (
 	"os"
 	"strings"
 
+	"github.com/Bukharney/ModX/configs"
 	"github.com/Bukharney/ModX/modules/entities"
 	"github.com/jmoiron/sqlx"
 )
 
 type ProductRepo struct {
-	Db *sqlx.DB
+	Cfg *configs.Configs
+	Db  *sqlx.DB
 }
 
-func NewProductRepo(db *sqlx.DB) entities.ProductRepository {
-	return &ProductRepo{Db: db}
+func NewProductRepo(db *sqlx.DB, cfg *configs.Configs) entities.ProductRepository {
+	return &ProductRepo{Db: db, Cfg: cfg}
 }
 
 func (p *ProductRepo) Create(req *entities.Product) (*entities.ProductCreateRes, error) {
@@ -98,7 +100,7 @@ func (p *ProductRepo) GetAll(req *entities.ProductQuery) (*entities.AllProductRe
 
 		data := strings.Split(res.Picture, ",")
 		for i, v := range data {
-			data[i] = fmt.Sprintf("http://localhost:8080/static/products/%s", v)
+			data[i] = fmt.Sprintf(p.Cfg.URL+"static/products/%s", v)
 		}
 
 		res.Picture = data[0]
@@ -238,15 +240,15 @@ func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, erro
 	req.Rating = res.Rating
 	req.Sold = res.Sold
 	req.Stock = res.Stock
-	req.Created = res.Created
 	req.Updated = res.Updated
 	req.Picture = strings.Split(res.Picture, ",")
 	for i, v := range req.Picture {
-		req.Picture[i] = fmt.Sprintf("http://localhost:8080/static/products/%s", v)
+		req.Picture[i] = fmt.Sprintf(p.Cfg.URL+"static/products/%s", v)
 	}
 
 	query = `
-	SELECT * FROM reviews WHERE product_id = $1;
+	SELECT id, user_id, comment, rating, created_at 
+	FROM reviews WHERE product_id = $1;
 	`
 
 	row, err = p.Db.Queryx(query, req.Id)
@@ -254,12 +256,38 @@ func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, erro
 		return nil, err
 	}
 
-	var review entities.Review
+	var review entities.ReviewRes
 	for row.Next() {
-		err = row.StructScan(&review)
+		err := row.Scan(
+			&review.Id,
+			&review.UserId,
+			&review.Comment,
+			&review.Rating,
+			&review.CreatedAt,
+		)
 		if err != nil {
 			return nil, err
 		}
+
+		created_time := strings.Split(review.CreatedAt, "T")
+		review.CreatedAt = created_time[0]
+
+		query := `
+		SELECT username FROM users WHERE id = $1;
+		`
+
+		rows, err := p.Db.Queryx(query, review.UserId)
+		if err != nil {
+			return nil, err
+		}
+
+		for rows.Next() {
+			err = rows.Scan(&review.Name)
+			if err != nil {
+				return nil, err
+			}
+		}
+
 		req.Reviews = append(req.Reviews, review)
 	}
 
@@ -272,13 +300,14 @@ func (p *ProductRepo) AddReview(req *entities.Review) error {
 		"user_id",
 		"product_id",
 		"rating",
-		"comment"
+		"comment",
+		"order_product_id"
 	)
-	VALUES ($1, $2, $3, $4)
+	VALUES ($1, $2, $3, $4, $5)
 	RETURNING "id";
 	`
 
-	row, err := p.Db.Queryx(query, req.UserId, req.ProductId, req.Rating, req.Comment)
+	row, err := p.Db.Queryx(query, req.UserId, req.ProductId, req.Rating, req.Comment, req.ItemId)
 	if err != nil {
 		return err
 	}
@@ -288,6 +317,15 @@ func (p *ProductRepo) AddReview(req *entities.Review) error {
 		if err != nil {
 			return err
 		}
+	}
+
+	query = `
+	UPDATE order_products SET is_reviewed = true WHERE id = $1;
+	`
+
+	_, err = p.Db.Queryx(query, req.ItemId)
+	if err != nil {
+		return err
 	}
 
 	return nil

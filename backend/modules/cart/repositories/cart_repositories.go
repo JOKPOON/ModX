@@ -2,18 +2,21 @@ package repositories
 
 import (
 	"encoding/json"
+	"log"
 	"strings"
 
+	"github.com/Bukharney/ModX/configs"
 	"github.com/Bukharney/ModX/modules/entities"
 	"github.com/jmoiron/sqlx"
 )
 
 type CartRepo struct {
-	Db *sqlx.DB
+	Cfg *configs.Configs
+	Db  *sqlx.DB
 }
 
-func NewCartRepo(db *sqlx.DB) entities.CartRepository {
-	return &CartRepo{Db: db}
+func NewCartRepo(db *sqlx.DB, cfg *configs.Configs) entities.CartRepository {
+	return &CartRepo{Db: db, Cfg: cfg}
 }
 
 func (c *CartRepo) AddCartItem(req *entities.CartAddReq) (*entities.CartAddRes, error) {
@@ -52,6 +55,7 @@ func (c *CartRepo) AddCartItem(req *entities.CartAddReq) (*entities.CartAddRes, 
 func (c *CartRepo) GetCartItems(req *entities.CartGetReq) (*entities.CartGetRes, error) {
 	query := `
 	SELECT
+		"carts"."id",
 		"carts"."product_id",
 		"carts"."options",
 		"carts"."quantity"
@@ -65,13 +69,15 @@ func (c *CartRepo) GetCartItems(req *entities.CartGetReq) (*entities.CartGetRes,
 	}
 
 	var cart entities.CartGetRes
-	var options map[string]string
 
+	log.Println(cart)
 	for rows.Next() {
 		var product entities.CartProduct
-		var options_json []byte
+		var options_json string
+		var options map[string]string
 
 		err = rows.Scan(
+			&product.Id,
 			&product.ProductId,
 			&options_json,
 			&product.Quantity,
@@ -80,7 +86,8 @@ func (c *CartRepo) GetCartItems(req *entities.CartGetReq) (*entities.CartGetRes,
 			return nil, err
 		}
 
-		err = json.Unmarshal(options_json, &options)
+		log.Println(options_json)
+		err = json.Unmarshal([]byte(options_json), &options)
 		if err != nil {
 			return nil, err
 		}
@@ -123,7 +130,8 @@ func (c *CartRepo) GetProductDetails(product_id int) (*entities.ProductGetByIdRe
 	SELECT
 		products.id,
 		products.title,
-		products.picture
+		products.picture,
+		products.discount
 	FROM products
 	WHERE products.id = $1;
 	`
@@ -136,7 +144,7 @@ func (c *CartRepo) GetProductDetails(product_id int) (*entities.ProductGetByIdRe
 
 	picture := strings.Split(res.Picture, ",")
 	for i, v := range picture {
-		picture[i] = "http://localhost:8080/static/products/" + v
+		picture[i] = c.Cfg.URL + "static/products/" + v
 	}
 
 	res.Picture = picture[0]
@@ -147,15 +155,17 @@ func (c *CartRepo) GetProductDetails(product_id int) (*entities.ProductGetByIdRe
 func (c *CartRepo) DeleteCartItem(req *entities.CartDeleteReq) (*entities.CartDeleteRes, error) {
 	query := `
 	DELETE FROM "carts"
-	WHERE "carts"."user_id" = $1
-	AND "carts"."product_id" = $2
+	WHERE "carts"."id" = $1
+	AND "carts"."user_id" = $2
 	RETURNING "id";
 	`
 
 	var res entities.CartDeleteRes
-	err := c.Db.QueryRowx(query, req.UserId, req.ProductId).Scan(&res.Id)
-	if err != nil {
-		return nil, err
+	for _, v := range req.CartId {
+		err := c.Db.QueryRowx(query, v, req.UserId).Scan(&res.Id)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &res, nil

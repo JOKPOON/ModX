@@ -1,48 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Wishlist.css";
-import Clothes from "../assets/Clothes.svg";
 import { useNavigate } from "react-router-dom";
-
-interface items {
-  picture?: string;
-  title: string;
-  price: number;
-}
+import { wishlistItems } from "../../Interface/Interface";
+import { HandleGetWishList, HandleDeleteWishList } from "../../API/API";
 
 export const Wishlist = () => {
-  const [wishlist, setWishlist] = useState<items[]>([
-    {
-      picture: "#00001",
-      title: "Female Uniform From KMUTT Fear of Natacha 2nd",
-      price: 99999999,
-    },
-    {
-      picture: "#00002",
-      title: "Female Uniform From KMUTT Fear of Natacha 2nd",
-      price: 99999999,
-    },
-    {
-      picture: "#00002",
-      title: "Female Uniform From KMUTT Fear of Natacha 2nd",
-      price: 99999999,
-    },
-  ]);
+  const navigate = useNavigate();
+  const [wishlist, setWishlist] = useState<wishlistItems[]>([]);
 
   const removeFromWishlist = (index: number) => {
-    const updatedWishlist = [...wishlist];
-    updatedWishlist.splice(index, 1);
-    setWishlist(updatedWishlist);
+    HandleDeleteWishList(index).then((res) => {
+      setWishlist(res);
+    });
+
+    const newWishlist = [...(wishlist ?? [])];
+    newWishlist.splice(index, 1);
+    setWishlist(newWishlist);
   };
 
-  const navigate = useNavigate();
-
-  const handleProductGo = () => {
-    navigate("/Product");
+  const handleProductGo = (item: wishlistItems) => {
+    item.id = item.product_id ?? 0;
+    navigate("/SingleProduct", { state: { item: item } });
   };
 
   const handleGoBack = () => {
     navigate(-1);
   };
+
+  useEffect(() => {
+    HandleGetWishList().then((res) => {
+      setWishlist(res);
+    });
+  }, []);
 
   return (
     <div className="Order__Container">
@@ -56,41 +45,50 @@ export const Wishlist = () => {
       </div>
       <div className="Wishlist__Container">
         <div className="Wishlist__Title">WISHLIST</div>
-        {wishlist.map((items, index) => (
-          <div className="Wishlist__Item">
-            <React.Fragment key={index}>
-              <div className="Item__Container">
-                <div className="Item__Top">
-                  <div className="Item__Picture">
-                    <img src={Clothes} className="Item__Picture" />
+        {wishlist.length &&
+          wishlist.map((items, index) => (
+            <div className="Wishlist__Item" key={index}>
+              <React.Fragment key={index}>
+                <div className="Item__Container">
+                  <div className="Item__Top">
+                    <div className="Item__Picture">
+                      <img
+                        src={items.product_image}
+                        className="Item__Picture"
+                      />
+                    </div>
+                    <div className="Item__Title">{items.product_title}</div>
+                    <div className="Price__Container">
+                      <div className="Item__Price">
+                        <div className="Item__PriceTHB">{items.price}</div>
+                        <div className="Item__THB">THB</div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="Item__Title">{items.title}</div>
-                  <div className="Price__Container">
-                    <div className="Item__Price">
-                      <div className="Item__PriceTHB">{items.price}</div>
-                      <div className="Item__THB">THB</div>
+                  <div className="Item__Bottom">
+                    <div className="Item__Remover">
+                      <button
+                        className="Remove"
+                        onClick={() => removeFromWishlist(items.id)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                    <div className="Item__Viewer">
+                      <button
+                        className="View"
+                        onClick={() => {
+                          handleProductGo(items);
+                        }}
+                      >
+                        Go to store
+                      </button>
                     </div>
                   </div>
                 </div>
-                <div className="Item__Bottom">
-                  <div className="Item__Remover">
-                    <button
-                      className="Remove"
-                      onClick={() => removeFromWishlist(index)}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                  <div className="Item__Viewer">
-                    <button className="View" onClick={handleProductGo}>
-                      Go to store
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </React.Fragment>
-          </div>
-        ))}
+              </React.Fragment>
+            </div>
+          ))}
       </div>
     </div>
   );

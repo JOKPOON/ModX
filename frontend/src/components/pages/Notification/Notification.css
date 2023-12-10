@@ -5,7 +5,6 @@
 .dropdown-container .button {
   display: flex;
   cursor: pointer;
-
 }
 
 .dropdown-container .dropdown {
@@ -64,7 +63,6 @@
   height: 42px;
 }
 
-
 .dropdown_item .dropdown_info p {
   margin-bottom: 5px;
 }
@@ -74,11 +72,11 @@
   margin-right: 5px;
 }
 
-.dropdown_item .dropdown_Time p{
+.dropdown_item .dropdown_Time p {
   color: #a9a9a9;
 }
 
-.dropdown_item .Deleted_Noti{
+.dropdown_item .Deleted_Noti {
   cursor: pointer;
   display: flex;
   justify-content: flex-end;
@@ -87,7 +85,7 @@
   padding-right: 10px;
 }
 
-.dropdown_item .Deleted_Noti:hover{
+.dropdown_item .Deleted_Noti:hover {
   cursor: pointer;
   transform: scale(1.15);
 }
@@ -116,14 +114,14 @@
   color: #000;
 }
 
-.dropdown-container .dropdown .show_all_container :hover{
+.dropdown-container .dropdown .show_all_container :hover {
   color: #ffffff;
   background-color: #000;
   transform: scale(1.01);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
 }
 
-.dropdown-container .dropdown .show_all_container button{
+.dropdown-container .dropdown .show_all_container button {
   color: #000;
   background-color: #ffffff;
   border-radius: 20px;
@@ -144,41 +142,17 @@
   transition: all 0.5s ease;
 }
 
-.Title__Container{
+.Title__Container {
   padding: 20px 250px 20px 250px;
   width: 100%;
   display: grid;
-  grid-template-columns: 1.0fr 1.0fr 1.0fr 1.0fr 1.0fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   gap: 20px;
   color: #ffffff;
   transition: all 0.5s ease;
 }
 
-.Title__Container .Title__Grid1 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.Title__Container .Title__Grid2 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.Title__Container .Title__Grid3 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.Title__Container .Title__Grid4 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.Title__Container .Title__Grid5 {
+.Title__Container .Title__Grid {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -189,8 +163,7 @@
   width: 100%;
 }
 
-
-.Order__Body .Order__Container{
+.Order__Body .Order__Container {
   padding: 20px 120px 20px 120px;
   width: 100%;
   height: 100px;
@@ -199,52 +172,28 @@
   border-radius: 10px;
   margin-bottom: 10px;
   display: grid;
-  grid-template-columns: 1.0fr 1.0fr 1.0fr 1.0fr 1.0fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   gap: 20px;
   transition: all 0.5s ease;
 }
 
-.Order__Body .Order__Container:hover{
+.Order__Body .Order__Container:hover {
   cursor: pointer;
   transform: scale(1.01);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
 }
 
-.Order__Body .Order__Container .Order__Grid1 {
+.Order__Body .Order__Container .Order__Grid {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.Order__Body .Order__Container .Order__Grid1 :hover{
+.Order__Body .Order__Container .Order__Grid :hover {
   transform: none;
 }
 
-.Order__Body .Order__Container .Order__Grid2 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.Order__Body .Order__Container .Order__Grid3 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.Order__Body .Order__Container .Order__Grid4 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.Order__Body .Order__Container .Order__Grid5 {
-  display: flex;
-  justify-content: center;
-  align-items: center; 
-}
-
-.Order__Body .Order__Container .Order__Grid5 .Shipping {
+.Order__Body .Order__Container .Order__Grid .Shipping {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -257,7 +206,7 @@
   transition: all 0.5 ease;
 }
 
-.Order__Body .Order__Container .Order__Grid5 .Pending {
+.Order__Body .Order__Container .Order__Grid .Pending {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -270,7 +219,7 @@
   transition: all 0.5 ease;
 }
 
-.Order__Body .Order__Container .Order__Grid5 .Complete {
+.Order__Body .Order__Container .Order__Grid .Complete {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -284,7 +233,6 @@
 }
 
 @media screen and (max-width: 1024px) {
-
   .notification-container .button {
     padding-left: 25px;
   }
@@ -303,13 +251,13 @@
     margin-top: 50px;
   }
 
-  .Title__Container{
+  .Title__Container {
     font-size: 12px;
     padding: 20px 200px 20px 160px;
     gap: 20px;
   }
 
-  .Order__Body .Order__Container{
+  .Order__Body .Order__Container {
     font-size: 12px;
     padding: 20px 80px 20px 80px;
   }
@@ -333,25 +281,22 @@
     padding-left: 29px;
     transition: none;
   }
-
 }
 
 @media screen and (max-width: 600px) {
-
   .Track__Header {
     height: 50px;
   }
 
-  .Title__Container{
+  .Title__Container {
     font-size: 12px;
     padding: 10px 120px 10px 120px;
-    grid-template-columns: 1.0fr 0.2fr 1.2fr 1.2fr 1.0fr;
+    grid-template-columns: 1fr 0.2fr 1.2fr 1.2fr 1fr;
     gap: 5px;
   }
 
-  .Order__Body .Order__Container{
+  .Order__Body .Order__Container {
     font-size: 12px;
     padding: 20px 30px 20px 30px;
   }
-
 }

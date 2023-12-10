@@ -73,14 +73,24 @@ CREATE TABLE IF NOT EXISTS "order_products" (
 	"options" JSON NOT NULL,
 	"price" INT NOT NULL,
 	"quantity" INT NOT NULL,
-    CONSTRAINT "order_products_key" UNIQUE ("order_id", "product_id")
+	"is_reviewed" BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS "carts" (
 	"id" SERIAL PRIMARY KEY,
 	"user_id" INT NOT NULL REFERENCES "users" ("id") ON DELETE CASCADE,
 	"product_id" INT NOT NULL REFERENCES "products" ("id") ON DELETE CASCADE,
-	"options" TEXT NOT NULL,
+	"options" VARCHAR(255) NOT NULL,
+	"quantity" INT NOT NULL,
+	"created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	"updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS "whishlist" (
+	"id" SERIAL PRIMARY KEY,
+	"user_id" INT NOT NULL REFERENCES "users" ("id") ON DELETE CASCADE,
+	"product_id" INT NOT NULL REFERENCES "products" ("id") ON DELETE CASCADE,
+	"options" VARCHAR(255) NOT NULL,
 	"quantity" INT NOT NULL,
 	"created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	"updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -90,6 +100,7 @@ CREATE TABLE IF NOT EXISTS "reviews" (
 	"id" SERIAL PRIMARY KEY,
 	"user_id" INT NOT NULL REFERENCES "users" ("id") ON DELETE CASCADE,
 	"product_id" INT NOT NULL REFERENCES "products" ("id") ON DELETE CASCADE,
+	"order_product_id" INT NOT NULL REFERENCES "order_products" ("id") ON DELETE CASCADE,
 	"rating" INT NOT NULL,
 	"comment" VARCHAR(255) NOT NULL,
 	"created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -113,6 +124,9 @@ func NewPostgreSQL(cfg *configs.Configs) (*sqlx.DB, error) {
 		return nil, err
 	}
 
+	log.Println("Connecting to PostgreSQL")
+
+	log.Println(connectionUrl)
 	db, err := sqlx.Connect("postgres", connectionUrl)
 	if err != nil {
 		return nil, errors.New("failed to connect to PostgreSQL")

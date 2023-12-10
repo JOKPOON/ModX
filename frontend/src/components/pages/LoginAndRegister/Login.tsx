@@ -1,67 +1,17 @@
-import { MouseEvent, useState } from "react";
+import { useState } from "react";
 import "./Login.css";
 import Logo from "../assets/Logo.svg";
+import { HandleLogin, HandleResgister } from "../../API/API";
 
 export const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
-
-  const handleLogin = async (e: MouseEvent) => {
-    e.preventDefault();
-    await fetch("http://localhost:8080/v1/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    }).then(async (res) => {
-      if (res.ok) {
-        await res.json().then((data) => {
-          localStorage.setItem("token", data.token);
-          console.log(data);
-        });
-        window.location.href = "/AllProducts";
-      }
-      throw new Error("Username or password is incorrect");
-    });
-  };
-
   const [isSignUp, setIsSignUp] = useState(false);
 
   const handleToggle = () => {
     setIsSignUp(!isSignUp);
-  };
-
-  const handleResgister = async (e: MouseEvent) => {
-    e.preventDefault();
-    if (!username || !password || !confirmPassword || !email) {
-      alert("All fields are required");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      alert("Passwords do not match");
-      return;
-    }
-
-    await fetch("http://localhost:8080/v1/users/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password, email }),
-    }).then(async (res) => {
-      if (res.ok) {
-        await res.json().then((data) => {
-          localStorage.setItem("token", data.token);
-          console.log(data);
-        });
-        window.location.href = "/AllProducts";
-      }
-      throw new Error("Username already exists");
-    });
   };
 
   return (
@@ -75,20 +25,22 @@ export const Login = () => {
             <h1>Login</h1>
             <span></span>
             <input
+              id="username"
               type="name"
               placeholder="Username"
               onChange={(e) => setUsername(e.target.value)}
             />
             <input
+              id="password"
               type="password"
               placeholder="Password"
               onChange={(e) => setPassword(e.target.value)}
             />
-
             <button
               className="BtnTog"
               onClick={(e) => {
-                handleLogin(e);
+                e.preventDefault();
+                HandleLogin(username, password);
               }}
             >
               Login
@@ -100,6 +52,7 @@ export const Login = () => {
             <h1>Create Account</h1>
             <span></span>
             <input
+              id="username"
               type="text"
               placeholder="Username"
               onChange={(e) => {
@@ -107,6 +60,7 @@ export const Login = () => {
               }}
             />
             <input
+              id="email"
               type="email"
               placeholder="Email"
               onChange={(e) => {
@@ -114,6 +68,7 @@ export const Login = () => {
               }}
             />
             <input
+              id="password"
               type="password"
               placeholder="Password"
               onChange={(e) => {
@@ -121,13 +76,20 @@ export const Login = () => {
               }}
             />
             <input
+              id="confirmPassword"
               type="password"
               placeholder="Confirm Password"
               onChange={(e) => {
                 setConfirmPassword(e.target.value);
               }}
             />
-            <button className="BtnTog" onClick={handleResgister}>
+            <button
+              className="BtnTog"
+              onClick={(e) => {
+                e.preventDefault();
+                HandleResgister(username, password, confirmPassword, email);
+              }}
+            >
               Register
             </button>
           </form>

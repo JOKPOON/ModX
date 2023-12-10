@@ -1,80 +1,32 @@
 import "./Comment.css";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { formatPrice } from "../Helper/Calculator";
-
-interface items {
-  name: string;
-  price: number;
-  picture?: string;
-  itemID: number;
-  quantity?: number;
-  rating: number | null;
-}
+import { HandleReviewClick, HandleGetOrder } from "../../API/API";
+import { reviewItems } from "../../Interface/Interface";
 
 export const Comment = () => {
+  const location = useLocation();
   const navigate = useNavigate();
+  const order = location.state as { orderID: number };
+  const [orderProducts, setOrderProducts] = useState<reviewItems[]>([]);
   const HandlegoBack = () => {
     navigate(-1);
   };
 
-  const MockupOrderID = 515;
-
-  const [products, setProducts] = useState<items[]>([
-    {
-      picture:
-        "https://image.makewebeasy.net/makeweb/m_1920x0/o3WoPJcHm/content/%E0%B9%80%E0%B8%97%E0%B8%84%E0%B8%99%E0%B8%B4%E0%B8%84%E0%B8%A7%E0%B8%B4%E0%B8%98%E0%B8%B5%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%80%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%81%E0%B8%8B%E0%B8%B7%E0%B9%89%E0%B8%AD%E0%B9%80%E0%B8%82%E0%B9%87%E0%B8%A1%E0%B8%82%E0%B8%B1%E0%B8%94%E0%B8%9C%E0%B8%B9%E0%B9%89%E0%B8%8A%E0%B8%B2%E0%B8%A2.jpg",
-      name: "เข็มขัดผู้ชาย สำหรับนักศึกษาชาย",
-      price: 999,
-      itemID: 1,
-      quantity: 1,
-      rating: null,
-    },
-    {
-      picture:
-        "https://down-th.img.susercontent.com/file/91267398e5330558c9bda5cfab7b5fd4",
-      name: "เครื่องคิดเลข CASIO รุ่น MX-120B",
-      price: 960,
-      itemID: 2,
-      quantity: 4,
-      rating: null,
-    },
-    {
-      picture:
-        "https://shoppo-file.sgp1.cdn.digitaloceanspaces.com/natpopshop/product-images/310960155_477469997675145_5855571439791689059_n.jpeg",
-      name: "ปากกาเจลวันพีช One-piece Gel Pen M&G 0.5mm Blue ink ( 5 ด้าม/แพ็ค)",
-      price: 99,
-      itemID: 3,
-      quantity: 1,
-      rating: null,
-    }, 
-  ]);
-
-  const [, setSelectedRating] = useState<number | null>(null); 
-  const [commentData, setCommentData] = useState<{ [itemID: number]: { rating: number | null; comment: string } }>({});
   const handleRatingClick = (rate: number, itemID: number) => {
-    const updatedProducts = products.map((product) => 
-      product.itemID === itemID ? { ...product, rating: rate } : product 
-      // if itemID === itemID then rating = rate else rating = product.rating
-    );
-    setProducts(updatedProducts);
-    setSelectedRating(rate);
-
-    const ratedItem = updatedProducts.find(
-      (product) => product.itemID=== itemID
-    );
-    if (ratedItem) {
-      setCommentData((prevData) => ({
-        ...prevData,
-        [itemID]: { ...prevData[itemID], rating: ratedItem.rating },
-        // if itemID === itemID then rating = ratedItem.rating else rating = prevData[itemID].rating
-      }));
-    }
+    const updatedProducts = orderProducts.map((product) => {
+      if (product.id === itemID) {
+        product.rating = rate;
+      }
+      return product;
+    });
+    setOrderProducts(updatedProducts);
   };
 
   const RatingButton: React.FC<{
     rate: number;
-    onClick: () => void;
+    onClick: () => void | undefined;
     selectedRating: number | null;
   }> = ({ rate, onClick, selectedRating }) => {
     return (
@@ -91,37 +43,35 @@ export const Comment = () => {
     );
   };
 
-  const handleCommentChange = (comment: string, orderID: number) => {
-    setCommentData((prevData) => ({
-      ...prevData,
-      [orderID]: { ...prevData[orderID], comment },
-      // if orderID === orderID then comment = comment else comment = prevData[orderID].comment
-    }));
+  const handleCommentChange = (comment: string, itemId: number) => {
+    const updatedProducts = orderProducts.map((product) => {
+      if (product.id === itemId) {
+        product.comment = comment;
+        product.item_id = itemId;
+      }
+      return product;
+    });
+    setOrderProducts(updatedProducts);
+    console.log(updatedProducts);
   };
 
-  const HandleReviewClick = () => {
-    const reviewData = products.map((product) => {
-      const { itemID, rating } = product;
-      const comment = commentData[itemID]?.comment || '';
-      return {
-        orderID: MockupOrderID,
-        itemID,
-        rate: rating,
-        review: comment,
-      };
+  useEffect(() => {
+    HandleGetOrder(order.orderID).then((data) => {
+      if (data === "can't find token") {
+        navigate("/Login");
+      } else {
+        setOrderProducts(data);
+      }
     });
-  
-    console.log('Review Data:', reviewData);
-  };
+  }, [order, navigate]);
 
   return (
     <div>
       <div className="Comment__Container">
         <div className="Comment__Back">
           <button onClick={HandlegoBack}>&lt;Back</button>
-          <span style={{ color: "#fefefe" }}>orderID : {MockupOrderID}</span>
+          <span style={{ color: "#fefefe" }}>orderID : {order.orderID}</span>
         </div>
-
         <div className="Comment__Topic">
           <div className="Comment__Topic__Text">
             <div className="Comment__Grid"></div>
@@ -132,69 +82,128 @@ export const Comment = () => {
         </div>
         <div className="Comment__Container__Content">
           <div className="Comment__Box">
-            {products.map((product) => (
-              <div className="Comment__Content" key={product.itemID}>
-                <div className="Comment__Top">
-                  <div className="Commit__Picture__Container">
-                    <div
-                      className="Comment__Picture"
-                      style={{ backgroundImage: `url(${product.picture})` }}
-                    ></div>
-                  </div>
-                  <div className="Comment__Name">{product.name}</div>
-                  <div className="Comment__Quantity">{product.quantity}</div>
-                  <div className="Comment__Price">{formatPrice(product.price)} THB</div>
+            {orderProducts?.map((product) => {
+              return (
+                <div key={product.id}>
+                  {!product.is_reviewed && (
+                    <div className="Comment__Content" key={product.id}>
+                      <div className="Comment__Top">
+                        <div className="Commit__Picture__Container">
+                          <div
+                            className="Comment__Picture"
+                            style={{
+                              backgroundImage: `url(${product.picture})`,
+                            }}
+                          ></div>
+                        </div>
+                        <div className="Comment__Name">
+                          <div className="Comment__Name">{product.title}</div>
+                          <div className="Comment__Sub">
+                            {product.options["option_1"]}
+                          </div>
+                          <div className="Comment__Sub">
+                            {product.options["option_2"]}
+                          </div>
+                        </div>
+                        <div className="Comment__Quantity">
+                          {product.quantity}
+                        </div>
+                        <div className="Comment__Price">
+                          {formatPrice(product.total)} THB
+                        </div>
+                      </div>
+                      <div className="Comment__Bottom">
+                        <div className="Comment__Rate">
+                          {Array.from({ length: 5 }, (_, index) => (
+                            <RatingButton
+                              key={index}
+                              rate={index + 1}
+                              onClick={() =>
+                                handleRatingClick(index + 1, product.id)
+                              }
+                              selectedRating={product.rating}
+                            />
+                          ))}
+                        </div>
+                        <div className="Comment__input">
+                          <input
+                            type="text"
+                            placeholder="Comment"
+                            value={product.comment}
+                            onChange={(e) =>
+                              handleCommentChange(e.target.value, product.id)
+                            }
+                          />
+                        </div>
+                        <button
+                          className="Comment__Button"
+                          onClick={() => {
+                            HandleReviewClick(product.id, orderProducts);
+                          }}
+                        >
+                          Review
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  {product.is_reviewed && (
+                    <div className="Comment__Content" key={product.id}>
+                      <div className="Comment__Top">
+                        <div className="Commit__Picture__Container">
+                          <div
+                            className="Comment__Picture"
+                            style={{
+                              backgroundImage: `url(${product.picture})`,
+                            }}
+                          ></div>
+                        </div>
+                        <div className="Comment__Name">
+                          <div className="Comment__Name">{product.title}</div>
+                          <div className="Comment__Sub">
+                            {product.options["option_1"]}
+                          </div>
+                          <div className="Comment__Sub">
+                            {product.options["option_2"]}
+                          </div>
+                        </div>
+                        <div className="Comment__Quantity">
+                          {product.quantity}
+                        </div>
+                        <div className="Comment__Price">
+                          {formatPrice(product.total)} THB
+                        </div>
+                      </div>
+                      <div className="Comment__Bottom">
+                        <div className="Comment__Rate">
+                          {Array.from({ length: 5 }, (_, index) => (
+                            <RatingButton
+                              key={index}
+                              rate={index + 1}
+                              onClick={() => undefined}
+                              selectedRating={product.rating}
+                            />
+                          ))}
+                        </div>
+                        <div className="Comment__input">
+                          <input
+                            type="text"
+                            placeholder="Comment"
+                            value={product.comment}
+                            disabled
+                          />
+                        </div>
+                        <button className="Comment__Button__Disabled">
+                          Reviewed
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div className="Comment__Bottom">
-                  <div className="Comment__Rate">
-                    <RatingButton
-                      rate={1}
-                      onClick={() => handleRatingClick(1, product.itemID)}
-                      selectedRating={product.rating}
-                    />
-                    <RatingButton
-                      rate={2}
-                      onClick={() => handleRatingClick(2, product.itemID)}
-                      selectedRating={product.rating}
-                    />
-                    <RatingButton
-                      rate={3}
-                      onClick={() => handleRatingClick(3,  product.itemID)}
-                      selectedRating={product.rating}
-                    />
-                    <RatingButton
-                      rate={4}
-                      onClick={() => handleRatingClick(4, product.itemID)}
-                      selectedRating={product.rating}
-                    />
-                    <RatingButton
-                      rate={5}
-                      onClick={() => handleRatingClick(5,  product.itemID)}
-                      selectedRating={product.rating}
-                    />
-                  </div>
-                  <div className="Comment__input">
-                    <input
-                      type="text"
-                      placeholder="Comment"
-                      value={commentData[product.itemID]?.comment || ""}
-                      onChange={(e) =>
-                        handleCommentChange(e.target.value, product.itemID)
-                      }
-                    />
-                  </div>
-                  <button
-                    className="Comment__Button"
-                    onClick={HandleReviewClick}
-                  >
-                    Review
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
     </div>
-  ); 
+  );
 };

@@ -1,21 +1,12 @@
 import { useEffect, useState } from "react";
 import "./Account.css";
 import { useNavigate } from "react-router-dom";
-
-interface UserDetails {
-  username: string;
-  email: string;
-}
-
-interface ShippingDetails {
-  name?: string;
-  tel?: string;
-  addr?: string;
-  province?: string;
-  district?: string;
-  sub_dist?: string;
-  zip?: number;
-}
+import { userDetails, shippingDetails } from "../../Interface/Interface";
+import {
+  HandleGetUserData,
+  HandleDeleteAccount,
+  HandleUpdateShipping,
+} from "../../API/API";
 
 //Account Page Component
 export const Account = () => {
@@ -38,103 +29,33 @@ export const Account = () => {
   //Delete Account and navigate to Home Page
   const deleteAccount = () => {
     console.log("Delete Account");
-    handleDeleteAccount();
+    HandleDeleteAccount();
   };
 
   //Save Profile
   const handdleSaveProfile = () => {
     console.log(userData);
     console.log(shippingData);
-    handleUpdateShipping();
+    if (shippingData) {
+      HandleUpdateShipping(shippingData);
+    }
     alert("Save Profile");
   };
 
   //User Data
-  const [userData, setUserData] = useState<UserDetails>();
-  const [shippingData, setShippingData] = useState<ShippingDetails>();
-
-  const handleGetUserData = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      window.location.href = "/Login";
-      return;
-    }
-    await fetch("http://localhost:8080/v1/users/details", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }).then(async (res) => {
-      if (res.ok) {
-        await res.json().then((data) => {
-          console.log(data);
-          setUserData(data);
-        });
-      }
-    });
-
-    await fetch("http://localhost:8080/v1/users/shipping", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }).then(async (res) => {
-      if (res.ok) {
-        await res.json().then((data) => {
-          console.log(data);
-          setShippingData(data);
-        });
-      }
-    });
-  };
-
-  const handleUpdateShipping = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      window.location.href = "/Login";
-      return;
-    }
-    await fetch("http://localhost:8080/v1/users/shipping", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(shippingData),
-    }).then(async (res) => {
-      if (res.ok) {
-        await res.json().then((data) => {
-          console.log(data);
-        });
-      }
-    });
-  };
-
-  const handleDeleteAccount = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      window.location.href = "/Login";
-      return;
-    }
-    await fetch("http://localhost:8080/v1/users/delete-account", {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }).then(async (res) => {
-      if (res.ok) {
-        await res.json().then((data) => {
-          console.log(data);
-          localStorage.removeItem("token");
-          window.location.href = "/";
-        });
-      }
-    });
-  };
+  const [userData, setUserData] = useState<userDetails>();
+  const [shippingData, setShippingData] = useState<shippingDetails>();
 
   useEffect(() => {
-    handleGetUserData();
-  }, []);
+    HandleGetUserData().then((res) => {
+      if (res === "can't find token") {
+        navigate("/Login");
+      } else {
+        setUserData(res.userData);
+        setShippingData(res.shippingData);
+      }
+    });
+  }, [navigate]);
 
   /*
     In placeholder, if User Data is not null, show User Data
@@ -257,7 +178,14 @@ export const Account = () => {
             <button className="Small-Button" onClick={openPopup}>
               Delete Account
             </button>
-            <button className="Small-Button">Order History</button>
+            <button
+              className="Small-Button"
+              onClick={() => {
+                navigate("/History");
+              }}
+            >
+              Order History
+            </button>
           </div>
           <button className="Save-Button" onClick={handdleSaveProfile}>
             Save Profile

@@ -31,6 +31,10 @@ import (
 	_cartRepo "github.com/Bukharney/ModX/modules/cart/repositories"
 	_cartUsecase "github.com/Bukharney/ModX/modules/cart/usecases"
 
+	_wishlistController "github.com/Bukharney/ModX/modules/wishlist/controllers"
+	_wishlistRepo "github.com/Bukharney/ModX/modules/wishlist/repositories"
+	_wishlistUsecase "github.com/Bukharney/ModX/modules/wishlist/usecases"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -44,14 +48,16 @@ func (s *Server) MapHandlers() error {
 	paymentGroup := v1.Group("/payment")
 	productGroup := v1.Group("/product")
 	cartGroup := v1.Group("/cart")
+	wishlistGroup := v1.Group("/wishlist")
 
 	usersRepo := _usersRepo.NewUsersRepo(s.DB)
 	authRepo := _authRepo.NewAuthRepo(s.DB)
 	fileRepo := _fileRepo.NewFileRepo(s.DB)
-	orderRepo := _orderRepo.NewOrderRepo(s.DB)
+	orderRepo := _orderRepo.NewOrderRepo(s.DB, s.Cfg)
 	paymentRepo := _paymentRepo.NewPaymentRepo(s.DB)
-	productRepo := _productRepo.NewProductRepo(s.DB)
-	cartRepo := _cartRepo.NewCartRepo(s.DB)
+	productRepo := _productRepo.NewProductRepo(s.DB, s.Cfg)
+	cartRepo := _cartRepo.NewCartRepo(s.DB, s.Cfg)
+	wishlistRepo := _wishlistRepo.NewWishlistRepo(s.DB, s.Cfg)
 
 	authUsecase := _authUsecase.NewAuthUsecases(authRepo, usersRepo)
 	usersUsecase := _usersUsecase.NewUsersUsecases(usersRepo)
@@ -60,6 +66,7 @@ func (s *Server) MapHandlers() error {
 	paymentUsecase := _paymentUsecase.NewPaymentUsecase(paymentRepo)
 	productUsecase := _productUsecase.NewProductUsecases(productRepo, fileRepo)
 	cartUsecase := _cartUsecase.NewCartUsecase(cartRepo)
+	wishlistUsecase := _wishlistUsecase.NewWishlistUsecases(wishlistRepo)
 
 	_usersController.NewUsersControllers(usersGroup, usersUsecase, authUsecase)
 	_authController.NewAuthControllers(authGroup, s.Cfg, authUsecase)
@@ -68,6 +75,7 @@ func (s *Server) MapHandlers() error {
 	_paymentController.NewPaymentControllers(paymentGroup, s.Cfg, paymentUsecase)
 	_productController.NewProductControllers(productGroup, s.Cfg, usersUsecase, productUsecase, fileUsecase)
 	_cartController.NewCartControllers(cartGroup, s.Cfg, usersUsecase, cartUsecase)
+	_wishlistController.NewWishlistControllers(wishlistGroup, s.Cfg, usersUsecase, wishlistUsecase)
 
 	s.App.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Not Found"})

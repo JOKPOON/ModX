@@ -1,20 +1,15 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import "./AllProducts.css";
 import Products from "./Products";
 import { useNavigate, useLocation } from "react-router-dom";
+import { GetProductsData } from "../../API/API";
+import { productItems } from "../../Interface/Interface";
 
 interface CategoryButtonProps {
   text: string;
   isSelected: boolean;
   onClick: () => void;
-}
-
-interface items {
-  picture?: string;
-  title: string;
-  sold: number;
-  price: number;
-  discount?: number;
 }
 
 const mockCategories = ["Education", "Clothes", "Electronics", "Accessories"];
@@ -55,6 +50,7 @@ export const AllProducts = () => {
   const initialMaxPrice = location.state?.maxPrice || "";
   const initialSelectedRating = location.state?.selectedRating || null;
   const initialSelectedCategories = location.state?.selectedCategories || [];
+  const search = localStorage.getItem("searchQuery");
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     initialSelectedCategories
@@ -67,62 +63,28 @@ export const AllProducts = () => {
   const [maxPrice, setMaxPrice] = useState<string>(initialMaxPrice);
   const [showCategories, setShowCategories] = useState(true);
   const [sortType, setSortType] = useState("ASC");
-  const [ProductsData, setProductsData] = useState<items[] | null>(null);
+  const [ProductsData, setProductsData] = useState<productItems[] | null>(null);
   const [ApplyButton, setApplyButton] = useState<boolean>(false);
   const [selectedSort, setSelectedSort] = useState<string>("");
 
-  const getProductsData = async () => {
-    const response = await fetch(handleFetchString(), {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await response.json();
-    if (response.status !== 200) {
-      setProductsData(null);
-    } else {
-      setProductsData(data);
-    }
-  };
-
   useEffect(() => {
-    getProductsData();
-  }, [ApplyButton, sortType, selectedSort]);
+    GetProductsData(
+      selectedCategories,
+      minPrice,
+      maxPrice,
+      selectedRating,
+      sortType,
+      selectedSort,
+      search || ""
+    ).then((data) => {
+      setProductsData(data);
+    });
+  }, [ApplyButton, sortType, selectedSort, search]);
 
   //Sort Button
   const handleSortToggle = () => {
     setSortType(sortType === "ASC" ? "DESC" : "ASC");
     console.log("Sort button clicked!\nSort type: ", sortType);
-  };
-
-  const handleFetchString = () => {
-    const queryParams = [];
-
-    if (selectedCategories.length > 0) {
-      queryParams.push(`category=${selectedCategories.join(",")}`);
-    }
-    if (minPrice !== "") {
-      queryParams.push(`min_price=${minPrice}`);
-    }
-    if (maxPrice !== "") {
-      queryParams.push(`max_price=${maxPrice}`);
-    }
-    if (selectedRating !== null) {
-      queryParams.push(`rating=${selectedRating}`);
-    }
-    if (sortType !== "ASC") {
-      queryParams.push(`price_sort=${sortType}`);
-    }
-    if (selectedSort !== "") {
-      queryParams.push(`sort=${selectedSort}`);
-    }
-
-    let fetchString = "http://localhost:8080/v1/product/all";
-    if (queryParams.length > 0) {
-      fetchString += "?" + queryParams.join("&");
-    }
-    return fetchString;
   };
 
   useEffect(() => {
@@ -235,11 +197,7 @@ export const AllProducts = () => {
     setApplyButton(!ApplyButton);
   };
 
-  useEffect(() => {
-    return () => {
-      localStorage.clear();
-    };
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <div>

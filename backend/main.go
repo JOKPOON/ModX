@@ -3,35 +3,41 @@ package main
 import (
 	"errors"
 	"log"
+	"os"
 
 	"github.com/Bukharney/ModX/configs"
-	"github.com/Bukharney/ModX/modules/server"
 	"github.com/Bukharney/ModX/pkg/databases"
-	"github.com/joho/godotenv"
+	"github.com/Bukharney/ModX/server"
 )
 
 func main() {
-
-	if err := godotenv.Load(".env"); err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
 	cfg := new(configs.Configs)
 
-	cfg.App.Host = "localhost"
-	cfg.App.Port = "8080"
+	host, err := os.Hostname()
+	if err != nil {
+		log.Fatal(errors.New("failed to get hostname"))
+	}
 
-	cfg.PostgreSQL.Host = "localhost"
-	cfg.PostgreSQL.Port = "5432"
-	cfg.PostgreSQL.SSLMode = "disable"
-	cfg.PostgreSQL.Protocol = "tcp"
-	cfg.PostgreSQL.Username = "postgres"
-	cfg.PostgreSQL.Password = "postgres"
-	cfg.PostgreSQL.Database = "ModX"
+	log.Println(host)
+	if host != "railway" {
+		cfg.URL = "http://localhost:8080/"
+		cfg.PostgreSQL.Host = "localhost"
+		cfg.PostgreSQL.Port = "5432"
+		cfg.PostgreSQL.Username = "postgres"
+		cfg.PostgreSQL.Password = "postgres"
+		cfg.PostgreSQL.Database = "ModX"
+	} else {
+		cfg.URL = os.Getenv("URL")
+		cfg.PostgreSQL.Host = os.Getenv("PGHOST")
+		cfg.PostgreSQL.Port = os.Getenv("PGPORT")
+		cfg.PostgreSQL.Username = os.Getenv("POSTGRES_USER")
+		cfg.PostgreSQL.Password = os.Getenv("POSTGRES_PASSWORD")
+		cfg.PostgreSQL.Database = os.Getenv("POSTGRES_DB")
+	}
 
 	db, err := databases.NewPostgreSQL(cfg)
 	if err != nil {
-		log.Fatal(errors.New("failed to connect to PostgreSQL"))
+		log.Fatal(err)
 	}
 
 	srv := server.NewServer(cfg, db)
