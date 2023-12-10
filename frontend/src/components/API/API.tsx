@@ -120,6 +120,8 @@ export const HandleReviewClick = async (
         console.log(data);
         alert("Review Success");
       });
+    } else {
+      alert("fill all fields");
     }
   });
 };
@@ -300,39 +302,43 @@ export const OmiseHandler = async (
   OmiseCard: any
 ) => {
   console.log("order_id", order_id);
-  OmiseCard.configure({
-    publicKey: "pkey_test_5xh7smyrjtw4ythtq7n",
-    currency: "thb",
-    frameLabel: "ModX",
-    submitLabel: "PAY NOW",
-    buttonLabel: "Pay with Omise",
+  if (!order_id) {
+    alert("Enter your address first! idiot");
+  } else {
+    OmiseCard.configure({
+      publicKey: "pkey_test_5xh7smyrjtw4ythtq7n",
+      currency: "thb",
+      frameLabel: "ModX",
+      submitLabel: "PAY NOW",
+      buttonLabel: "Pay with Omise",
 
-    defaultPaymentMethod: "credit_card",
-    otherPaymentMethods: [],
-  });
+      defaultPaymentMethod: "credit_card",
+      otherPaymentMethods: [],
+    });
 
-  await OmiseCard.open({
-    amount: total * 100,
-    submitFormTarget: "#checkout-form",
-    onCreateTokenSuccess: async (nonce: string) => {
-      await fetch(URL + "v1/payment/charge", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          token: nonce,
-          order_id: order_id,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.status === "success") {
-            alert("Payment Success");
-          }
-          console.log(data);
-        });
-    },
-    onFormClosed: () => {},
-  });
+    await OmiseCard.open({
+      amount: total * 100,
+      submitFormTarget: "#checkout-form",
+      onCreateTokenSuccess: async (nonce: string) => {
+        await fetch(URL + "v1/payment/charge", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token: nonce,
+            order_id: order_id,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "success") {
+              alert("Payment Success");
+            }
+            console.log(data);
+          });
+      },
+      onFormClosed: () => {},
+    });
+  }
 };
 
 export const HandleGetShippingAddress = async () => {
@@ -480,8 +486,7 @@ export const HandleResgister = async (
         console.log(data);
       });
       window.location.href = "/AllProducts";
-    }
-    else {
+    } else {
       alert("Duplicate Username or Email");
     }
   });

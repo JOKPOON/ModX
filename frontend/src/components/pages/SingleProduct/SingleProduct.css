@@ -4,6 +4,7 @@
   color: #222222;
   cursor: pointer;
   padding: 5px 10px;
+  border-radius: 1vh;
 }
 
 .Single__Quantity__Button:hover {
@@ -282,7 +283,7 @@
   font-weight: 500;
   margin-bottom: 20px;
 }
-
+ 
 .Single__Product__RateNSold {
   font-size: 16px;
   color: #656464;
@@ -314,12 +315,12 @@
 }
 
 .Single__Product__Quantity {
+  margin-top: 10px;
   display: flex;
   align-items: center;
 }
 
 .Single__Select {
-  margin-top: 10px;
   border: 1px solid #909090;
   border-radius: 5px;
   padding: 0px 3px 0px 3px;
@@ -334,6 +335,7 @@
   padding: 5px;
   font-size: 16px;
 }
+
 
 .Single__Product__Description {
   font-size: 16px;

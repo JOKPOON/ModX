@@ -62,6 +62,11 @@ export const Account = () => {
     else show placeholder text
   */
 
+  const handlogOut = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  }
+
   return (
     <div className="main">
       <div className="Container">
@@ -186,11 +191,14 @@ export const Account = () => {
             >
               Order History
             </button>
-          </div>
+          </div> <div className="Row">
+          <button className="Logout-Button" onClick={handlogOut}>
+            Log Out
+          </button>
           <button className="Save-Button" onClick={handdleSaveProfile}>
             Save Profile
           </button>
-        </div>
+        </div></div>
         {isActive && (
           <div className="popup open-popup">
             <div className="popup-content">

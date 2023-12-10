@@ -28,7 +28,7 @@ export const NotifyDropdown = () => {
   };
 
   const handleOrdergo = () => {
-    navigate("/Order");
+    navigate("/History");
     setDropdownNotiActive(!dropdownNotiActive);
   };
 
