@@ -115,3 +115,4 @@ func (c *WishlistController) DeleteWhishlistItem(ctx *gin.Context) {
 
 	ctx.JSON(200, res)
 }
+//
