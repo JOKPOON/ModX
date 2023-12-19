@@ -8,6 +8,11 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
+
+	_ "github.com/Bukharney/ModX/docs"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Server struct {
@@ -27,12 +32,17 @@ func NewServer(db *sqlx.DB, cfg *configs.Configs, storage *storage.Client) *Serv
 }
 
 func (s *Server) Run() error {
+	s.App.Use(gin.Logger())
+	s.App.Use(gin.Recovery())
+
 	s.App.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "DELETE"},
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,
 	}))
+
+	s.App.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	err := s.MapHandlers()
 	if err != nil {

@@ -33,14 +33,24 @@ func NewProductControllers(
 		UsersUsecase:   usersUsecase,
 	}
 
-	r.POST("/create", controllers.Create, middlewares.JwtAuthentication())
-	r.GET("/all", controllers.GetAllProduct)
-	r.GET("/get/:id", controllers.GetProduct)
+	r.POST("/", controllers.Create, middlewares.JwtAuthentication())
+	r.GET("/", controllers.GetAllProduct)
+	r.GET("/:id", controllers.GetProduct)
 	r.POST("/review", controllers.AddReview, middlewares.JwtAuthentication())
 }
 
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 100
 
+// @Summary Create Product
+// @Description
+// @Tags Products
+// @Accept  json
+// @Produce  json
+// @Security Bearer
+// @Param product_data formData string true "{'title': 'string', 'desc': 'string', 'options': {'option_1':{'option':{'option_2':{'option':{'price': 0,'stock': 0}}}}, 'category': 'string'}"
+// @Param file formData file true "Product Picture"
+// @Success 200 {object} string
+// @Router /product [post]
 func (p *ProductController) Create(c *gin.Context) {
 	var req entities.Product
 	var data entities.ProductData
@@ -74,6 +84,23 @@ func (p *ProductController) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"status": "success", "message": res.Message})
 }
 
+// @Summary Get All Product
+// @Description Get All Product
+// @Tags Products
+// @Accept  json
+// @Produce  json
+// @Param id query string false "Id"
+// @Param title query string false "Title"
+// @Param category query string false "Category"
+// @Param rating query string false "Rating"
+// @Param limit query string false "Limit"
+// @Param max_price query string false "Max Price"
+// @Param min_price query string false "Min Price"
+// @Param price_sort query string false "Price Sort"
+// @Param search query string false "Search"
+// @Param sort query string false "Sort"
+// @Success 200 {object} entities.ProductQuery
+// @Router /product [get]
 func (p *ProductController) GetAllProduct(c *gin.Context) {
 	var req entities.ProductQuery
 	req.Id = c.Query("id")
@@ -101,6 +128,14 @@ func (p *ProductController) GetAllProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, &res.Data)
 }
 
+// @Summary Get Product
+// @Description Get Product
+// @Tags Products
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Product ID"
+// @Success 200 {object} entities.Product
+// @Router /product/{id} [get]
 func (p *ProductController) GetProduct(c *gin.Context) {
 	var req entities.Product
 	id, err := strconv.Atoi(c.Param("id"))
@@ -120,6 +155,15 @@ func (p *ProductController) GetProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+// @Summary Add Review
+// @Description Add Review
+// @Tags Products
+// @Accept  json
+// @Produce  json
+// @Security Bearer
+// @Param review body entities.Review true "Review"
+// @Success 200 {object} string
+// @Router /product/review [post]
 func (p *ProductController) AddReview(c *gin.Context) {
 	var req entities.Review
 	err := c.ShouldBind(&req)
@@ -145,6 +189,15 @@ func (p *ProductController) AddReview(c *gin.Context) {
 	c.JSON(http.StatusOK, err)
 }
 
+// @Summary Delete Product
+// @Description Delete Product
+// @Tags Products
+// @Accept  json
+// @Produce  json
+// @Security Bearer
+// @Param id path int true "Product ID"
+// @Success 200 {object} string
+// @Router /product/{id} [delete]
 func (p *ProductController) DeleteProduct(c *gin.Context) {
 	var req entities.Product
 	id, err := strconv.Atoi(c.Param("id"))

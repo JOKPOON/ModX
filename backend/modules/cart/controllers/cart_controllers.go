@@ -26,11 +26,19 @@ func NewCartControllers(
 		UsersUsecase: usersUsecase,
 	}
 
-	r.POST("/add", controllers.AddCartItem, middlewares.JwtAuthentication())
-	r.GET("/all", controllers.GetCartItems, middlewares.JwtAuthentication())
-	r.DELETE("/delete", controllers.DeleteCartItem, middlewares.JwtAuthentication())
+	r.POST("/", controllers.AddCartItem, middlewares.JwtAuthentication())
+	r.GET("/", controllers.GetCartItems, middlewares.JwtAuthentication())
+	r.DELETE("/", controllers.DeleteCartItem, middlewares.JwtAuthentication())
 }
 
+// @Summary Get Cart Items
+// @Description Get Cart Items
+// @Tags Cart
+// @Accept  json
+// @Produce  json
+// @Security Bearer
+// @Success 200 {object} entities.CartGetRes
+// @Router /cart [get]
 func (c *CartController) GetCartItems(ctx *gin.Context) {
 	var req entities.CartGetReq
 
@@ -50,6 +58,15 @@ func (c *CartController) GetCartItems(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary Add Cart Item
+// @Description Add Cart Item
+// @Tags Cart
+// @Accept  json
+// @Produce  json
+// @Security Bearer
+// @Param products body entities.CartAddReq true "Products"
+// @Success 200 {object} entities.CartAddRes
+// @Router /cart [post]
 func (c *CartController) AddCartItem(ctx *gin.Context) {
 	var req entities.CartAddReq
 	err := ctx.ShouldBind(&req.Products)
@@ -74,6 +91,15 @@ func (c *CartController) AddCartItem(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary Delete Cart Item
+// @Description Delete Cart Item
+// @Tags Cart
+// @Accept  json
+// @Produce  json
+// @Security Bearer
+// @Param products body entities.CartDeleteReq true "Products"
+// @Success 200 {object} entities.CartDeleteReq
+// @Router /cart [delete]
 func (c *CartController) DeleteCartItem(ctx *gin.Context) {
 	var req entities.CartDeleteReq
 	err := ctx.ShouldBind(&req)

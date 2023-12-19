@@ -1,0 +1,976 @@
+basePath: /v1
+definitions:
+  entities.CartAddReq:
+    properties:
+      products:
+        $ref: '#/definitions/entities.CartProduct'
+      user_id:
+        type: integer
+    required:
+    - products
+    type: object
+  entities.CartAddRes:
+    properties:
+      id:
+        type: integer
+    type: object
+  entities.CartDeleteReq:
+    properties:
+      cart_id:
+        items:
+          type: integer
+        type: array
+      user_id:
+        type: integer
+    type: object
+  entities.CartGetRes:
+    properties:
+      products:
+        items:
+          $ref: '#/definitions/entities.CartProduct'
+        type: array
+      totals:
+        type: integer
+    type: object
+  entities.CartProduct:
+    properties:
+      discount:
+        type: integer
+      id:
+        type: integer
+      options:
+        additionalProperties:
+          type: string
+        type: object
+      price:
+        type: integer
+      product_id:
+        type: integer
+      product_image:
+        type: string
+      product_title:
+        type: string
+      quantity:
+        type: integer
+    required:
+    - options
+    - product_id
+    - quantity
+    type: object
+  entities.OrderCreateReq:
+    properties:
+      id:
+        type: integer
+      item_cost:
+        type: integer
+      order_products:
+        items:
+          $ref: '#/definitions/entities.OrderProducts'
+        type: array
+      payment_status:
+        type: string
+      payment_type:
+        type: integer
+      quantity:
+        type: integer
+      shipping_cost:
+        type: integer
+      shipping_id:
+        type: integer
+      shipping_type:
+        type: string
+      status:
+        type: string
+      total_cost:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  entities.OrderCreateRes:
+    properties:
+      order_id:
+        type: integer
+    type: object
+  entities.OrderGetAllRes:
+    properties:
+      id:
+        type: integer
+      quantity:
+        type: integer
+      status:
+        type: string
+      total:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  entities.OrderGetRes:
+    properties:
+      comment:
+        type: string
+      id:
+        type: integer
+      is_reviewed:
+        type: boolean
+      options:
+        additionalProperties:
+          type: string
+        type: object
+      picture:
+        type: string
+      product_id:
+        type: integer
+      quantity:
+        type: integer
+      rating:
+        type: integer
+      title:
+        type: string
+      total:
+        type: integer
+    type: object
+  entities.OrderProducts:
+    properties:
+      discount:
+        type: integer
+      id:
+        type: integer
+      options:
+        additionalProperties:
+          type: string
+        type: object
+      price:
+        type: integer
+      product_id:
+        type: integer
+      quantity:
+        type: integer
+    type: object
+  entities.OrderUpdateReq:
+    properties:
+      id:
+        type: integer
+      payment_status:
+        type: string
+      status:
+        type: string
+    type: object
+  entities.PaymentChargeReq:
+    properties:
+      amount:
+        type: integer
+      charge:
+        type: string
+      id:
+        type: integer
+      order_id:
+        type: integer
+      token:
+        type: string
+    required:
+    - order_id
+    - token
+    type: object
+  entities.PaymentChargeRes:
+    properties:
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  entities.Product:
+    properties:
+      category:
+        type: string
+      created:
+        type: string
+      desc:
+        type: string
+      discount:
+        type: integer
+      id:
+        type: integer
+      options:
+        additionalProperties: true
+        type: object
+      picture:
+        items:
+          type: string
+        type: array
+      price:
+        type: integer
+      rating:
+        type: integer
+      review:
+        items:
+          $ref: '#/definitions/entities.ReviewRes'
+        type: array
+      sold:
+        type: integer
+      stock:
+        type: integer
+      title:
+        type: string
+      updated:
+        type: string
+    type: object
+  entities.ProductQuery:
+    properties:
+      category:
+        items:
+          type: string
+        type: array
+      id:
+        type: string
+      limit:
+        type: string
+      max_price:
+        type: string
+      min_price:
+        type: string
+      price_sort:
+        type: string
+      rating:
+        type: string
+      search:
+        type: string
+      sort:
+        type: string
+      title:
+        type: string
+    type: object
+  entities.Review:
+    properties:
+      comment:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      item_id:
+        type: integer
+      product_id:
+        type: integer
+      rating:
+        type: integer
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    required:
+    - comment
+    - item_id
+    - product_id
+    - rating
+    type: object
+  entities.ReviewRes:
+    properties:
+      comment:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      rating:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  entities.UsersCredentials:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  entities.UsersDataRes:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      username:
+        type: string
+    type: object
+  entities.UsersLoginRes:
+    properties:
+      token:
+        type: string
+    type: object
+  entities.UsersRegisterReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  entities.UsersRegisterRes:
+    properties:
+      id:
+        type: integer
+      token:
+        type: string
+      username:
+        type: string
+    type: object
+  entities.UsersShippingReq:
+    properties:
+      addr:
+        type: string
+      district:
+        type: string
+      name:
+        type: string
+      province:
+        type: string
+      sub_dist:
+        type: string
+      tel:
+        type: string
+      user_id:
+        type: integer
+      zip:
+        type: string
+    required:
+    - addr
+    - district
+    - name
+    - province
+    - sub_dist
+    - tel
+    - zip
+    type: object
+  entities.UsersShippingRes:
+    properties:
+      success:
+        type: boolean
+    type: object
+  entities.Whishlist:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      options:
+        additionalProperties:
+          type: string
+        type: object
+      price:
+        type: integer
+      product_id:
+        type: integer
+      product_image:
+        type: string
+      product_title:
+        type: string
+      quantity:
+        type: integer
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    required:
+    - options
+    - product_id
+    - quantity
+    type: object
+  entities.WhishlistAddReq:
+    properties:
+      products:
+        $ref: '#/definitions/entities.Whishlist'
+      user_id:
+        type: integer
+    required:
+    - products
+    type: object
+  entities.WhishlistAddRes:
+    properties:
+      id:
+        type: integer
+    type: object
+  entities.WhishlistDeleteRes:
+    properties:
+      id:
+        type: integer
+    type: object
+  entities.WhishlistGetRes:
+    properties:
+      products:
+        items:
+          $ref: '#/definitions/entities.Whishlist'
+        type: array
+      totals:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a ModX API server.
+  title: ModX API
+  version: "1.0"
+paths:
+  /auth/auth-test:
+    get:
+      consumes:
+      - application/json
+      description: Auth Test
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Auth Test
+      tags:
+      - Auth
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: Credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/entities.UsersCredentials'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.UsersLoginRes'
+      summary: Login
+      tags:
+      - Auth
+  /cart:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Cart Item
+      parameters:
+      - description: Products
+        in: body
+        name: products
+        required: true
+        schema:
+          $ref: '#/definitions/entities.CartDeleteReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.CartDeleteReq'
+      security:
+      - Bearer: []
+      summary: Delete Cart Item
+      tags:
+      - Cart
+    get:
+      consumes:
+      - application/json
+      description: Get Cart Items
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.CartGetRes'
+      security:
+      - Bearer: []
+      summary: Get Cart Items
+      tags:
+      - Cart
+    post:
+      consumes:
+      - application/json
+      description: Add Cart Item
+      parameters:
+      - description: Products
+        in: body
+        name: products
+        required: true
+        schema:
+          $ref: '#/definitions/entities.CartAddReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.CartAddRes'
+      security:
+      - Bearer: []
+      summary: Add Cart Item
+      tags:
+      - Cart
+  /order:
+    get:
+      consumes:
+      - application/json
+      description: Get All Orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.OrderGetAllRes'
+            type: array
+      security:
+      - Bearer: []
+      summary: Get All Orders
+      tags:
+      - Order
+    post:
+      consumes:
+      - application/json
+      description: Create Order
+      parameters:
+      - description: Order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/entities.OrderCreateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.OrderCreateRes'
+      security:
+      - Bearer: []
+      summary: Create Order
+      tags:
+      - Order
+    put:
+      consumes:
+      - application/json
+      description: Update Order
+      parameters:
+      - description: Order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/entities.OrderUpdateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Update Order
+      tags:
+      - Order
+  /order/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get Order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.OrderGetRes'
+            type: array
+      security:
+      - Bearer: []
+      summary: Get Order
+      tags:
+      - Order
+  /payment/charge:
+    post:
+      consumes:
+      - application/json
+      description: Charge
+      parameters:
+      - description: Charge
+        in: body
+        name: charge
+        required: true
+        schema:
+          $ref: '#/definitions/entities.PaymentChargeReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.PaymentChargeRes'
+      security:
+      - Bearer: []
+      summary: Charge
+      tags:
+      - Payment
+  /product:
+    get:
+      consumes:
+      - application/json
+      description: Get All Product
+      parameters:
+      - description: Id
+        in: query
+        name: id
+        type: string
+      - description: Title
+        in: query
+        name: title
+        type: string
+      - description: Category
+        in: query
+        name: category
+        type: string
+      - description: Rating
+        in: query
+        name: rating
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: string
+      - description: Max Price
+        in: query
+        name: max_price
+        type: string
+      - description: Min Price
+        in: query
+        name: min_price
+        type: string
+      - description: Price Sort
+        in: query
+        name: price_sort
+        type: string
+      - description: Search
+        in: query
+        name: search
+        type: string
+      - description: Sort
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.ProductQuery'
+      summary: Get All Product
+      tags:
+      - Products
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: '{''title'': ''string'', ''desc'': ''string'', ''options'': {''option_1'':{''option'':{''option_2'':{''option'':{''price'':
+          0,''stock'': 0}}}}, ''category'': ''string''}'
+        in: formData
+        name: product_data
+        required: true
+        type: string
+      - description: Product Picture
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Create Product
+      tags:
+      - Products
+  /product/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Product
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Delete Product
+      tags:
+      - Products
+    get:
+      consumes:
+      - application/json
+      description: Get Product
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.Product'
+      summary: Get Product
+      tags:
+      - Products
+  /product/review:
+    post:
+      consumes:
+      - application/json
+      description: Add Review
+      parameters:
+      - description: Review
+        in: body
+        name: review
+        required: true
+        schema:
+          $ref: '#/definitions/entities.Review'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Add Review
+      tags:
+      - Products
+  /users:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Account
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.UsersShippingRes'
+      security:
+      - Bearer: []
+      summary: Delete Account
+      tags:
+      - Users
+    get:
+      consumes:
+      - application/json
+      description: Get User Details
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.UsersDataRes'
+      security:
+      - Bearer: []
+      summary: Get User Details
+      tags:
+      - Users
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: Register
+      parameters:
+      - description: Credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/entities.UsersRegisterReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.UsersRegisterRes'
+      summary: Register
+      tags:
+      - Users
+  /users/shipping:
+    get:
+      consumes:
+      - application/json
+      description: Get Shipping Details
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.UsersShippingReq'
+      security:
+      - Bearer: []
+      summary: Get Shipping Details
+      tags:
+      - Shipping
+    post:
+      consumes:
+      - application/json
+      description: Create Shipping
+      parameters:
+      - description: Shipping
+        in: body
+        name: shipping
+        required: true
+        schema:
+          $ref: '#/definitions/entities.UsersShippingReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.UsersShippingRes'
+      security:
+      - Bearer: []
+      summary: Create Shipping
+      tags:
+      - Shipping
+    put:
+      consumes:
+      - application/json
+      description: Update Shipping Details
+      parameters:
+      - description: Shipping
+        in: body
+        name: shipping
+        required: true
+        schema:
+          $ref: '#/definitions/entities.UsersShippingReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.UsersShippingReq'
+      security:
+      - Bearer: []
+      summary: Update Shipping Details
+      tags:
+      - Shipping
+  /wishlist:
+    get:
+      consumes:
+      - application/json
+      description: Get Wishlist Items
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.WhishlistGetRes'
+      security:
+      - Bearer: []
+      summary: Get Wishlist Items
+      tags:
+      - Wishlist
+    post:
+      consumes:
+      - application/json
+      description: Add Wishlist Item
+      parameters:
+      - description: Wishlist
+        in: body
+        name: wishlist
+        required: true
+        schema:
+          $ref: '#/definitions/entities.WhishlistAddReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.WhishlistAddRes'
+      security:
+      - Bearer: []
+      summary: Add Wishlist Item
+      tags:
+      - Wishlist
+  /wishlist/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Wishlist Item
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.WhishlistDeleteRes'
+      security:
+      - Bearer: []
+      summary: Delete Wishlist Item
+      tags:
+      - Wishlist
+securityDefinitions:
+  Bearer:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

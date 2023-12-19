@@ -31,6 +31,14 @@ func NewWishlistControllers(
 	r.DELETE("/:id", controllers.DeleteWhishlistItem, middlewares.JwtAuthentication())
 }
 
+// @Summary Get Wishlist Items
+// @Description Get Wishlist Items
+// @Tags Wishlist
+// @Accept  json
+// @Produce  json
+// @Security Bearer
+// @Success 200 {object} entities.WhishlistGetRes
+// @Router /wishlist [get]
 func (c *WishlistController) GetWhishlistItems(ctx *gin.Context) {
 	role, err := middlewares.GetUserByToken(ctx)
 	if err != nil {
@@ -52,6 +60,15 @@ func (c *WishlistController) GetWhishlistItems(ctx *gin.Context) {
 	ctx.JSON(200, res)
 }
 
+// @Summary Add Wishlist Item
+// @Description Add Wishlist Item
+// @Tags Wishlist
+// @Accept  json
+// @Produce  json
+// @Security Bearer
+// @Param wishlist body entities.WhishlistAddReq true "Wishlist"
+// @Success 200 {object} entities.WhishlistAddRes
+// @Router /wishlist [post]
 func (c *WishlistController) AddWhishlistItem(ctx *gin.Context) {
 	role, err := middlewares.GetUserByToken(ctx)
 	if err != nil {
@@ -83,6 +100,15 @@ func (c *WishlistController) AddWhishlistItem(ctx *gin.Context) {
 	ctx.JSON(200, res)
 }
 
+// @Summary Delete Wishlist Item
+// @Description Delete Wishlist Item
+// @Tags Wishlist
+// @Accept  json
+// @Produce  json
+// @Security Bearer
+// @Param id path int true "Id"
+// @Success 200 {object} entities.WhishlistDeleteRes
+// @Router /wishlist/{id} [delete]
 func (c *WishlistController) DeleteWhishlistItem(ctx *gin.Context) {
 	role, err := middlewares.GetUserByToken(ctx)
 	if err != nil {
@@ -115,4 +141,3 @@ func (c *WishlistController) DeleteWhishlistItem(ctx *gin.Context) {
 
 	ctx.JSON(200, res)
 }
-//
