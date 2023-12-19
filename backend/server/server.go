@@ -36,10 +36,10 @@ func (s *Server) Run() error {
 	s.App.Use(gin.Recovery())
 
 	s.App.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "DELETE"},
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,
+		AllowAllOrigins:  true,
 	}))
 
 	s.App.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

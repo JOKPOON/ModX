@@ -413,7 +413,7 @@ definitions:
       totals:
         type: integer
     type: object
-host: localhost:8080
+host: modx.bukharney.tech
 info:
   contact: {}
   description: This is a ModX API server.
@@ -967,6 +967,8 @@ paths:
       summary: Delete Wishlist Item
       tags:
       - Wishlist
+schemes:
+- https
 securityDefinitions:
   Bearer:
     description: Type "Bearer" followed by a space and JWT token.
