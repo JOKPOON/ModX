@@ -22,14 +22,23 @@ func NewUsersControllers(r gin.IRoutes, usersUsecase entities.UsersUsecase, auth
 		AuthUsecase:  authUsecase,
 	}
 
-	r.POST("/register", controllers.Register)
-	r.POST("/change-password", middlewares.JwtAuthentication(), controllers.ChangePassword)
+	r.POST("/", controllers.Register)
+	r.GET("/", controllers.GetUserDetails, middlewares.JwtAuthentication())
+	r.DELETE("/", controllers.DeleteAccount, middlewares.JwtAuthentication())
+	r.POST("/change-password", controllers.ChangePassword, middlewares.JwtAuthentication())
 	r.POST("/shipping", controllers.Shipping, middlewares.JwtAuthentication())
-	r.GET("/details", controllers.GetUserDetails, middlewares.JwtAuthentication())
 	r.GET("/shipping", controllers.GetShippingDetails, middlewares.JwtAuthentication())
-	r.DELETE("/delete-account", controllers.DeleteAccount, middlewares.JwtAuthentication())
+	r.PUT("/shipping", controllers.UpdateShippingDetails, middlewares.JwtAuthentication())
 }
 
+// @Summary Register
+// @Description Register
+// @Tags Users
+// @Accept  json
+// @Produce  json
+// @Param credentials body entities.UsersRegisterReq true "Credentials"
+// @Success 200 {object} entities.UsersRegisterRes
+// @Router /users/register [post]
 func (u *UsersController) Register(c *gin.Context) {
 	req := new(entities.UsersRegisterReq)
 	err := c.ShouldBind(req)
@@ -95,6 +104,15 @@ func (u *UsersController) ChangePassword(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+// @Summary Create Shipping
+// @Description Create Shipping
+// @Tags Shipping
+// @Accept  json
+// @Produce  json
+// @Security Bearer
+// @Param shipping body entities.UsersShippingReq true "Shipping"
+// @Success 200 {object} entities.UsersShippingRes
+// @Router /users/shipping [post]
 func (u *UsersController) Shipping(c *gin.Context) {
 	req := new(entities.UsersShippingReq)
 	err := c.ShouldBind(req)
@@ -122,6 +140,14 @@ func (u *UsersController) Shipping(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+// @Summary Get User Details
+// @Description Get User Details
+// @Tags Users
+// @Accept  json
+// @Produce  json
+// @Security Bearer
+// @Success 200 {object} entities.UsersDataRes
+// @Router /users [get]
 func (u *UsersController) GetUserDetails(c *gin.Context) {
 	user, err := middlewares.GetUserByToken(c)
 	if err != nil {
@@ -139,6 +165,14 @@ func (u *UsersController) GetUserDetails(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+// @Summary Get Shipping Details
+// @Description Get Shipping Details
+// @Tags Shipping
+// @Accept  json
+// @Produce  json
+// @Security Bearer
+// @Success 200 {object} entities.UsersShippingReq
+// @Router /users/shipping [get]
 func (u *UsersController) GetShippingDetails(c *gin.Context) {
 	user, err := middlewares.GetUserByToken(c)
 	if err != nil {
@@ -156,6 +190,15 @@ func (u *UsersController) GetShippingDetails(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+// @Summary Update Shipping Details
+// @Description Update Shipping Details
+// @Tags Shipping
+// @Accept  json
+// @Produce  json
+// @Security Bearer
+// @Param shipping body entities.UsersShippingReq true "Shipping"
+// @Success 200 {object} entities.UsersShippingReq
+// @Router /users/shipping [put]
 func (u *UsersController) UpdateShippingDetails(c *gin.Context) {
 	req := new(entities.UsersShippingReq)
 	err := c.ShouldBind(req)
@@ -183,6 +226,14 @@ func (u *UsersController) UpdateShippingDetails(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+// @Summary Delete Account
+// @Description Delete Account
+// @Tags Users
+// @Accept  json
+// @Produce  json
+// @Security Bearer
+// @Success 200 {object} entities.UsersShippingRes
+// @Router /users [delete]
 func (u *UsersController) DeleteAccount(c *gin.Context) {
 	user, err := middlewares.GetUserByToken(c)
 	if err != nil {

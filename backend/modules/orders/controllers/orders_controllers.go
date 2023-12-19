@@ -23,12 +23,21 @@ func NewOrderControllers(r gin.IRoutes, cfg *configs.Configs, userUsecase entiti
 		UserUsecases:  userUsecase,
 	}
 
-	r.POST("/create", controllers.Create, middlewares.JwtAuthentication())
-	r.POST("/update", controllers.Update, middlewares.JwtAuthentication())
+	r.POST("/", controllers.Create, middlewares.JwtAuthentication())
+	r.PUT("/", controllers.Update, middlewares.JwtAuthentication())
 	r.GET("/", controllers.GetAll, middlewares.JwtAuthentication())
 	r.GET("/:id", controllers.Get, middlewares.JwtAuthentication())
 }
 
+// @Summary Create Order
+// @Description Create Order
+// @Tags Order
+// @Accept  json
+// @Produce  json
+// @Security Bearer
+// @Param order body entities.OrderCreateReq true "Order"
+// @Success 200 {object} entities.OrderCreateRes
+// @Router /order [post]
 func (o *OrderController) Create(c *gin.Context) {
 	var req entities.OrderCreateReq
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -56,6 +65,15 @@ func (o *OrderController) Create(c *gin.Context) {
 	c.JSON(200, res)
 }
 
+// @Summary Update Order
+// @Description Update Order
+// @Tags Order
+// @Accept  json
+// @Produce  json
+// @Security Bearer
+// @Param order body entities.OrderUpdateReq true "Order"
+// @Success 200 {object} string
+// @Router /order [put]
 func (o *OrderController) Update(c *gin.Context) {
 	var req entities.OrderUpdateReq
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -90,6 +108,14 @@ func (o *OrderController) Update(c *gin.Context) {
 	})
 }
 
+// @Summary Get All Orders
+// @Description Get All Orders
+// @Tags Order
+// @Accept  json
+// @Produce  json
+// @Security Bearer
+// @Success 200 {object} []entities.OrderGetAllRes
+// @Router /order [get]
 func (o *OrderController) GetAll(c *gin.Context) {
 	var req entities.OrderGetAllReq
 
@@ -111,6 +137,15 @@ func (o *OrderController) GetAll(c *gin.Context) {
 	c.JSON(200, res)
 }
 
+// @Summary Get Order
+// @Description Get Order
+// @Tags Order
+// @Accept  json
+// @Produce  json
+// @Security Bearer
+// @Param id path int true "Order ID"
+// @Success 200 {object} []entities.OrderGetRes
+// @Router /order/{id} [get]
 func (o *OrderController) Get(c *gin.Context) {
 	var req entities.OrderGetReq
 

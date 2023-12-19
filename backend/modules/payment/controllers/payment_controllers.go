@@ -23,6 +23,15 @@ func NewPaymentControllers(
 	r.POST("/charge", controllers.Charge)
 }
 
+// @Summary Charge
+// @Description Charge
+// @Tags Payment
+// @Accept  json
+// @Produce  json
+// @Security Bearer
+// @Param charge body entities.PaymentChargeReq true "Charge"
+// @Success 200 {object} entities.PaymentChargeRes
+// @Router /payment/charge [post]
 func (p *PaymentController) Charge(c *gin.Context) {
 	charge := new(entities.PaymentChargeReq)
 	err := c.ShouldBind(charge)

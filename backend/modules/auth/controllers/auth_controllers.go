@@ -24,6 +24,14 @@ func NewAuthControllers(r gin.IRoutes, cfg *configs.Configs, authUsecase entitie
 	r.GET("/auth-test", middlewares.JwtAuthentication(), controllers.AuthTest)
 }
 
+// @Summary Login
+// @Description Login
+// @Tags Auth
+// @Accept  json
+// @Produce  json
+// @Param credentials body entities.UsersCredentials true "Credentials"
+// @Success 200 {object} entities.UsersLoginRes
+// @Router /auth/login [post]
 func (a *AuthController) Login(c *gin.Context) {
 	req := new(entities.UsersCredentials)
 	err := c.ShouldBind(req)
@@ -45,6 +53,14 @@ func (a *AuthController) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+// @Summary Auth Test
+// @Description Auth Test
+// @Tags Auth
+// @Accept  json
+// @Produce  json
+// @Security Bearer
+// @Success 200 {object} string
+// @Router /auth/auth-test [get]
 func (a *AuthController) AuthTest(c *gin.Context) {
 	tk, err := middlewares.GetUserByToken(c)
 	if err != nil {
