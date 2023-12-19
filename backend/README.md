@@ -57,15 +57,15 @@ Before you start, ensure you have the following installed:
 
 #### Database Configuration
 
-1. Create a PostgreSQL database and configure the connection in the `config/config.yaml` file.
+1. Create a PostgreSQL database 
 
 #### Omise Configuration
 
-1. Set up your Omise API credentials in the same configuration file.
+1. Set up your Omise API credentials 
 
 #### Google Cloud Storage Configuration
 
-1. Set up your Google Cloud Storage credentials and update the configuration in the `config/config.yaml` file.
+1. Set up your Google Cloud Storage credentials 
 
 
 ### Running the Server
@@ -78,7 +78,7 @@ The server will start on http://localhost:8080 by default.
 
 ### API Documentation
 
-For detailed information on available API endpoints and how to use them, refer to the API documentation.
+For detailed information on available API endpoints and how to use them, refer to the [API documentation](https://modx.bukharney.tech/docs/index.html).
 
 ### Contribution
 
