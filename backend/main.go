@@ -13,7 +13,7 @@ import (
 // @title           ModX API
 // @version         1.0
 // @description     This is a ModX API server.
-// @host modx.bukharney.tech
+// @host modx-production.up.railway.app
 // @BasePath /v1
 // @schemes https
 // @securityDefinitions.apikey Bearer
@@ -43,7 +43,6 @@ func main() {
 		log.Fatal(errors.New("failed to get hostname"))
 	}
 
-	log.Println(host)
 	if host != "railway" {
 		cfg.URL = "https://storage.googleapis.com/modx-product-image/"
 		cfg.PostgreSQL.Host = db_host
@@ -71,8 +70,8 @@ func main() {
 	}
 
 	srv := server.NewServer(db, cfg, storage)
-
-	if err := srv.Run(); err != nil {
+	err = srv.Run()
+	if err != nil {
 		log.Fatal(err)
 	}
 }

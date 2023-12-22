@@ -87,7 +87,6 @@ export const GetProductsData = async (
       redirect: "follow",
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
       },
     }
   );
