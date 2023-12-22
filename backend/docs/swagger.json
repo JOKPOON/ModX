@@ -1,4 +1,7 @@
 {
+    "schemes": [
+        "https"
+    ],
     "swagger": "2.0",
     "info": {
         "description": "This is a ModX API server.",
@@ -6,7 +9,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:8080",
+    "host": "modx-production.up.railway.app",
     "basePath": "/v1",
     "paths": {
         "/auth/auth-test": {

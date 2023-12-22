@@ -13,8 +13,9 @@ import (
 // @title           ModX API
 // @version         1.0
 // @description     This is a ModX API server.
-// @host 		  	localhost:8080
-// @BasePath 	  	/v1
+// @host modx-production.up.railway.app
+// @BasePath /v1
+// @schemes https
 // @securityDefinitions.apikey Bearer
 // @in header
 // @name Authorization
@@ -22,19 +23,33 @@ import (
 func main() {
 	cfg := new(configs.Configs)
 
+	mustGetenv := func(k string) string {
+		v := os.Getenv(k)
+		if v == "" {
+			log.Fatalf("Fatal Error in connect_unix.go: %s environment variable not set.\n", k)
+		}
+		return v
+	}
+
+	var (
+		db_user     = mustGetenv("DB_USER")
+		db_password = mustGetenv("DB_PASS")
+		db_host     = mustGetenv("INSTANCE_UNIX_SOCKET")
+		db_name     = mustGetenv("DB_NAME")
+	)
+
 	host, err := os.Hostname()
 	if err != nil {
 		log.Fatal(errors.New("failed to get hostname"))
 	}
 
-	log.Println(host)
 	if host != "railway" {
 		cfg.URL = "https://storage.googleapis.com/modx-product-image/"
-		cfg.PostgreSQL.Host = "localhost"
+		cfg.PostgreSQL.Host = db_host
 		cfg.PostgreSQL.Port = "5432"
-		cfg.PostgreSQL.Username = "postgres"
-		cfg.PostgreSQL.Password = "postgres"
-		cfg.PostgreSQL.Database = "ModX"
+		cfg.PostgreSQL.Username = db_user
+		cfg.PostgreSQL.Password = db_password
+		cfg.PostgreSQL.Database = db_name
 	} else {
 		cfg.URL = "https://storage.googleapis.com/modx-product-image/"
 		cfg.PostgreSQL.Host = os.Getenv("PGHOST")
@@ -55,8 +70,8 @@ func main() {
 	}
 
 	srv := server.NewServer(db, cfg, storage)
-
-	if err := srv.Run(); err != nil {
+	err = srv.Run()
+	if err != nil {
 		log.Fatal(err)
 	}
 }
