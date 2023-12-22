@@ -7,8 +7,6 @@ import {
   cartItems,
 } from "../Interface/Interface";
 
-const URL = "https://modx-jqmntftvda-as.a.run.app/";
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
 const createFetchString = (
@@ -48,7 +46,7 @@ const createFetchString = (
     queryParams.push(`limit=${limit}`);
   }
 
-  let fetchString = URL + "v1/product";
+  let fetchString = "v1/product";
   if (queryParams.length > 0) {
     fetchString += "?" + queryParams.join("&");
   }
@@ -86,8 +84,10 @@ export const GetProductsData = async (
     ),
     {
       method: "GET",
+      redirect: "follow",
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
     }
   );
@@ -107,7 +107,7 @@ export const HandleReviewClick = async (
 
   const reviewData = order_products.filter((product) => product.id === id);
 
-  await fetch(URL + "v1/product/review", {
+  await fetch("v1/product/review", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -134,7 +134,7 @@ export const HandleGetOrder = async (order_id: number) => {
 
   let orderProducts: reviewItems[] = [];
 
-  await fetch(URL + `v1/order/${order_id}`, {
+  await fetch(`v1/order/${order_id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -160,7 +160,7 @@ export const HandleGetOrderList = async () => {
 
   let orderList: ordersItems[] = [];
 
-  await fetch(URL + "v1/order/", {
+  await fetch("v1/order/", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -187,7 +187,7 @@ export const HandleGetUserData = async () => {
     return "can't find token";
   }
 
-  const userData = await fetch(URL + "v1/users", {
+  const userData = await fetch("v1/users", {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -196,16 +196,12 @@ export const HandleGetUserData = async () => {
     if (res.ok) {
       const data = await res.json();
       return data;
-    }
-
-    if (res.status === 403) {
-      window.location.href = "/Login";
     }
 
     return null;
   });
 
-  const shippingData = await fetch(URL + "v1/users/shipping", {
+  const shippingData = await fetch("v1/users/shipping", {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -214,10 +210,6 @@ export const HandleGetUserData = async () => {
     if (res.ok) {
       const data = await res.json();
       return data;
-    }
-
-    if (res.status === 403) {
-      window.location.href = "/Login";
     }
 
     return null;
@@ -232,7 +224,7 @@ export const HandleUpdateShipping = async (shippingData: shippingDetails) => {
     return "can't find token";
   }
 
-  await fetch(URL + "v1/users/shipping", {
+  await fetch("v1/users/shipping", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -254,7 +246,7 @@ export const HandleDeleteAccount = async () => {
     return "can't find token";
   }
 
-  await fetch(URL + "v1/users", {
+  await fetch("v1/users", {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -279,7 +271,7 @@ export const HandleCheckout = async (
   if (!token) {
     return "can't find token";
   }
-  const res = await fetch(URL + "v1/order", {
+  const res = await fetch("v1/order", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -293,7 +285,7 @@ export const HandleCheckout = async (
     return await res.json();
   });
 
-  await fetch(URL + "v1/cart", {
+  await fetch("v1/cart", {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -334,7 +326,7 @@ export const OmiseHandler = async (
       amount: total * 100,
       submitFormTarget: "#checkout-form",
       onCreateTokenSuccess: async (nonce: string) => {
-        await fetch(URL + "v1/payment/charge", {
+        await fetch("v1/payment/charge", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -360,7 +352,7 @@ export const HandleGetShippingAddress = async () => {
   if (!token) {
     return "can't find token";
   }
-  const shippingData = await fetch(URL + "v1/users/shipping", {
+  const shippingData = await fetch("v1/users/shipping", {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -369,10 +361,6 @@ export const HandleGetShippingAddress = async () => {
     if (res.ok) {
       const data = await res.json();
       return data;
-    }
-
-    if (res.status === 403) {
-      window.location.href = "/Login";
     }
   });
 
@@ -385,7 +373,7 @@ export const HandleGetCartProducts = async () => {
     return "can't find token";
   }
 
-  const cartData = await fetch(URL + "v1/cart", {
+  const cartData = await fetch("v1/cart", {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -394,10 +382,6 @@ export const HandleGetCartProducts = async () => {
     if (res.ok) {
       const data = await res.json();
       return data;
-    }
-
-    if (res.status === 403) {
-      window.location.href = "/Login";
     }
   });
 
@@ -418,7 +402,7 @@ export const HandleDeleteCart = async (
 
   console.log(newCartProducts);
 
-  await fetch(URL + "v1/cart", {
+  await fetch("v1/cart", {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -446,7 +430,7 @@ export const HandleDeleteCart = async (
 };
 
 export const HandleLogin = async (username: string, password: string) => {
-  await fetch(URL + "v1/auth/login", {
+  await fetch("v1/auth/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -487,7 +471,7 @@ export const HandleResgister = async (
     return;
   }
 
-  await fetch(URL + "v1/users", {
+  await fetch("v1/users", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -499,7 +483,6 @@ export const HandleResgister = async (
         localStorage.setItem("token", data.token);
         console.log(data);
       });
-      window.location.href = "/AllProducts";
     } else {
       alert("Duplicate Username or Email");
     }
@@ -507,7 +490,7 @@ export const HandleResgister = async (
 };
 
 export const HandleGetProduct = async (item_id: number) => {
-  const res = await fetch(URL + `v1/product/${item_id}`, {
+  const res = await fetch(`v1/product/${item_id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -543,23 +526,16 @@ export const HandleAddToCart = async (
     return "can't find token";
   }
 
-  await fetch(URL + "v1/cart", {
+  await fetch("v1/cart", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-  }).then(
-    (res) => {
-      if (res.status === 403) {
-        window.location.href = "/Login";
-      }
-    },
-    (err) => {
-      console.log(err);
-    }
-  );
+  }).then((err) => {
+    console.log(err);
+  });
 };
 
 export const HandleGetWishList = async () => {
@@ -568,7 +544,7 @@ export const HandleGetWishList = async () => {
     return "can't find token";
   }
 
-  const res = await fetch(URL + "v1/wishlist", {
+  const res = await fetch("v1/wishlist", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -578,10 +554,6 @@ export const HandleGetWishList = async () => {
     if (res.ok) {
       const data = await res.json();
       return data.products;
-    }
-
-    if (res.status === 403) {
-      window.location.href = "/Login";
     }
   });
 
@@ -594,7 +566,7 @@ export const HandleDeleteWishList = async (id: number) => {
     return "can't find token";
   }
 
-  const res = await fetch(URL + `v1/wishlist/${id}`, {
+  const res = await fetch(`v1/wishlist/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -605,10 +577,6 @@ export const HandleDeleteWishList = async (id: number) => {
       return HandleGetWishList().then((res) => {
         return res;
       });
-    }
-
-    if (res.status === 403) {
-      window.location.href = "/Login";
     }
   });
 
@@ -621,7 +589,7 @@ export const HandleAddToWishlist = async (orderProducts: orderProducts) => {
     return "can't find token";
   }
 
-  await fetch(URL + "v1/wishlist", {
+  await fetch("v1/wishlist", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
