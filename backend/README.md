@@ -78,7 +78,7 @@ The server will start on http://localhost:8080 by default.
 
 ### API Documentation
 
-For detailed information on available API endpoints and how to use them, refer to the [API documentation](https://modx.bukharney.tech/docs/index.html).
+For detailed information on available API endpoints and how to use them, refer to the [API documentation](https://modx-production.up.railway.app/docs/index.html).
 
 ### Contribution
 
