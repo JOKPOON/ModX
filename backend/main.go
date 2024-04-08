@@ -26,17 +26,10 @@ func main() {
 	mustGetenv := func(k string) string {
 		v := os.Getenv(k)
 		if v == "" {
-			log.Fatalf("Fatal Error in connect_unix.go: %s environment variable not set.\n", k)
+			log.Fatalf("missing env var %s", k)
 		}
 		return v
 	}
-
-	var (
-		db_user     = mustGetenv("DB_USER")
-		db_password = mustGetenv("DB_PASS")
-		db_host     = mustGetenv("INSTANCE_UNIX_SOCKET")
-		db_name     = mustGetenv("DB_NAME")
-	)
 
 	host, err := os.Hostname()
 	if err != nil {
@@ -44,19 +37,19 @@ func main() {
 	}
 
 	if host != "railway" {
-		cfg.URL = "https://storage.googleapis.com/modx-product-image/"
-		cfg.PostgreSQL.Host = db_host
+		cfg.GCS.URL = "https://storage.googleapis.com/modx-product-image/"
+		cfg.PostgreSQL.Host = "postgres"
 		cfg.PostgreSQL.Port = "5432"
-		cfg.PostgreSQL.Username = db_user
-		cfg.PostgreSQL.Password = db_password
-		cfg.PostgreSQL.Database = db_name
+		cfg.PostgreSQL.Username = "postgres"
+		cfg.PostgreSQL.Password = "junepoon"
+		cfg.PostgreSQL.Database = "ModX"
 	} else {
-		cfg.URL = "https://storage.googleapis.com/modx-product-image/"
-		cfg.PostgreSQL.Host = os.Getenv("PGHOST")
-		cfg.PostgreSQL.Port = os.Getenv("PGPORT")
-		cfg.PostgreSQL.Username = os.Getenv("POSTGRES_USER")
-		cfg.PostgreSQL.Password = os.Getenv("POSTGRES_PASSWORD")
-		cfg.PostgreSQL.Database = os.Getenv("POSTGRES_DB")
+		cfg.GCS.URL = "https://storage.googleapis.com/modx-product-image/"
+		cfg.PostgreSQL.Host = mustGetenv("PGHOST")
+		cfg.PostgreSQL.Port = mustGetenv("PGPORT")
+		cfg.PostgreSQL.Username = mustGetenv("POSTGRES_USER")
+		cfg.PostgreSQL.Password = mustGetenv("POSTGRES_PASSWORD")
+		cfg.PostgreSQL.Database = mustGetenv("POSTGRES_DB")
 	}
 
 	db, err := databases.NewPostgreSQL(cfg)
