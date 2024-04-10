@@ -50,6 +50,11 @@ func (s *Server) Run() error {
 		return errors.New("failed to map handlers")
 	}
 
+	err = s.FileServer()
+	if err != nil {
+		return errors.New("failed to run file server")
+	}
+
 	err = s.App.Run(":8080")
 	if err != nil {
 		return errors.New("failed to run server")
