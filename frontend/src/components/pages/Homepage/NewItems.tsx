@@ -35,7 +35,7 @@ const NewItems = () => {
   };
 
   useEffect(() => {
-    GetProductsData([], "", "", null, "", "", "", "5").then((res) => {
+    GetProductsData([], "", "", null, "", "", " ", "5").then((res) => {
       setNewItemsData(res);
     });
   }, []);

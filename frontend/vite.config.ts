@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/v1": {
-        target: "https://modx-production.up.railway.app",
+        target: "https://modx.bukharney.tech",
         changeOrigin: true,
       },
     },

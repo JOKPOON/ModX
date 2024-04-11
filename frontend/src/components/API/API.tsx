@@ -46,7 +46,7 @@ const createFetchString = (
     queryParams.push(`limit=${limit}`);
   }
 
-  let fetchString = "v1/product";
+  let fetchString = "v1/product/";
   if (queryParams.length > 0) {
     fetchString += "?" + queryParams.join("&");
   }
@@ -71,7 +71,7 @@ export const GetProductsData = async (
   search: string,
   limit: string
 ) => {
-  const response = await fetch(
+  const res = await fetch(
     createFetchString(
       selectedCategories,
       minPrice,
@@ -91,7 +91,7 @@ export const GetProductsData = async (
     }
   );
 
-  const data = await response.json();
+  const data = await res.json();
   return data;
 };
 

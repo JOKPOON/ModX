@@ -950,6 +950,7 @@ packages:
       react-interactive: 0.8.3(react@16.14.0)
       react-router-dom: 4.3.1(react@16.14.0)
     dev: false
+    bundledDependencies: false
 
   /brace-expansion@1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
@@ -1771,6 +1772,7 @@ packages:
       react: 16.14.0
       scheduler: 0.19.1
     dev: false
+    bundledDependencies: false
 
   /react-dom@18.2.0(react@18.2.0):
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
@@ -1880,6 +1882,7 @@ packages:
       object-assign: 4.1.1
       prop-types: 15.8.1
     dev: false
+    bundledDependencies: false
 
   /react@18.2.0:
     resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}
