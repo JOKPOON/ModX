@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"log"
 	"os"
 
@@ -31,26 +30,12 @@ func main() {
 		return v
 	}
 
-	host, err := os.Hostname()
-	if err != nil {
-		log.Fatal(errors.New("failed to get hostname"))
-	}
-
-	if host != "railway" {
-		cfg.GCS.URL = "https://storage.googleapis.com/modx-product-image/"
-		cfg.PostgreSQL.Host = "postgres"
-		cfg.PostgreSQL.Port = "5432"
-		cfg.PostgreSQL.Username = "postgres"
-		cfg.PostgreSQL.Password = "junepoon"
-		cfg.PostgreSQL.Database = "ModX"
-	} else {
-		cfg.GCS.URL = "https://storage.googleapis.com/modx-product-image/"
-		cfg.PostgreSQL.Host = mustGetenv("PGHOST")
-		cfg.PostgreSQL.Port = mustGetenv("PGPORT")
-		cfg.PostgreSQL.Username = mustGetenv("POSTGRES_USER")
-		cfg.PostgreSQL.Password = mustGetenv("POSTGRES_PASSWORD")
-		cfg.PostgreSQL.Database = mustGetenv("POSTGRES_DB")
-	}
+	cfg.GCS.URL = mustGetenv("GCLOUD_STORAGE_URL")
+	cfg.PostgreSQL.Host = mustGetenv("POSTGRES_HOST")
+	cfg.PostgreSQL.Port = mustGetenv("POSTGRES_PORT")
+	cfg.PostgreSQL.Username = mustGetenv("POSTGRES_USER")
+	cfg.PostgreSQL.Password = mustGetenv("POSTGRES_PASSWORD")
+	cfg.PostgreSQL.Database = mustGetenv("POSTGRES_DB")
 
 	db, err := databases.NewPostgreSQL(cfg)
 	if err != nil {

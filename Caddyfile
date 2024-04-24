@@ -1,0 +1,3 @@
+modx.localhost {
+    reverse_proxy web:5173
+}

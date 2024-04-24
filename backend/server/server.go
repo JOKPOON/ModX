@@ -36,10 +36,11 @@ func (s *Server) Run() error {
 
 	s.App.Use(cors.New(
 		cors.Config{
-			AllowOrigins:     []string{"*", "https://mod-x.vercel.app"},
-			AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
-			AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type"},
+			AllowOrigins:     []string{"*", "http://localhost:5173"},
+			AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+			AllowHeaders:     []string{"*"},
 			AllowCredentials: false,
+			MaxAge:           12 * 3600,
 		},
 	))
 
@@ -55,7 +56,7 @@ func (s *Server) Run() error {
 		return errors.New("failed to run file server")
 	}
 
-	err = s.App.Run(":8080")
+	err = s.App.Run()
 	if err != nil {
 		return errors.New("failed to run server")
 	}
