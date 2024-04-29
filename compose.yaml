@@ -14,7 +14,7 @@ services:
       - caddy_net
 
   web:
-    image: modx_web
+    image: registry.gitlab.com/bukharney/modx:main_frontend
     container_name: web
     expose:
       - 5173
@@ -22,7 +22,7 @@ services:
       - caddy_net
 
   server:
-    image: modx
+    image: registry.gitlab.com/bukharney/modx:main_backend
     container_name: server
     expose:
       - 8080
@@ -44,6 +44,7 @@ services:
   postgres:
     image: postgres:14-alpine
     container_name: postgres
+    user: postgres
     ports:
       - 5555:5432
     volumes:
