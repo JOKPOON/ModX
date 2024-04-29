@@ -129,8 +129,7 @@ func NewPostgreSQL(cfg *configs.Configs) (*sqlx.DB, error) {
 	log.Println(connectionUrl)
 	db, err := sqlx.Connect("postgres", connectionUrl)
 	if err != nil {
-		return nil, errors.New("failed to connect to PostgreSQL")
-
+		return nil, errors.New(err.Error())
 	}
 
 	db.MustExec(schema)

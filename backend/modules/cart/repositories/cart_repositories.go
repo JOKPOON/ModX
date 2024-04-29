@@ -144,7 +144,7 @@ func (c *CartRepo) GetProductDetails(product_id int) (*entities.ProductGetByIdRe
 
 	picture := strings.Split(res.Picture, ",")
 	for i, v := range picture {
-		picture[i] = c.Cfg.URL + v
+		picture[i] = c.Cfg.GCS.URL + v
 	}
 
 	res.Picture = picture[0]

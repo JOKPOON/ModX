@@ -100,7 +100,7 @@ func (p *ProductRepo) GetAll(req *entities.ProductQuery) (*entities.AllProductRe
 
 		data := strings.Split(res.Picture, ",")
 		for i, v := range data {
-			data[i] = fmt.Sprintf(p.Cfg.URL + v)
+			data[i] = fmt.Sprintf(p.Cfg.GCS.URL + v)
 		}
 
 		res.Picture = data[0]
@@ -243,7 +243,7 @@ func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, erro
 	req.Updated = res.Updated
 	req.Picture = strings.Split(res.Picture, ",")
 	for i, v := range req.Picture {
-		req.Picture[i] = fmt.Sprintf(p.Cfg.URL + v)
+		req.Picture[i] = fmt.Sprintf(p.Cfg.GCS.URL + v)
 	}
 
 	query = `
