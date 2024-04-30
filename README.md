@@ -12,6 +12,7 @@ ModX is an online shopping platform designed specifically for the KMUTT bookstor
 - User Profile: Users can view and edit their profile, view past transactions, and more.
 
 ## Technoology Stack
+
 The Modx application is developed using the following technologies:
 
 - React: A TypeScript library for building user interfaces.
@@ -22,23 +23,39 @@ The Modx application is developed using the following technologies:
 
 To run TradeKub locally on your machine, follow these steps:
 
-1. Clone the repository: 
-   ```
-   git clone https://github.com/your-username/ModX.git
+1. Clone the repository:
+
+   ```bash
+   git clone https://gitlab.com/Bukharney/ModX.git
    ```
 
-2. Install the dependencies:
-   ```
-   cd modx
-   pnpm install
+2. Set up the environment variables:
+
+   - You need to have a Google Cloud Storage account and an Omise account to run the application.
+     - For Google Cloud Storage, you need to create a bucket and generate a service account key file.
+       - And put your `credentials.json` file in the `backend` directory.
+     - For Omise, you need to create an account and generate API keys.
+   - Create a `.env` file in the root directory of the project.
+   - Add the following environment variables to the `.env` file:
+
+     ```
+     POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+     POSTGRES_USER=${POSTGRES_USER}
+     POSTGRES_DB=${POSTGRES_DB}
+     POSTGRES_HOST=${POSTGRES_HOST}
+     POSTGRES_PORT=${POSTGRES_PORT}
+     GCLOUD_STORAGE_URL=${GCLOUD_STORAGE_URL}
+     OMISE_PUBLIC_KEY=${OMISE_PUBLIC_KEY}
+     OMISE_SECRET_KEY=${OMISE_SECRET_KEY}
+     ```
+
+3. Start the application using the following command:
+
+   ```bash
+   docker compose up
    ```
 
-3. Start the application:
-   ```
-   pnpm start
-   ```
-
-4. Access the TradeKub application in your browser at `http://localhost:5173`.
+4. Access the TradeKub application in your browser at `http://modx.localhost`.
 
 ## Contributing
 
