@@ -3,7 +3,7 @@ import { useState } from "react";
 import "./Wishlist.css";
 import { useNavigate } from "react-router-dom";
 import { wishlistItems } from "../../Interface/Interface";
-import { HandleGetWishList } from "../../API/API";
+import { CheckToken, HandleGetWishList } from "../../API/API";
 
 export const WishlistDropdown = () => {
   const navigate = useNavigate();
@@ -24,10 +24,12 @@ export const WishlistDropdown = () => {
   };
 
   useEffect(() => {
-    HandleGetWishList().then((res) => {
-      setWishlist(res);
-    });
-  }, []);
+    CheckToken()
+      ? HandleGetWishList().then((res) => {
+          setWishlist(res);
+        })
+      : navigate("/Login");
+  }, [navigate]);
 
   return (
     <div className="dropdown-container">

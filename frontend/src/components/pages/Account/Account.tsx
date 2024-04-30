@@ -6,6 +6,7 @@ import {
   HandleGetUserData,
   HandleDeleteAccount,
   HandleUpdateShipping,
+  CheckToken,
 } from "../../API/API";
 
 //Account Page Component
@@ -47,15 +48,20 @@ export const Account = () => {
   const [shippingData, setShippingData] = useState<shippingDetails>();
 
   useEffect(() => {
-    HandleGetUserData().then((res) => {
-      if (res === "can't find token") {
-        navigate("/Login");
-      } else {
-        setUserData(res.userData);
-        setShippingData(res.shippingData);
-      }
-    });
+    CheckToken()
+      ? HandleGetUserData().then((res) => {
+          setUserData(res.userData);
+          setShippingData(res.shippingData);
+        })
+      : navigate("/Login");
   }, [navigate]);
+
+  // useEffect(() => {
+  //   const checkToken = localStorage.getItem("token");
+  //   if (checkToken === null) {
+  //     navigate("/Login");
+  //   }
+  // }, [navigate]);
 
   /*
     In placeholder, if User Data is not null, show User Data
@@ -65,7 +71,7 @@ export const Account = () => {
   const handlogOut = () => {
     localStorage.removeItem("token");
     navigate("/");
-  }
+  };
 
   return (
     <div className="main">
@@ -84,7 +90,6 @@ export const Account = () => {
               readOnly
             />
           </div>
-
           <div className="One-Form-Long">
             <h4>Email</h4>
             <input
@@ -94,7 +99,6 @@ export const Account = () => {
               readOnly
             />
           </div>
-
           <div className="One-Form">
             <h4>Name</h4>
             <input
@@ -121,7 +125,6 @@ export const Account = () => {
               }
             />
           </div>
-
           <div className="One-Form-Long">
             <h4>Address</h4>
             <input
@@ -191,14 +194,16 @@ export const Account = () => {
             >
               Order History
             </button>
-          </div> <div className="Row">
-          <button className="Logout-Button" onClick={handlogOut}>
-            Log Out
-          </button>
-          <button className="Save-Button" onClick={handdleSaveProfile}>
-            Save Profile
-          </button>
-        </div></div>
+          </div>{" "}
+          <div className="Row">
+            <button className="Logout-Button" onClick={handlogOut}>
+              Log Out
+            </button>
+            <button className="Save-Button" onClick={handdleSaveProfile}>
+              Save Profile
+            </button>
+          </div>
+        </div>
         {isActive && (
           <div className="popup open-popup">
             <div className="popup-content">

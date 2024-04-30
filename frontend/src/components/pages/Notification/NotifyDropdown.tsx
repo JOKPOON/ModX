@@ -3,7 +3,7 @@ import { useState } from "react";
 import "./Notification.css";
 import { useNavigate } from "react-router-dom";
 import Logo from "../assets/Logo.svg";
-import { HandleGetOrderList } from "../../API/API";
+import { CheckToken, HandleGetOrderList } from "../../API/API";
 import { ordersItems } from "../../Interface/Interface";
 
 export const NotifyDropdown = () => {
@@ -12,13 +12,11 @@ export const NotifyDropdown = () => {
   const [Notification, setOrder] = React.useState<ordersItems[] | null>(null);
 
   useEffect(() => {
-    HandleGetOrderList().then((res) => {
-      if (res === "can't find token") {
-        navigate("/Login");
-      } else {
-        setOrder(res);
-      }
-    });
+    CheckToken()
+      ? HandleGetOrderList().then((res) => {
+          setOrder(res);
+        })
+      : navigate("/Login");
   }, [navigate]);
 
   const handledropdownNotigo = () => {

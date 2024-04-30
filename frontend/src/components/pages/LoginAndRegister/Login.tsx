@@ -1,9 +1,10 @@
 import { useState } from "react";
 import "./Login.css";
 import Logo from "../assets/Logo.svg";
-import { HandleLogin, HandleResgister } from "../../API/API";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -11,8 +12,68 @@ export const Login = () => {
   const [isSignUp, setIsSignUp] = useState(false);
 
   const handleToggle = () => {
-
     setIsSignUp(!isSignUp);
+  };
+
+  const HandleLogin = async (username: string, password: string) => {
+    await fetch("v1/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    }).then(async (res) => {
+      if (res.ok) {
+        await res.json().then((data) => {
+          localStorage.setItem("token", data.token);
+          console.log(data);
+          navigate(-1);
+        });
+      } else {
+        alert("Invalid Username or Password");
+      }
+    });
+  };
+
+  const HandleResgister = async (
+    username: string,
+    password: string,
+    confirmPassword: string,
+    email: string
+  ) => {
+    if (!username || !password || !confirmPassword || !email) {
+      alert("All fields are required");
+      return;
+    }
+
+    if (email.indexOf("@") === -1 || email.indexOf(".") === -1) {
+      alert("Email is invalid");
+      return;
+    }
+
+    console.log(password, confirmPassword);
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    await fetch("v1/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password, email }),
+    }).then(async (res) => {
+      if (res.ok) {
+        await res.json().then((data) => {
+          localStorage.setItem("token", data.token);
+          console.log(data);
+          navigate(-1);
+        });
+      } else {
+        alert("Duplicate Username or Email");
+      }
+    });
   };
 
   return (
@@ -26,13 +87,13 @@ export const Login = () => {
             <h1>Login</h1>
             <span></span>
             <input
-              id="username"
+              id="login_username"
               type="name"
               placeholder="Username"
               onChange={(e) => setUsername(e.target.value)}
             />
             <input
-              id="password"
+              id="login_password"
               type="password"
               placeholder="Password"
               onChange={(e) => setPassword(e.target.value)}

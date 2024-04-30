@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import "./Notification.css";
 import { useNavigate } from "react-router-dom";
-import { HandleGetOrderList } from "../../API/API";
+import { CheckToken, HandleGetOrderList } from "../../API/API";
 import { ordersItems } from "../../Interface/Interface";
 
 export const Notification = () => {
@@ -9,13 +9,11 @@ export const Notification = () => {
   const [Order, setOrder] = React.useState<ordersItems[] | null>(null);
 
   useEffect(() => {
-    HandleGetOrderList().then((res) => {
-      if (res === "can't find token") {
-        navigate("/Login");
-      } else {
-        setOrder(res);
-      }
-    });
+    CheckToken()
+      ? HandleGetOrderList().then((res) => {
+          setOrder(res);
+        })
+      : navigate("/Login");
   }, [navigate]);
 
   const noIteminHistory = () => {
@@ -24,7 +22,7 @@ export const Notification = () => {
         <div className="NoItem__Text">No Item in History</div>
       </div>
     );
-  }
+  };
 
   return (
     <div className="Track__Container">
@@ -37,7 +35,7 @@ export const Notification = () => {
           <div className="Title__Grid">Status</div>
         </div>
       </div>
-      <div className="Order__Body" >
+      <div className="Order__Body">
         {Order?.length === 0 ? noIteminHistory() : null}
         {Order?.map((item, index) => (
           <div

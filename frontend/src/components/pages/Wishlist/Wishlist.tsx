@@ -2,11 +2,15 @@ import React, { useState, useEffect } from "react";
 import "./Wishlist.css";
 import { useNavigate } from "react-router-dom";
 import { wishlistItems } from "../../Interface/Interface";
-import { HandleGetWishList, HandleDeleteWishList } from "../../API/API";
+import {
+  HandleGetWishList,
+  HandleDeleteWishList,
+  CheckToken,
+} from "../../API/API";
 
 export const Wishlist = () => {
   const navigate = useNavigate();
-  const [wishlist, setWishlist] = useState<wishlistItems[]>([]);
+  const [wishlist, setWishlist] = useState<wishlistItems[] | null>(null);
 
   const removeFromWishlist = (index: number) => {
     HandleDeleteWishList(index).then((res) => {
@@ -28,11 +32,12 @@ export const Wishlist = () => {
   };
 
   useEffect(() => {
-    HandleGetWishList().then((res) => {
-      setWishlist(res);
-      console.log(res);
-    });
-  }, []);
+    CheckToken()
+      ? HandleGetWishList().then((res) => {
+          setWishlist(res);
+        })
+      : navigate("/Login");
+  }, [navigate]);
 
   return (
     <div className="Order__Container">
@@ -46,46 +51,50 @@ export const Wishlist = () => {
       </div>
       <div className="Wishlist__Container">
         <div className="Wishlist__Title">WISHLIST</div>
-        {wishlist.map((items, index) => (
-          <div className="Wishlist__Item" key={index}>
-            <React.Fragment key={index}>
-              <div className="Item__Container">
-                <div className="Item__Top">
-                  <div className="Item__Picture">
-                    <img src={items.product_image} className="Item__Picture" />
+        {wishlist &&
+          wishlist.map((items, index) => (
+            <div className="Wishlist__Item" key={index}>
+              <React.Fragment key={index}>
+                <div className="Item__Container">
+                  <div className="Item__Top">
+                    <div className="Item__Picture">
+                      <img
+                        src={items.product_image}
+                        className="Item__Picture"
+                      />
+                    </div>
+                    <div className="Item__Title">{items.product_title}</div>
+                    <div className="Price__Container">
+                      <div className="Item__Price">
+                        <div className="Item__PriceTHB">{items.price}</div>
+                        <div className="Item__THB">THB</div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="Item__Title">{items.product_title}</div>
-                  <div className="Price__Container">
-                    <div className="Item__Price">
-                      <div className="Item__PriceTHB">{items.price}</div>
-                      <div className="Item__THB">THB</div>
+                  <div className="Item__Bottom">
+                    <div className="Item__Remover">
+                      <button
+                        className="Remove"
+                        onClick={() => removeFromWishlist(items.id)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                    <div className="Item__Viewer">
+                      <button
+                        className="View"
+                        onClick={() => {
+                          handleProductGo(items);
+                        }}
+                      >
+                        Go to store
+                      </button>
                     </div>
                   </div>
                 </div>
-                <div className="Item__Bottom">
-                  <div className="Item__Remover">
-                    <button
-                      className="Remove"
-                      onClick={() => removeFromWishlist(items.id)}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                  <div className="Item__Viewer">
-                    <button
-                      className="View"
-                      onClick={() => {
-                        handleProductGo(items);
-                      }}
-                    >
-                      Go to store
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </React.Fragment>
-          </div>
-        ))}
+              </React.Fragment>
+            </div>
+          ))}
       </div>
     </div>
   );

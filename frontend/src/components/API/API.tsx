@@ -53,12 +53,8 @@ const createFetchString = (
   return fetchString;
 };
 
-const checkToken = () => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    return "can't find token";
-  }
-  return token;
+export const CheckToken = () => {
+  return localStorage.getItem("token");
 };
 
 export const GetProductsData = async (
@@ -99,10 +95,7 @@ export const HandleReviewClick = async (
   id: number,
   order_products: reviewItems[]
 ) => {
-  const token = checkToken();
-  if (!token) {
-    return "can't find token";
-  }
+  const token = CheckToken();
 
   const reviewData = order_products.filter((product) => product.id === id);
 
@@ -126,10 +119,7 @@ export const HandleReviewClick = async (
 };
 
 export const HandleGetOrder = async (order_id: number) => {
-  const token = checkToken();
-  if (!token) {
-    return "can't find token";
-  }
+  const token = CheckToken();
 
   let orderProducts: reviewItems[] = [];
 
@@ -152,10 +142,7 @@ export const HandleGetOrder = async (order_id: number) => {
 };
 
 export const HandleGetOrderList = async () => {
-  const token = checkToken();
-  if (!token) {
-    return "can't find token";
-  }
+  const token = CheckToken();
 
   let orderList: ordersItems[] = [];
 
@@ -181,10 +168,7 @@ export const HandleGetOrderList = async () => {
 };
 
 export const HandleGetUserData = async () => {
-  const token = checkToken();
-  if (!token) {
-    return "can't find token";
-  }
+  const token = CheckToken();
 
   const userData = await fetch("v1/users", {
     method: "GET",
@@ -192,12 +176,8 @@ export const HandleGetUserData = async () => {
       Authorization: `Bearer ${token}`,
     },
   }).then(async (res) => {
-    if (res.ok) {
-      const data = await res.json();
-      return data;
-    }
-
-    return null;
+    const data = await res.json();
+    return data;
   });
 
   const shippingData = await fetch("v1/users/shipping", {
@@ -218,10 +198,7 @@ export const HandleGetUserData = async () => {
 };
 
 export const HandleUpdateShipping = async (shippingData: shippingDetails) => {
-  const token = checkToken();
-  if (!token) {
-    return "can't find token";
-  }
+  const token = CheckToken();
 
   await fetch("v1/users/shipping", {
     method: "POST",
@@ -240,10 +217,7 @@ export const HandleUpdateShipping = async (shippingData: shippingDetails) => {
 };
 
 export const HandleDeleteAccount = async () => {
-  const token = checkToken();
-  if (!token) {
-    return "can't find token";
-  }
+  const token = CheckToken();
 
   await fetch("v1/users", {
     method: "DELETE",
@@ -266,7 +240,7 @@ export const HandleCheckout = async (
   total: number,
   OmiseCard: any
 ) => {
-  const token = checkToken();
+  const token = CheckToken();
   if (!token) {
     return "can't find token";
   }
@@ -347,10 +321,8 @@ export const OmiseHandler = async (
 };
 
 export const HandleGetShippingAddress = async () => {
-  const token = checkToken();
-  if (!token) {
-    return "can't find token";
-  }
+  const token = CheckToken();
+
   const shippingData = await fetch("v1/users/shipping", {
     method: "GET",
     headers: {
@@ -367,10 +339,7 @@ export const HandleGetShippingAddress = async () => {
 };
 
 export const HandleGetCartProducts = async () => {
-  const token = checkToken();
-  if (!token) {
-    return "can't find token";
-  }
+  const token = CheckToken();
 
   const cartData = await fetch("v1/cart", {
     method: "GET",
@@ -391,7 +360,7 @@ export const HandleDeleteCart = async (
   CartProducts: cartItems[],
   selectedItemIndices: number[]
 ) => {
-  const token = checkToken();
+  const token = CheckToken();
   if (!token) {
     return "can't find token";
   }
@@ -428,66 +397,6 @@ export const HandleDeleteCart = async (
   return newCartProducts;
 };
 
-export const HandleLogin = async (username: string, password: string) => {
-  await fetch("v1/auth/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ username, password }),
-  }).then(async (res) => {
-    if (res.ok) {
-      await res.json().then((data) => {
-        localStorage.setItem("token", data.token);
-        console.log(data);
-      });
-      window.location.href = "/AllProducts";
-    } else {
-      alert("Username or Password is incorrect");
-    }
-  });
-};
-
-export const HandleResgister = async (
-  username: string,
-  password: string,
-  confirmPassword: string,
-  email: string
-) => {
-  if (!username || !password || !confirmPassword || !email) {
-    alert("All fields are required");
-    return;
-  }
-
-  if (email.indexOf("@") === -1 || email.indexOf(".") === -1) {
-    alert("Email is invalid");
-    return;
-  }
-
-  console.log(password, confirmPassword);
-  if (password !== confirmPassword) {
-    alert("Passwords do not match");
-    return;
-  }
-
-  await fetch("v1/users", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ username, password, email }),
-  }).then(async (res) => {
-    if (res.ok) {
-      await res.json().then((data) => {
-        localStorage.setItem("token", data.token);
-        console.log(data);
-      });
-    } else {
-      alert("Duplicate Username or Email");
-    }
-  });
-};
-
 export const HandleGetProduct = async (item_id: number) => {
   const res = await fetch(`v1/product/${item_id}`, {
     method: "GET",
@@ -520,10 +429,7 @@ export const HandleAddToCart = async (
     options: options,
   };
 
-  const token = checkToken();
-  if (!token) {
-    return "can't find token";
-  }
+  const token = CheckToken();
 
   await fetch("v1/cart", {
     method: "POST",
@@ -538,10 +444,7 @@ export const HandleAddToCart = async (
 };
 
 export const HandleGetWishList = async () => {
-  const token = checkToken();
-  if (!token) {
-    return "can't find token";
-  }
+  const token = CheckToken();
 
   const res = await fetch("v1/wishlist", {
     method: "GET",
@@ -560,10 +463,7 @@ export const HandleGetWishList = async () => {
 };
 
 export const HandleDeleteWishList = async (id: number) => {
-  const token = checkToken();
-  if (!token) {
-    return "can't find token";
-  }
+  const token = CheckToken();
 
   const res = await fetch(`v1/wishlist/${id}`, {
     method: "DELETE",
@@ -583,10 +483,7 @@ export const HandleDeleteWishList = async (id: number) => {
 };
 
 export const HandleAddToWishlist = async (orderProducts: orderProducts) => {
-  const token = checkToken();
-  if (!token) {
-    return "can't find token";
-  }
+  const token = CheckToken();
 
   await fetch("v1/wishlist", {
     method: "POST",

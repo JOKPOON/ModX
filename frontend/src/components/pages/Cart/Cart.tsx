@@ -14,6 +14,7 @@ import {
   HandleDeleteCart,
   HandleGetCartProducts,
   HandleGetShippingAddress,
+  CheckToken,
 } from "../../API/API";
 
 export const Cart = () => {
@@ -55,13 +56,14 @@ export const Cart = () => {
   };
 
   useEffect(() => {
-    HandleGetCartProducts().then((res) => {
-      setCartProducts(res);
-    });
-
-    HandleGetShippingAddress().then((res) => {
-      setShippingData(res);
-    });
+    CheckToken()
+      ? (HandleGetCartProducts().then((res) => {
+          setCartProducts(res);
+        }),
+        HandleGetShippingAddress().then((res) => {
+          setShippingData(res);
+        }))
+      : navigate("/Login");
   }, []);
 
   useEffect(() => {
@@ -194,14 +196,16 @@ export const Cart = () => {
               <div className="Cart__text__Right">
                 <div className="Cart__text__Right__Toppic">Shipping</div>
                 <div className="Cart__text__Right__Content">
-                  {CartProducts?.reduce(
-                    (total, product) =>
-                      total +
-                      (selectedItemIndices.includes(product.id)
-                        ? 10 * product.quantity
-                        : 0),
-                    0
-                  ) + " "}
+                  {CartProducts &&
+                    CartProducts.length === 0 &&
+                    CartProducts?.reduce(
+                      (total, product) =>
+                        total +
+                        (selectedItemIndices.includes(product.id)
+                          ? 10 * product.quantity
+                          : 0),
+                      0
+                    ) + " "}
                   THB
                 </div>
               </div>

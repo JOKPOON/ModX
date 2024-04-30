@@ -8,6 +8,7 @@ import {
   HandleGetProduct,
   HandleAddToCart,
   HandleAddToWishlist,
+  CheckToken,
 } from "../../API/API";
 
 export const SingleProduct = () => {
@@ -168,22 +169,26 @@ export const SingleProduct = () => {
   };
 
   const HandleSingleItemToWishlist = () => {
-    HandleAddToWishlist({
-      id: 0,
-      product_id: Product?.id ?? 0,
-      quantity: selectedQuantity,
-      options: {
-        option_1: selectedOptionKey1 ?? "",
-        option_2: selectedOptionKey2 ?? "",
-      },
-    });
+    CheckToken()
+      ? HandleAddToWishlist({
+          id: 0,
+          product_id: Product?.id ?? 0,
+          quantity: selectedQuantity,
+          options: {
+            option_1: selectedOptionKey1 ?? "",
+            option_2: selectedOptionKey2 ?? "",
+          },
+        })
+      : navigate("/Login");
   };
 
   const HandleSingleItemToCart = () => {
-    HandleAddToCart(Product?.id, selectedQuantity, {
-      option_1: selectedOptionKey1 ?? "",
-      option_2: selectedOptionKey2 ?? "",
-    });
+    CheckToken()
+      ? HandleAddToCart(Product?.id, selectedQuantity, {
+          option_1: selectedOptionKey1 ?? "",
+          option_2: selectedOptionKey2 ?? "",
+        })
+      : navigate("/Login");
   };
 
   const HandleSingleItemBuyNow = () => {
