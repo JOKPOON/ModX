@@ -4,6 +4,7 @@ type Configs struct {
 	GCS        GCS
 	PostgreSQL PostgreSQL
 	App        Gin
+	Omi        Omi
 }
 
 type Gin struct {
@@ -25,4 +26,9 @@ type GCS struct {
 	URL        string
 	BucketName string
 	ProjectID  string
+}
+
+type Omi struct {
+	PublicKey string
+	SecretKey string
 }

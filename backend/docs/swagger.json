@@ -9,7 +9,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "modx-production.up.railway.app",
+    "host": "modx.bukharney.tech/api",
     "basePath": "/v1",
     "paths": {
         "/auth/auth-test": {

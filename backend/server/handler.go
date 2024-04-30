@@ -63,7 +63,7 @@ func (s *Server) MapHandlers() error {
 	usersUsecase := _usersUsecase.NewUsersUsecases(usersRepo)
 	fileUsecase := _fileUsecase.NewFileUsecase(usersRepo, fileRepo, s.Cfg, s.Storage)
 	orderUsecase := _orderUsecase.NewOrderUsecases(orderRepo, usersRepo)
-	paymentUsecase := _paymentUsecase.NewPaymentUsecase(paymentRepo)
+	paymentUsecase := _paymentUsecase.NewPaymentUsecase(paymentRepo, s.Cfg)
 	productUsecase := _productUsecase.NewProductUsecases(productRepo, fileRepo)
 	cartUsecase := _cartUsecase.NewCartUsecase(cartRepo)
 	wishlistUsecase := _wishlistUsecase.NewWishlistUsecases(wishlistRepo)
@@ -76,21 +76,6 @@ func (s *Server) MapHandlers() error {
 	_productController.NewProductControllers(productGroup, s.Cfg, usersUsecase, productUsecase, fileUsecase)
 	_cartController.NewCartControllers(cartGroup, s.Cfg, usersUsecase, cartUsecase)
 	_wishlistController.NewWishlistControllers(wishlistGroup, s.Cfg, usersUsecase, wishlistUsecase)
-
-	s.App.NoRoute(func(c *gin.Context) {
-		c.JSON(http.StatusNotFound, gin.H{"message": "Not Found"})
-	})
-
-	return nil
-}
-
-func (s *Server) FileServer() error {
-	mux := http.NewServeMux()
-	fileServer := http.FileServer(http.Dir("./static/"))
-	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
-	s.App.GET("/static/*filepath", func(c *gin.Context) {
-		mux.ServeHTTP(c.Writer, c.Request)
-	})
 
 	s.App.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Not Found"})

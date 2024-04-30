@@ -12,7 +12,7 @@ import (
 // @title           ModX API
 // @version         1.0
 // @description     This is a ModX API server.
-// @host modx-production.up.railway.app
+// @host modx.bukharney.tech/api
 // @BasePath /v1
 // @schemes https
 // @securityDefinitions.apikey Bearer
@@ -36,6 +36,8 @@ func main() {
 	cfg.PostgreSQL.Username = mustGetenv("POSTGRES_USER")
 	cfg.PostgreSQL.Password = mustGetenv("POSTGRES_PASSWORD")
 	cfg.PostgreSQL.Database = mustGetenv("POSTGRES_DB")
+	cfg.Omi.PublicKey = mustGetenv("OMISE_PUBLIC_KEY")
+	cfg.Omi.SecretKey = mustGetenv("OMISE_SECRET_KEY")
 
 	db, err := databases.NewPostgreSQL(cfg)
 	if err != nil {

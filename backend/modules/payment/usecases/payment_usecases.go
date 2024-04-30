@@ -3,6 +3,7 @@ package usecases
 import (
 	"fmt"
 
+	"github.com/Bukharney/ModX/configs"
 	"github.com/Bukharney/ModX/modules/entities"
 	"github.com/omise/omise-go"
 	"github.com/omise/omise-go/operations"
@@ -14,19 +15,21 @@ const (
 )
 
 type paymentUsecase struct {
+	Cfg         *configs.Configs
 	paymentRepo entities.PaymentRepository
 }
 
-func NewPaymentUsecase(paymentRepo entities.PaymentRepository) entities.PaymentUsecase {
+func NewPaymentUsecase(paymentRepo entities.PaymentRepository, cfg *configs.Configs) entities.PaymentUsecase {
 	return &paymentUsecase{
 		paymentRepo: paymentRepo,
+		Cfg:         cfg,
 	}
 }
 
 func (p *paymentUsecase) Charge(req *entities.PaymentChargeReq) (*entities.PaymentChargeRes, error) {
 	client, _ := omise.NewClient(
-		OmisePublicKey,
-		OmiseSecretKey,
+		p.Cfg.Omi.PublicKey,
+		p.Cfg.Omi.SecretKey,
 	)
 
 	amount, err := p.paymentRepo.GetAmount(req.OrderId)

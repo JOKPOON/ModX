@@ -21,10 +21,6 @@ func (u *WishlistUsecases) GetWishlistItems(req *entities.WhishlistGetReq) (*ent
 	}
 
 	for i, product := range res.Products {
-		if err != nil {
-			return nil, err
-		}
-
 		res.Products[i] = product
 
 		product_detail, err := u.WishlistRepo.GetProductDetails(product.ProductId)

@@ -413,7 +413,7 @@ definitions:
       totals:
         type: integer
     type: object
-host: modx-production.up.railway.app
+host: modx.bukharney.tech/api
 info:
   contact: {}
   description: This is a ModX API server.

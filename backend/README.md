@@ -31,54 +31,44 @@ ModX is an online shopping platform designed specifically for the KMUTT bookstor
 
 Before you start, ensure you have the following installed:
 
-- Go (version 1.16 or later)
-- PostgreSQL
 - Omise API credentials
 - Google Cloud Storage credentials
 
 ## Getting Started
 
-### Installation
-
-1. Clone this repository:
-
-    ```bash
-    git clone https://github.com/your-username/ModX-backend.git
-    cd ModX-backend
-    ```
-
-2. Install dependencies:
-
-    ```bash
-    go mod download
-    ```
-
 ### Configuration
 
 #### Database Configuration
 
-1. Create a PostgreSQL database and configure the connection in the `config/config.yaml` file.
+1. Create a PostgreSQL database and configure the connection in the `docker-compose`or `.env` (recommend) file.
 
 #### Omise Configuration
 
-1. Set up your Omise API credentials in the same configuration file.
+1. Set up your Omise API credentials in the `docker-compose`or `.env` (recommend) file.
 
 #### Google Cloud Storage Configuration
 
-1. Set up your Google Cloud Storage credentials and update the configuration in the `config/config.yaml` file.
+1. Set up your Google Cloud Storage credentials `credentials.json` in the `backend` directory.
+   and URL of a bucket in the `docker-compose` or `.env` (recommend) file.
 
+### Installation
+
+```bash
+git clone https://gitlab.com/Bukharney/ModX.git
+cd backend
+```
 
 ### Running the Server
 
 ```bash
-go run main.go
+docker-compose up
 ```
 
 The server will start on http://localhost:8080 by default.
 
 ### API Documentation
 
-For detailed information on available API endpoints and how to use them, refer to the API documentation.
+For detailed information on available API endpoints and how to use them, refer to the [API documentation](https://modx.bukharney.tech/api/docs/index.html).
 
 ### Contribution
 

@@ -1528,7 +1528,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "modx-production.up.railway.app",
+	Host:             "modx.bukharney.tech/api",
 	BasePath:         "/v1",
 	Schemes:          []string{"https"},
 	Title:            "ModX API",
