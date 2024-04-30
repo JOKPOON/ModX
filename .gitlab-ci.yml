@@ -5,6 +5,7 @@ default:
 
 stages:
   - build
+  - test
   - deploy
 
 variables:
@@ -27,11 +28,14 @@ build_frontend:
   script:
     - docker build --pull -t "$CONTAINER_TEST_IMAGE"_frontend ./frontend
     - docker push "$CONTAINER_TEST_IMAGE"_frontend
+  rules:
+    - changes:
+        - frontend/**/*
 
 build_backend:
   stage: build
   variables:
-    SECURE_FILES_DOWNLOAD_PATH: './backend'
+    SECURE_FILES_DOWNLOAD_PATH: "./backend"
   before_script:
     - apk add curl bash
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -40,6 +44,32 @@ build_backend:
     - ls backend/
     - docker build --pull -t "$CONTAINER_TEST_IMAGE"_backend ./backend
     - docker push "$CONTAINER_TEST_IMAGE"_backend
+  rules:
+    - changes:
+        - backend/**/*
+
+# test:
+#   stage: test
+#   variables:
+#     POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+#     POSTGRES_USER: $POSTGRES_USER
+#     POSTGRES_DB: $POSTGRES_DB
+#     POSTGRES_HOST: $POSTGRES_HOST
+#     POSTGRES_PORT: $POSTGRES_PORT
+#     GCLOUD_STORAGE_URL: $GCLOUD_STORAGE_URL
+#   services:
+#     - name: postgres:14-alpine
+#       alias: postgres
+#     - name: $CONTAINER_TEST_IMAGE"_backend"
+#       alias: server
+#   before_script:
+#     - apk add curl
+#   script:
+#     - curl --silent "https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer" | bash
+#     - docker run --rm --network host -e POSTGRES_PASSWORD -e POSTGRES_USER -e POSTGRES_DB -e POSTGRES_HOST -e POSTGRES_PORT -e GCLOUD_STORAGE_URL $CONTAINER_TEST_IMAGE"_backend" go test -v ./...
+#   rules:
+#     - changes:
+#         - backend/**/*
 
 deploy:
   stage: deploy
@@ -65,4 +95,3 @@ deploy:
     - scp Caddyfile ec2-user@54.254.163.171:~/
     # docker login and restart services
     - ssh ec2-user@54.254.163.171 "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY && docker-compose pull && docker-compose up -d"
-    
