@@ -1,0 +1,68 @@
+default:
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+
+stages:
+  - build
+  - deploy
+
+variables:
+  # Use TLS https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-enabled
+  DOCKER_HOST: tcp://docker:2376
+  DOCKER_TLS_CERTDIR: "/certs"
+  CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
+  POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+  POSTGRES_USER: $POSTGRES_USER
+  POSTGRES_DB: $POSTGRES_DB
+  POSTGRES_HOST: $POSTGRES_HOST
+  POSTGRES_PORT: $POSTGRES_PORT
+  GCLOUD_STORAGE_URL: $GCLOUD_STORAGE_URL
+
+build_frontend:
+  stage: build
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build --pull -t "$CONTAINER_TEST_IMAGE"_frontend ./frontend
+    - docker push "$CONTAINER_TEST_IMAGE"_frontend
+
+build_backend:
+  stage: build
+  variables:
+    SECURE_FILES_DOWNLOAD_PATH: './backend'
+  before_script:
+    - apk add curl bash
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - curl --silent "https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer" | bash
+    - ls backend/
+    - docker build --pull -t "$CONTAINER_TEST_IMAGE"_backend ./backend
+    - docker push "$CONTAINER_TEST_IMAGE"_backend
+
+deploy:
+  stage: deploy
+  image: alpine
+  before_script:
+    # install envsubst and ssh-add
+    - apk add gettext openssh-client
+  script:
+    # create the new docker-compose.yml
+    - envsubst < docker-compose.tmpl > docker-compose.yml
+    - envsubst < Caddyfile.tmpl > Caddyfile
+    # start ssh-agent and import ssh private key
+    - eval `ssh-agent`
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    # add server to list of known hosts
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - touch ~/.ssh/known_hosts
+    - chmod 600 ~/.ssh/known_hosts
+    - ssh-keyscan -H 54.254.163.171 > ~/.ssh/known_hosts
+    # upload docker-compose to the server
+    - scp docker-compose.yml ec2-user@54.254.163.171:~/
+    - scp Caddyfile ec2-user@54.254.163.171:~/
+    # docker login and restart services
+    - ssh ec2-user@54.254.163.171 "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY && docker-compose pull && docker-compose up -d"
+    
