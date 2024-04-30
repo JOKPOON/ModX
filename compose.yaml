@@ -14,7 +14,9 @@ services:
       - caddy_net
 
   web:
-    image: registry.gitlab.com/bukharney/modx:main_frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: web
     expose:
       - 5173
@@ -22,7 +24,9 @@ services:
       - caddy_net
 
   server:
-    image: registry.gitlab.com/bukharney/modx:main_backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: server
     expose:
       - 8080
