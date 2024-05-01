@@ -10,6 +10,8 @@ RUN pnpm install
 
 COPY . /app
 
+RUN pnpm build 
+
 EXPOSE 5173
 
-CMD [ "pnpm", "run", "dev" ]
+CMD ["pnpm", "start"]
