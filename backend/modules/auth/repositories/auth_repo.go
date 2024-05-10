@@ -25,7 +25,7 @@ func (a *AuthRepo) SignUsersAccessToken(req *entities.UsersPassport) (string, er
 		Username: req.Username,
 		Role:     req.Roles,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(60 * time.Minute)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			NotBefore: jwt.NewNumericDate(time.Now()),
 			Subject:   "users_access_token",

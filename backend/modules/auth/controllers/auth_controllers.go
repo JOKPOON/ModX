@@ -22,6 +22,7 @@ func NewAuthControllers(r gin.IRoutes, cfg *configs.Configs, authUsecase entitie
 
 	r.POST("/login", controllers.Login)
 	r.GET("/auth-test", middlewares.JwtAuthentication(), controllers.AuthTest)
+	r.GET("/refresh-token", controllers.RefreshToken)
 }
 
 // @Summary Login
@@ -70,4 +71,15 @@ func (a *AuthController) AuthTest(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, tk)
+}
+
+// @Summary Refresh Token
+// @Description Refresh Token
+// @Tags Auth
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} string
+// @Router /auth/refresh-token [get]
+func (a *AuthController) RefreshToken(c *gin.Context) {
+	middlewares.RefreshToken(c)
 }

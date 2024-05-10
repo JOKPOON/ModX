@@ -459,6 +459,21 @@ paths:
       summary: Login
       tags:
       - Auth
+  /auth/refresh-token:
+    get:
+      consumes:
+      - application/json
+      description: Refresh Token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Refresh Token
+      tags:
+      - Auth
   /cart:
     delete:
       consumes:

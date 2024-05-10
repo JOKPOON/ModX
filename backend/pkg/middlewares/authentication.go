@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/Bukharney/ModX/modules/entities"
 	"github.com/gin-gonic/gin"
@@ -59,7 +60,7 @@ func JwtAuthentication() gin.HandlerFunc {
 
 		if !token.Valid {
 			c.JSON(http.StatusForbidden, gin.H{
-				"error": "Token is not valid",
+				"error": "Invalid token",
 			})
 			c.Abort()
 			return
@@ -106,9 +107,21 @@ func RefreshToken(c *gin.Context) {
 	})
 
 	if token.Valid {
+		claims := token.Claims.(*entities.UsersClaims)
+		claims.ExpiresAt = jwt.NewNumericDate(time.Now().Add(24 * time.Hour))
+		claims.IssuedAt = jwt.NewNumericDate(time.Now())
+		claims.NotBefore = jwt.NewNumericDate(time.Now())
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+		ss, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err,
+			})
+		}
 		c.JSON(http.StatusOK, gin.H{
-			"token": tk,
+			"token": ss,
 		})
+
 	} else {
 		c.JSON(http.StatusForbidden, gin.H{
 			"error": err,

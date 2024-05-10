@@ -77,6 +77,29 @@ const docTemplate = `{
                 }
             }
         },
+        "/auth/refresh-token": {
+            "get": {
+                "description": "Refresh Token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Refresh Token",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/cart": {
             "get": {
                 "security": [
