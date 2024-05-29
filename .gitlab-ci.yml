@@ -91,7 +91,7 @@ deploy:
     - chmod 600 ~/.ssh/known_hosts
     - ssh-keyscan -H 54.254.163.171 > ~/.ssh/known_hosts
     # upload docker-compose to the server
-    - scp docker-compose.yml ec2-user@54.254.163.171:~/
-    - scp Caddyfile ec2-user@54.254.163.171:~/
+    - scp docker-compose.yml ec2-user@54.254.163.171:~/modx/
+    - scp Caddyfile ec2-user@54.254.163.171:~/modx/
     # docker login and restart services
-    - ssh ec2-user@54.254.163.171 "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY && docker-compose pull && docker-compose up -d"
+    - ssh ec2-user@54.254.163.171 "cd modx && docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY && docker-compose pull && docker-compose up -d"
