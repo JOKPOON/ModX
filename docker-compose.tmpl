@@ -24,7 +24,7 @@ services:
       - OMISE_PUBLIC_KEY=${OMISE_PUBLIC_KEY}
       - OMISE_SECRET_KEY=${OMISE_SECRET_KEY}
     depends_on:
-      postgres:
+      modx_postgres:
         condition: service_healthy
     networks:
       - caddy_net
