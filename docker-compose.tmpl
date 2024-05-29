@@ -1,5 +1,5 @@
 services:
-  web:
+  modx_web:
     image: $CI_REGISTRY_IMAGE:main_frontend
     container_name: modxWeb
     expose:
@@ -7,7 +7,7 @@ services:
     networks:
       - caddy_net
 
-  server:
+  modx_server:
     image: $CI_REGISTRY_IMAGE:main_backend
     container_name: modxServer
     expose:
@@ -29,7 +29,7 @@ services:
     networks:
       - caddy_net
 
-  postgres:
+  modx_postgres:
     image: postgres:14-alpine
     container_name: modXpostgres
     user: postgres
