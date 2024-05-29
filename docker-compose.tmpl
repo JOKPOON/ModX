@@ -15,7 +15,7 @@ services:
 
   web:
     image: $CI_REGISTRY_IMAGE:main_frontend
-    container_name: web
+    container_name: modxWeb
     expose:
       - 5173
     networks:
@@ -23,7 +23,7 @@ services:
 
   server:
     image: $CI_REGISTRY_IMAGE:main_backend
-    container_name: server
+    container_name: modxServer
     expose:
       - 8080
     environment:
