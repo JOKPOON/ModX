@@ -1,18 +1,4 @@
 services:
-  caddy:
-    image: caddy:2.7-alpine
-    restart: unless-stopped
-    container_name: modx_caddy_proxy
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
-    networks:
-      - caddy_net
-
   web:
     image: $CI_REGISTRY_IMAGE:main_frontend
     container_name: modxWeb
@@ -63,8 +49,5 @@ services:
     networks:
       - caddy_net
 
-volumes:
-  caddy_data:
-  caddy_config:
 networks:
   caddy_net:
