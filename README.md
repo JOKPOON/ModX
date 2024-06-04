@@ -55,7 +55,7 @@ To run TradeKub locally on your machine, follow these steps:
    docker compose up
    ```
 
-4. Access the TradeKub application in your browser at `http://modx.localhost`.
+4. Access the ModX in your browser at `http://modx.localhost`.
 
 ## Contributing
 
