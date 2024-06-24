@@ -1,18 +1,19 @@
 package usecases
 
 import (
-	"context"
+	"bytes"
 	"fmt"
 	"io"
 	"log"
 	"mime/multipart"
 	"net/http"
-	"time"
+	"os"
 
-	"cloud.google.com/go/storage"
 	"github.com/Bukharney/ModX/configs"
 	"github.com/Bukharney/ModX/modules/entities"
 	"github.com/Bukharney/ModX/pkg/utils"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/s3"
 )
 
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 20
@@ -21,19 +22,19 @@ type FileUsecase struct {
 	UserRepo entities.UsersRepository
 	FileRepo entities.FileRepository
 	Cfg      *configs.Configs
-	Storage  *storage.Client
+	S3       *s3.S3
 }
 
-func NewFileUsecase(userRepo entities.UsersRepository, fileRepo entities.FileRepository, cfg *configs.Configs, storage *storage.Client) entities.FileUsecase {
+func NewFileUsecase(userRepo entities.UsersRepository, fileRepo entities.FileRepository, cfg *configs.Configs, storage *s3.S3) entities.FileUsecase {
 	return &FileUsecase{
 		UserRepo: userRepo,
 		FileRepo: fileRepo,
 		Cfg:      cfg,
-		Storage:  storage,
+		S3:       storage,
 	}
 }
 
-func (f *FileUsecase) Upload(req *entities.FileUploadReq) (entities.FileUploadRes, error) {
+func (f *FileUsecase) Upload(req *entities.FileUploadReq, cfg *configs.Configs) (entities.FileUploadRes, error) {
 	res := entities.FileUploadRes{
 		Status: "failed",
 	}
@@ -82,18 +83,16 @@ func (f *FileUsecase) Upload(req *entities.FileUploadReq) (entities.FileUploadRe
 		fileName := utils.RandomString(16)
 
 		err = f.StreamFileUpload(
-			log.Writer(),
-			"modx-product-image",
+			f.S3,
 			fileName,
 			file,
+			cfg,
 		)
 		if err != nil {
 			return res, fmt.Errorf("error, failed to upload file" + err.Error())
 		}
-
-		file.Close()
-
 		FileName = append(FileName, fileName)
+		file.Close()
 	}
 
 	res = entities.FileUploadRes{
@@ -103,34 +102,25 @@ func (f *FileUsecase) Upload(req *entities.FileUploadReq) (entities.FileUploadRe
 	return res, nil
 }
 
-func (f *FileUsecase) StreamFileUpload(w io.Writer, bucket, object string, file multipart.File) error {
-	// bucket := "bucket-name"
-	// object := "object-name"
-	ctx := context.Background()
-	client, err := storage.NewClient(ctx)
+func (f *FileUsecase) StreamFileUpload(svc *s3.S3, fileName string, file multipart.File, cfg *configs.Configs) error {
+	var buf bytes.Buffer
+	if _, err := io.Copy(&buf, file); err != nil {
+		fmt.Fprintln(os.Stderr, "Error reading file:", err)
+		return err
+	}
+
+	fmt.Println("Uploading file to S3...")
+	fmt.Println(cfg.S3.BucketName)
+
+	_, err := svc.PutObject(&s3.PutObjectInput{
+		Bucket: aws.String("modx-image"),
+		Key:    aws.String(fileName),
+		Body:   bytes.NewReader(buf.Bytes()),
+	})
 	if err != nil {
-		return fmt.Errorf("storage.NewClient: %w", err)
+		fmt.Println("Error uploading file:", err)
+		return err
 	}
-	defer client.Close()
-
-	ctx, cancel := context.WithTimeout(ctx, time.Second*50)
-	defer cancel()
-
-	// Upload an object with storage.Writer.
-	wc := client.Bucket(bucket).Object(object).NewWriter(ctx)
-	wc.ChunkSize = 0 // note retries are not supported for chunk size 0.
-
-	wc.CacheControl = "Cache-Control:no-cache, max-age=0"
-	wc.ContentType = "image/jpeg"
-
-	if _, err = io.Copy(wc, file); err != nil {
-		return fmt.Errorf("io.Copy: %w", err)
-	}
-	// Data can continue to be added to the file until the writer is closed.
-	if err := wc.Close(); err != nil {
-		return fmt.Errorf("Writer.Close: %w", err)
-	}
-	fmt.Fprintf(w, "%v uploaded to %v.\n", object, bucket)
 
 	return nil
 }

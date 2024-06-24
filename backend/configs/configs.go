@@ -1,7 +1,8 @@
 package configs
 
 type Configs struct {
-	GCS        GCS
+	S3         S3
+	AWS        AWS
 	PostgreSQL PostgreSQL
 	App        Gin
 	Omi        Omi
@@ -22,10 +23,15 @@ type PostgreSQL struct {
 	SSLMode  string
 }
 
-type GCS struct {
+type AWS struct {
+	Region          string
+	AccessKeyID     string
+	SecretAccessKey string
+}
+
+type S3 struct {
 	URL        string
 	BucketName string
-	ProjectID  string
 }
 
 type Omi struct {

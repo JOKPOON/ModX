@@ -8,7 +8,6 @@ import {
 } from "../Interface/Interface";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-
 const createFetchString = (
   selectedCategories: string[],
   minPrice: string,
@@ -20,7 +19,6 @@ const createFetchString = (
   limit: string
 ) => {
   const queryParams = [];
-
   if (selectedCategories.length > 0) {
     queryParams.push(`category=${selectedCategories.join(",")}`);
   }
@@ -46,7 +44,7 @@ const createFetchString = (
     queryParams.push(`limit=${limit}`);
   }
 
-  let fetchString = "v1/product/";
+  let fetchString = "v1/product";
   if (queryParams.length > 0) {
     fetchString += "?" + queryParams.join("&");
   }

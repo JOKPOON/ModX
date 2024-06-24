@@ -237,7 +237,7 @@ func (p *ProductController) UploadProductPicture(c *gin.Context) (*entities.File
 	files := c.Request.MultipartForm.File["file"]
 	freq.File = files
 
-	res, err := p.FileUsecase.Upload(&freq)
+	res, err := p.FileUsecase.Upload(&freq, p.Cfg)
 	if err != nil {
 		return nil, err
 	}

@@ -9,7 +9,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/v1": {
-        target: "http://modx_server:8080",
+        target: "http://modx_server",
         changeOrigin: true,
       },
     },

@@ -20,10 +20,10 @@ const NewItems = () => {
   };
 
   // To set the number of items per page
-  const visibleItems = newItemsData.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE
-  );
+  const visibleItems =
+    newItemsData.length > 0
+      ? newItemsData.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+      : [];
 
   // To check if the last item is visible
   const isLastItemVisible = startIndex + ITEMS_PER_PAGE >= newItemsData.length;

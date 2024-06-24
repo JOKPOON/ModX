@@ -100,7 +100,7 @@ func (p *ProductRepo) GetAll(req *entities.ProductQuery) (*entities.AllProductRe
 
 		data := strings.Split(res.Picture, ",")
 		for i, v := range data {
-			data[i] = fmt.Sprintf(p.Cfg.GCS.URL + v)
+			data[i] = fmt.Sprintf(p.Cfg.S3.URL + v)
 		}
 
 		res.Picture = data[0]
@@ -213,7 +213,7 @@ func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, erro
 
 	row, err := p.Db.Queryx(query, req.Id)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error, failed to query product")
 	}
 
 	if !row.Next() {
@@ -223,12 +223,12 @@ func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, erro
 	res := new(entities.ProductRes)
 	err = row.StructScan(&res)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error, failed to scan product data")
 	}
 	var data map[string]interface{}
 	err = json.Unmarshal([]byte(res.Options), &data)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error, failed to unmarshal product options")
 	}
 
 	req.Id = res.Id
@@ -243,7 +243,7 @@ func (p *ProductRepo) GetProduct(req *entities.Product) (*entities.Product, erro
 	req.Updated = res.Updated
 	req.Picture = strings.Split(res.Picture, ",")
 	for i, v := range req.Picture {
-		req.Picture[i] = fmt.Sprintf(p.Cfg.GCS.URL + v)
+		req.Picture[i] = fmt.Sprintf(p.Cfg.S3.URL + v)
 	}
 
 	query = `

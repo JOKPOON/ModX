@@ -49,7 +49,7 @@ func (f *FileController) Upload(c *gin.Context) {
 
 	req.Claims = role
 
-	res, err := f.FileUsecase.Upload(&req)
+	res, err := f.FileUsecase.Upload(&req, f.Cfg)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

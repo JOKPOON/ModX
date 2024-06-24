@@ -30,7 +30,11 @@ func main() {
 		return v
 	}
 
-	cfg.GCS.URL = mustGetenv("GCLOUD_STORAGE_URL")
+	cfg.S3.URL = mustGetenv("AWS_S3_URL")
+	cfg.S3.BucketName = mustGetenv("AWS_S3_BUCKET_NAME")
+	cfg.AWS.AccessKeyID = mustGetenv("AWS_ACCESS_KEY")
+	cfg.AWS.SecretAccessKey = mustGetenv("AWS_SECRET_ACCESS_KEY")
+	cfg.AWS.Region = mustGetenv("AWS_REGION")
 	cfg.PostgreSQL.Host = mustGetenv("POSTGRES_HOST")
 	cfg.PostgreSQL.Port = mustGetenv("POSTGRES_PORT")
 	cfg.PostgreSQL.Username = mustGetenv("POSTGRES_USER")
@@ -44,7 +48,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	storage, err := databases.NewGoolgeCloudStorage(cfg)
+	storage, err := databases.NewAwsS3(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}
