@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { jwtDecode } from "jwt-decode";
 import {
   reviewItems,
   ordersItems,
@@ -52,7 +53,16 @@ const createFetchString = (
 };
 
 export const CheckToken = () => {
-  return localStorage.getItem("token");
+  const token = localStorage.getItem("token");
+  if (!token) {
+    return null;
+  }
+  const decoded = jwtDecode(token);
+  if (decoded.exp! * 1000 < Date.now()) {
+    localStorage.removeItem("token");
+    return null;
+  }
+  return token;
 };
 
 export const GetProductsData = async (
