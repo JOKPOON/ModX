@@ -31,22 +31,25 @@ To run TradeKub locally on your machine, follow these steps:
 
 2. Set up the environment variables:
 
-   - You need to have a Google Cloud Storage account and an Omise account to run the application.
-     - For Google Cloud Storage, you need to create a bucket and generate a service account key file.
-       - And put your `credentials.json` file in the `backend` directory.
+   - You need to have a AWS account and an Omise account to run the application.
+     - For S3 Storage, you need to create a bucket and create a ACCESS and SECRET keys.
      - For Omise, you need to create an account and generate API keys.
    - Create a `.env` file in the root directory of the project.
    - Add the following environment variables to the `.env` file:
 
      ```
-     POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-     POSTGRES_USER=${POSTGRES_USER}
-     POSTGRES_DB=${POSTGRES_DB}
-     POSTGRES_HOST=${POSTGRES_HOST}
-     POSTGRES_PORT=${POSTGRES_PORT}
-     GCLOUD_STORAGE_URL=${GCLOUD_STORAGE_URL}
-     OMISE_PUBLIC_KEY=${OMISE_PUBLIC_KEY}
-     OMISE_SECRET_KEY=${OMISE_SECRET_KEY}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - OMISE_PUBLIC_KEY=${OMISE_PUBLIC_KEY}
+      - OMISE_SECRET_KEY=${OMISE_SECRET_KEY}
+      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
+      - AWS_S3_URL=${AWS_S3_URL}
      ```
 
 3. Start the application using the following command:
