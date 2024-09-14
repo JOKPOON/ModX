@@ -1,22 +1,6 @@
 services:
-  caddy:
-    image: caddy:2.7-alpine
-    restart: unless-stopped
-    container_name: caddy_proxy
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
-    networks:
-      - caddy_net
-
   web:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: public.ecr.aws/z4n6o0v4/modx/client:latest
     container_name: modx_client
     expose:
       - 5173
@@ -24,9 +8,7 @@ services:
       - caddy_net
 
   server:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: public.ecr.aws/z4n6o0v4/modx/server:latest
     container_name: modx_server
     expose:
       - 8080
