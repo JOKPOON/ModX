@@ -17,7 +17,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: web
+    container_name: modx_client
     expose:
       - 5173
     networks:
@@ -27,7 +27,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: server
+    container_name: modx_server
     expose:
       - 8080
     environment:
