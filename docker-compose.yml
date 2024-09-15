@@ -1,5 +1,5 @@
 services:
-  web:
+  modx_client:
     image: public.ecr.aws/z4n6o0v4/modx/client:latest
     container_name: modx_client
     expose:
@@ -7,7 +7,7 @@ services:
     networks:
       - caddy_net
 
-  server:
+  modx_server:
     image: public.ecr.aws/z4n6o0v4/modx/server:latest
     container_name: modx_server
     expose:
