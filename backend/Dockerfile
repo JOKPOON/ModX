@@ -16,4 +16,4 @@ RUN go build -o main .
 
 EXPOSE 8080
 
-CMD ["infisical", "run", "--projectId", "modx", "--", "./main"]
+CMD ["infisical", "run", "--projectId", "24602f54-d71d-4ab4-a926-88f14b186f6b", "--", "./main"]
