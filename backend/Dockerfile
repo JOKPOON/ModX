@@ -10,8 +10,6 @@ COPY . .
 
 RUN go build -o main .
 
-ENV GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
-
 EXPOSE 8080
 
-CMD ["./main"]
+CMD ["infisical", "run", "--projectId", "<your-project-id>", "--", "./main"]
