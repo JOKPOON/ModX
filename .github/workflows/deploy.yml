@@ -89,8 +89,8 @@ jobs:
           USER=${{ secrets.EC2_USER }}
           PORT=22
 
-          ssh -o StrictHostKeyChecking=no $USER@$HOST mkdir -p /$USER/modx
-          scp -o StrictHostKeyChecking=no -P $PORT docker-compose.yml $USER@$HOST:/$USER/modx/docker-compose.yml
+          ssh -o StrictHostKeyChecking=no $USER@$HOST mkdir -p /home/$USER/modx
+          scp -o StrictHostKeyChecking=no -P $PORT docker-compose.yml $USER@$HOST:/home/$USER/modx/docker-compose.yml
 
       - name: Deploy Backend to EC2
         run: |
@@ -100,7 +100,7 @@ jobs:
 
           ssh -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
             docker pull public.ecr.aws/z4n6o0v4/modx/server:latest
-            sudo docker compose -f /$USER/modx/docker-compose.yml up -d modx_server
+            docker compose -f /home/$USER/modx/docker-compose.yml up -d modx_server
           EOF
 
   deploy-frontend:
@@ -123,8 +123,8 @@ jobs:
           USER=${{ secrets.EC2_USER }}
           PORT=22
 
-          ssh -o StrictHostKeyChecking=no $USER@$HOST mkdir -p /$USER/modx
-          scp -o StrictHostKeyChecking=no -P $PORT docker-compose.yml $USER@$HOST:/$USER/modx/docker-compose.yml
+          ssh -o StrictHostKeyChecking=no $USER@$HOST mkdir -p /home/$USER/modx
+          scp -o StrictHostKeyChecking=no -P $PORT docker-compose.yml $USER@$HOST:/home/$USER/modx/docker-compose.yml
 
       - name: Deploy Frontend to EC2
         run: |
@@ -134,5 +134,5 @@ jobs:
 
           ssh -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
             docker pull public.ecr.aws/z4n6o0v4/modx/client:latest
-            sudo docker compose -f /$USER/modx/docker-compose.yml up -d modx_client
+            docker compose -f /home/$USER/modx/docker-compose.yml up -d modx_client
           EOF
