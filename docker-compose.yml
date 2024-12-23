@@ -13,8 +13,7 @@ services:
     expose:
       - 8080
     environment:
-      - INFISICAL_MACHINE_IDENTITY_CLIENT_ID=${INFISICAL_MACHINE_IDENTITY_CLIENT_ID_FOR_WEB}
-      - INFISICAL_MACHINE_IDENTITY_CLIENT_SECRET=${INFISICAL_MACHINE_IDENTITY_CLIENT_SECRET_FOR_WEB}
+      - INFISICAL_TOKEN=$INFISICAL_TOKEN  
     depends_on:
       postgres:
         condition: service_healthy
@@ -23,7 +22,7 @@ services:
 
   postgres:
     image: postgres:14-alpine
-    container_name: postgres
+    container_name: modx_postgres
     user: postgres
     ports:
       - 5555:5432
