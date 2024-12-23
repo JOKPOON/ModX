@@ -100,7 +100,7 @@ jobs:
 
           ssh -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
             docker pull public.ecr.aws/z4n6o0v4/modx/server:latest
-            docker compose -f /home/$USER/modx/docker-compose.yml up -d modx_server
+            docker-compose -f /home/$USER/modx/docker-compose.yml up -d modx_server
           EOF
 
   deploy-frontend:
@@ -134,5 +134,5 @@ jobs:
 
           ssh -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
             docker pull public.ecr.aws/z4n6o0v4/modx/client:latest
-            docker compose -f /home/$USER/modx/docker-compose.yml up -d modx_client
+            docker-compose -f /home/$USER/modx/docker-compose.yml up -d modx_client
           EOF
